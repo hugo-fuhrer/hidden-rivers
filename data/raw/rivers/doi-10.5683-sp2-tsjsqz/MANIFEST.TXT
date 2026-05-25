@@ -1,0 +1,18 @@
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAS_geojson/BI_Lost_Rivers_20170705_WAMS_qgis.geojson (application/octet-stream) 1830750 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/MDL_1882_Shoreline_wDon_WAMS.zip (application/zipped-shapefile) 37656 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/BI_Lost_Rivers_20180925_WAMS_nozeros.zip (application/zipped-shapefile) 390416 bytes.
+LostRiversData/00_READ_ME.txt (text/plain) 29 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/CL_WGS84_hydro_WAMS.zip (application/zipped-shapefile) 229507 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/WatershedsDEM_trca_noshore_historic_WAMS.zip (application/zipped-shapefile) 915236 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/Web-mapping pilot - Lost Rivers 20171005.pdf (application/pdf) 337023 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/WatershedsDEM_trca_noshore_WAMS.zip (application/zipped-shapefile) 899376 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/working/Web-mapping pilot - Lost Rivers 20170925.docx (application/vnd.openxmlformats-officedocument.wordprocessingml.document) 315080 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAS_geojson/BI_Lost_Rivers_20170626_WAMS_qgis.geojson (application/octet-stream) 1828246 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/Web-mapping pilot - Lost Rivers 20171005.docx (application/vnd.openxmlformats-officedocument.wordprocessingml.document) 951567 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/working/Web-mapping pilot - Lost Rivers 20171003.docx (application/vnd.openxmlformats-officedocument.wordprocessingml.document) 951492 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/working/Web-mapping pilot - Lost Rivers 20170930.docx (application/vnd.openxmlformats-officedocument.wordprocessingml.document) 951399 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Composite.gdb.zip (application/zip) 4137092 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/working/Web-mapping pilot - Lost Rivers 20170930.pdf (application/pdf) 336324 bytes.
+LostRiversData/Documentation/geohist_ca blog docs/working/Web-mapping pilot - Lost Rivers 20170926.docx (application/vnd.openxmlformats-officedocument.wordprocessingml.document) 315096 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAMS_shps/LR_Toronto_Comp_WAMS_shps/BI_Lost_Rivers_20170705_WAMS.zip (application/zipped-shapefile) 443282 bytes.
+LostRiversData/Webmaps_data/LR_Toronto_Comp_WAS_geojson/BI_Lost_Rivers_20170621_WAMS_qgis.geojson (application/octet-stream) 1826185 bytes.

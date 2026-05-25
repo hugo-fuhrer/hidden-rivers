@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Data too large to commit
+data/raw/topography/
+data/raw/sewers/Sewer Gravity Main - 4326.geojson
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo

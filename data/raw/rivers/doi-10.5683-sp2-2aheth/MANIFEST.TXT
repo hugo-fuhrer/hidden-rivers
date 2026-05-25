@@ -1,0 +1,4 @@
+BestInterpretedLostRIversMay12_2017.kmz (application/vnd.google-earth.kmz) 621360 bytes.
+BestInterpretedLostRIversMay12_2017.zip (application/zipped-shapefile) 552683 bytes.
+CL_WGS84_hydro_WAMS.zip (application/zipped-shapefile) 249414 bytes.
+LR_Toronto_Composite.gdb.tar (application/x-tar) 4171264 bytes.
