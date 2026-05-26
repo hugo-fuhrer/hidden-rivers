@@ -233,134 +233,202 @@ def update(year):
     return fig
 
 
-# ── Historical map sequence ───────────────────────────────────────────────────
-_UOT = "http://maps.library.utoronto.ca/datapub/digital/NG/historicTOmaps"
+# ── River-change figure for a transition period ──────────────────────────────
 
-HIST_MAPS = [
+def build_change_fig(before_year, after_year):
+    """Plotly map: gray=already buried, orange=newly buried, cyan=still flowing."""
+    already_lats, already_lons = [], []
+    new_lats,     new_lons     = [], []
+    still_lats,   still_lons   = [], []
+    for last_yr, lats_chunk in _river_lats.items():
+        if last_yr == "all":
+            continue
+        lons_chunk = _river_lons[last_yr]
+        if last_yr < before_year:
+            already_lats += lats_chunk; already_lons += lons_chunk
+        elif last_yr <= after_year:
+            new_lats     += lats_chunk; new_lons     += lons_chunk
+        else:
+            still_lats   += lats_chunk; still_lons   += lons_chunk
+
+    traces = []
+    if already_lats:
+        traces.append(go.Scattermap(
+            lat=already_lats, lon=already_lons, mode="lines",
+            line=dict(color="#3a3a3a", width=1.0), name="Buried before",
+            hovertemplate="<b>Buried before this period</b><extra></extra>",
+        ))
+    if still_lats:
+        traces.append(go.Scattermap(
+            lat=still_lats, lon=still_lons, mode="lines",
+            line=dict(color="#4fc3f7", width=1.5), name="Still flowing after",
+            hovertemplate="<b>Still flowing after this period</b><extra></extra>",
+        ))
+    if new_lats:
+        traces.append(go.Scattermap(
+            lat=new_lats, lon=new_lons, mode="lines",
+            line=dict(color="#ff7043", width=3.0),
+            name=f"Buried {before_year}–{after_year}",
+            hovertemplate=f"<b>Buried {before_year}–{after_year}</b><extra></extra>",
+        ))
+
+    fig = go.Figure(data=traces)
+    fig.update_layout(
+        map_style="carto-darkmatter",
+        map_center={"lat": 43.68, "lon": -79.38}, map_zoom=10,
+        paper_bgcolor="#0d1117",
+        margin=dict(l=0, r=0, t=0, b=0),
+        legend=dict(bgcolor="rgba(13,17,23,0.85)", font=dict(color="white", size=10),
+                    x=0.01, y=0.99, xanchor="left", yanchor="top"),
+        uirevision=f"{before_year}-{after_year}",
+    )
+    return fig
+
+
+# ── Historical map transition sequence ───────────────────────────────────────
+_UOT  = "http://maps.library.utoronto.ca/datapub/digital/NG/historicTOmaps"
+_WIKI = "https://commons.wikimedia.org/wiki/Special:FilePath"
+
+HIST_TRANSITIONS = [
     {
-        "year": 1818,
-        "title": "Plan of York — 1818  (Lieut. Phillpotts)",
-        "url": f"{_UOT}/1818Phillpotts.mt-109x.jpg",
-        "buried": [],
+        "before_year": 1818, "after_year": 1842,
+        "before_title": "1818 — Plan of York (Phillpotts)",
+        "after_title":  "1842 — Cane Topographical Map",
+        "before_url": f"{_UOT}/1818Phillpotts.mt-109x.jpg",
+        "after_url":  f"{_UOT}/1842CaneF.jpeg",
+        "buried": ["Lower Garrison Creek mouth (harbour infill under new docks)"],
         "description": (
-            "York (pop. ~1,200) occupies a small street grid between Yonge and Parliament. "
-            "Every waterway is fully surface: Garrison Creek drains the western ravines to "
-            "the lake near Strachan Ave; Taddle Creek runs south through what will become "
-            "Queen's Park; Russell Creek drains the Annex. No sewers exist — open streams "
-            "carry all runoff to the lake."
+            "York (pop. ~1,200) sits in a small street grid east of Yonge. By 1842 it is "
+            "Toronto (renamed 1834, pop. ~15,000). Harbour edges are filled for wharves and "
+            "creek mouths begin to vanish. Garrison Creek, Taddle Creek, Russell Creek, and "
+            "Park Creek all still run fully open. No engineered sewers exist — all drainage "
+            "flows naturally to Lake Ontario."
         ),
     },
     {
-        "year": 1842,
-        "title": "Cane Topographical Map — 1842",
-        "url": f"{_UOT}/1842CaneF.jpeg",
-        "buried": ["Lower Garrison Creek mouth (harbour infill for docks)"],
-        "description": (
-            "Toronto (renamed 1834, pop. ~15,000) expands along the waterfront. Harbour "
-            "edges are filled in and creek mouths disappear beneath wharves. Garrison Creek "
-            "still runs its full 7 km from the Davenport ridge to the lake. Park Creek feeds "
-            "the western bay. Taddle Creek is open north of College Street."
-        ),
-    },
-    {
-        "year": 1851,
-        "title": "Fleming Topographical Plan — 1851",
-        "url": f"{_UOT}/1851flemingliberatedfromsid.jpeg",
+        "before_year": 1842, "after_year": 1858,
+        "before_title": "1842 — Cane Topographical Map",
+        "after_title":  "1858 — Maclear's Sewer Plan",
+        "before_url": f"{_UOT}/1842CaneF.jpeg",
+        "after_url":  f"{_UOT}/1858MaclearSewers.jpg",
         "buried": [
-            "Lower Taddle Creek — College St to lake (first culvert)",
-            "Russell Creek lower reach",
+            "Lower Taddle Creek — College St to lake (first deliberate culvert, c.1852)",
+            "Russell Creek lower reach (south of Bloor)",
+            "Park Creek lower reach",
         ],
         "description": (
             "Population doubles to ~30,000. The lower Taddle Creek on College Street is "
-            "culverted to create a road surface — Toronto's first deliberate creek burial. "
-            "Russell Creek, draining the future Annex neighbourhood, begins to disappear "
-            "downtown. Garrison Creek still runs openly through its full 7-km course."
+            "culverted c.1852 — Toronto's first deliberate creek burial. By 1858 engineer "
+            "Maclear surveys a comprehensive sewer network that incorporates creek beds into "
+            "brick conduits. The Don River's natural meanders are still fully intact. "
+            "Garrison Creek still runs its full 7 km from Davenport Ridge to the lake."
         ),
     },
     {
-        "year": 1858,
-        "title": "Maclear's Sewer Plan — 1858",
-        "url": f"{_UOT}/1858MaclearSewers.jpg",
+        "before_year": 1858, "after_year": 1882,
+        "before_title": "1858 — Maclear's Sewer Plan",
+        "after_title":  "1882 — McMurrich Parks Plan",
+        "before_url": f"{_UOT}/1858MaclearSewers.jpg",
+        "after_url":  f"{_UOT}/1882McMurrichPlan.jpeg",
         "buried": [
-            "Taddle Creek — Queen St to lake",
-            "Park Creek lower reach",
-            "Several unnamed downtown ravine streams",
+            "Taddle Creek — through University of Toronto campus (1870s)",
+            "Garrison Creek — King St to lake (lower half, brick sewer 1870s)",
+            "Russell Creek — full lower half south of Dupont St",
         ],
         "description": (
-            "The first comprehensive sewer network is planned. Lower Taddle Creek from "
-            "Queen St to the lake is incorporated into the sewer system and ceases to exist "
-            "as a stream. Park Creek and ravine feeders south of Queen are channelled "
-            "underground. The Don River's natural meanders, still fully intact here, will "
-            "be straightened by engineers within 30 years."
+            "Population reaches 86,000. Taddle Creek through the U of T campus is paved over; "
+            "only the ravine north of Bloor survives. Garrison Creek's lower half is replaced "
+            "by a brick sewer in the 1870s. In 1882, Mayor McMurrich proposes a parks system "
+            "along remaining creek valleys — the last chance to preserve them as green corridors. "
+            "The proposal is defeated by council. This decision seals the fate of every "
+            "remaining open stream in the city."
         ),
     },
     {
-        "year": 1882,
-        "title": "McMurrich Parks Plan — 1882",
-        "url": f"{_UOT}/1882McMurrichPlan.jpeg",
+        "before_year": 1882, "after_year": 1892,
+        "before_title": "1882 — McMurrich Parks Plan",
+        "after_title":  "1889 — Intercepting Sewers Plan",
+        "before_url": f"{_UOT}/1882McMurrichPlan.jpeg",
+        "after_url":  f"{_UOT}/1889.Toronto-Proposed-Intercepting-Sewers.s0725_fl0013_MT00098.jpg",
         "buried": [
-            "Taddle Creek — Bloor St to Queen St (through university campus)",
-            "Garrison Creek — King St to lake",
-            "Russell Creek — entire lower half",
-        ],
-        "description": (
-            "Population 86,000. Mayor McMurrich proposes a parks system along the remaining "
-            "creek valleys — the last chance to preserve them as green corridors. The proposal "
-            "is defeated. Taddle Creek through the university campus is now underground; only "
-            "the ravine north of Bloor survives. Garrison Creek's lower half below King St "
-            "has been replaced by a brick sewer."
-        ),
-    },
-    {
-        "year": 1888,
-        "title": "Don River Straightening Plan — 1888  (Unwin, Browne & Sankey)",
-        "url": f"{_UOT}/s0725_fl0012_MT00092C_don%20straightening.jpg",
-        "buried": [
-            "12 Don River tributary streams (meander cut-offs, 1886–1892)",
-            "Lower Don natural meanders — channelled into straight cut",
-        ],
-        "description": (
-            "Engineers propose straightening the lower 3 km of the Don into an artificial "
-            "channel. Work begins in 1886 and finishes in 1892, burying 12 tributary streams "
-            "that entered the old meanders. Ashbridge's Bay — fed by the natural Don delta — "
-            "begins to be filled in for industrial use. The straight channel still carries the "
-            "river today; the old meanders are now the DVP on-ramp at Eastern Ave."
-        ),
-    },
-    {
-        "year": 1888,
-        "title": "Proposed Interceptor Sewers — 1888",
-        "url": f"{_UOT}/1888Sewers.jpg",
-        "buried": [
-            "Garrison Creek — full 7-km course, Davenport to lake (brick tunnel)",
-            "Taddle Creek — remaining Bloor-to-Davenport section",
-        ],
-        "description": (
-            "A new interceptor sewer is engineered along the full course of Garrison Creek, "
-            "replacing it mile by mile with a brick tunnel. By 1895 the creek is completely "
-            "gone from the surface. The Garrison Creek Sewer remains the largest brick sewer "
-            "in Canada and still carries stormwater under Garrison Creek Road today. Taddle "
-            "Creek's last surface section north of Bloor is simultaneously buried as the "
-            "neighbourhood is developed."
-        ),
-    },
-    {
-        "year": 1889,
-        "title": "Intercepting Sewers & Outfall — 1889",
-        "url": f"{_UOT}/1889.Toronto-Proposed-Intercepting-Sewers.s0725_fl0013_MT00098.jpg",
-        "buried": [
+            "Garrison Creek — full 7-km course, Davenport to lake (brick tunnel 1886–1892)",
+            "Taddle Creek — remaining Bloor-to-Davenport ravine section",
+            "Lower Don — 12 tributary streams cut off by meander straightening (1886–1892)",
             "Castle Frank Creek (east Don valley branch)",
-            "Mud Creek (north Toronto — under Mt Pleasant Cemetery & Leaside)",
-            "Brewery Creek (east end, St Lawrence Market area)",
-            "All remaining waterways within the 1889 city boundary",
+            "Mud Creek — under Mount Pleasant Cemetery & Leaside",
+            "Brewery Creek (St Lawrence Market area)",
         ],
         "description": (
-            "The expanded interceptor sewer network routes stormwater from all buried creeks "
-            "to the lake outfall. Castle Frank Creek in the east Don valley is channelled. "
-            "Mud Creek, running under Mount Pleasant Cemetery and Leaside, disappears. "
-            "Brewery Creek in the east end is buried, ending the natural drainage of the "
-            "St Lawrence Market area. Within the 1889 city boundary, only the Don River "
-            "itself remains as an open watercourse."
+            "The most dramatic decade of water erasure in Toronto's history. The Garrison Creek "
+            "interceptor sewer (1886–1892) replaces the creek mile by mile with a brick tunnel — "
+            "still the largest brick sewer in Canada. Simultaneously engineers straighten the "
+            "lower 3 km of the Don, cutting off 12 tributary streams. Castle Frank Creek, Mud "
+            "Creek, and Brewery Creek are all buried in the new interceptor network. Within the "
+            "1889 city boundary, only the Don's main channel survives as open water."
+        ),
+    },
+    {
+        "before_year": 1892, "after_year": 1912,
+        "before_title": "1889 — Intercepting Sewers Plan",
+        "after_title":  "1910 — Goad's Atlas of Toronto",
+        "before_url": f"{_UOT}/1889.Toronto-Proposed-Intercepting-Sewers.s0725_fl0013_MT00098.jpg",
+        "after_url":  f"{_WIKI}/Toronto_1910_Atlas_General_Key.jpg",
+        "buried": [
+            "Black Creek upper reaches (Toronto Junction annexation, 1909)",
+            "Mimico Creek tributaries (western annexations)",
+            "Rosedale ravine streams — multiple tributaries buried under new streets",
+        ],
+        "description": (
+            "Toronto annexes 16 surrounding municipalities between 1883 and 1914, each bringing "
+            "new creek networks promptly sewered. The Garrison Creek Sewer is now complete and "
+            "invisible on new maps. Black Creek's upper branches disappear under the expanding "
+            "street grid of Toronto Junction (annexed 1909). Rosedale ravine streams vanish as "
+            "wealthy estates give way to planned streets. The city triples in area; every "
+            "expansion follows the same pattern: survey, sewer, build."
+        ),
+    },
+    {
+        "before_year": 1912, "after_year": 1954,
+        "before_title": "1910 — Goad's Atlas of Toronto",
+        "after_title":  "1956 — Nirenstein Business Map",
+        "before_url":  f"{_WIKI}/Toronto_1910_Atlas_General_Key.jpg",
+        "after_url":   f"{_WIKI}/Business_section_City_of_Toronto_1.jpg",
+        "buried": [
+            "Black Creek — full lower course (channelized for flood control, 1930s)",
+            "Humber River tributaries (Etobicoke interwar expansion)",
+            "East Toronto ravine networks (Scarborough border development)",
+            "Don Valley small streams under industrial land use (1920s–1940s)",
+        ],
+        "description": (
+            "Interwar expansion fills in the last open spaces. Black Creek, the largest "
+            "surviving tributary network in the west end, is progressively channelized through "
+            "the 1930s. On October 15, 1954, Hurricane Hazel drops 285 mm in 24 hours, killing "
+            "81 people in the Humber and Don floodplains. The Toronto Region Conservation "
+            "Authority is created the following year; its mandate is to channelize and control, "
+            "not preserve. Flood-control works throughout the late 1950s bury or armour the "
+            "last natural stream segments."
+        ),
+    },
+    {
+        "before_year": 1954, "after_year": 1975,
+        "before_title": "1956 — Nirenstein Business Map (west)",
+        "after_title":  "1956 — Nirenstein Business Map (east)",
+        "before_url":  f"{_WIKI}/Business_section_City_of_Toronto_1.jpg",
+        "after_url":   f"{_WIKI}/Business_section_City_of_Toronto_2.jpg",
+        "buried": [
+            "Don Valley tributaries — culverted under Don Valley Parkway (opened 1961)",
+            "Mud Creek lower course — fully enclosed under Mt Pleasant Rd",
+            "Taylor-Massey Creek upper — culverted under Scarborough subdivisions (1960s)",
+            "Mimico Creek lower reach — armoured concrete channel (1960s)",
+        ],
+        "description": (
+            "The highway era buries the last significant open tributaries. The Don Valley "
+            "Parkway (1961) runs directly through the Don Valley, culverting every tributary "
+            "at each crossing. The Gardiner Expressway (1955–1966) permanently severs the "
+            "waterfront from downtown. Postwar subdivision expansion in Scarborough and "
+            "Etobicoke routes stormwater through culverts. By 1975, fewer than 5% of "
+            "Toronto's original stream network remains at surface — mostly within the ravine "
+            "parks system that the 1882 McMurrich proposal had failed to protect."
         ),
     },
 ]
@@ -429,37 +497,127 @@ app.layout = html.Div(
             style={"flex": "1", "display": "none", "flexDirection": "column",
                    "overflow": "hidden", "padding": "12px 16px 8px"},
             children=[
+                # Before / After images (top, takes remaining flex space)
                 html.Div(
-                    style={"flex": "1", "display": "flex", "gap": "14px",
+                    style={"flex": "1", "display": "flex", "gap": "10px",
                            "overflow": "hidden", "minHeight": "0"},
                     children=[
+                        # Before image
                         html.Div(
-                            style={"flex": "1", "display": "flex",
-                                   "justifyContent": "center", "alignItems": "center",
+                            style={"flex": "1", "display": "flex", "flexDirection": "column",
                                    "overflow": "hidden", "minWidth": "0"},
                             children=[
-                                html.Img(id="hist-img",
-                                         src=HIST_MAPS[0]["url"],
-                                         style={"maxHeight": "100%", "maxWidth": "100%",
-                                                "objectFit": "contain",
-                                                "borderRadius": "4px"}),
+                                html.Div(
+                                    style={"display": "flex", "justifyContent": "space-between",
+                                           "alignItems": "baseline", "marginBottom": "4px"},
+                                    children=[
+                                        html.Span("◀ BEFORE",
+                                                  style={"color": "#4fc3f7", "fontSize": "10px",
+                                                         "fontWeight": "bold", "letterSpacing": "1px"}),
+                                        html.Span(id="hist-before-title",
+                                                  style={"color": "#888", "fontSize": "10px",
+                                                         "textAlign": "right"}),
+                                    ],
+                                ),
+                                html.Div(
+                                    style={"flex": "1", "display": "flex", "justifyContent": "center",
+                                           "alignItems": "center", "overflow": "hidden", "minHeight": "0"},
+                                    children=[
+                                        html.Img(id="hist-before-img",
+                                                 src=HIST_TRANSITIONS[0]["before_url"],
+                                                 style={"maxHeight": "100%", "maxWidth": "100%",
+                                                        "objectFit": "contain", "borderRadius": "4px"}),
+                                    ],
+                                ),
                             ],
                         ),
+                        # After image
                         html.Div(
-                            id="hist-desc",
-                            style={"width": "280px", "flexShrink": "0",
-                                   "backgroundColor": "#161b22", "borderRadius": "8px",
-                                   "padding": "14px 16px", "overflowY": "auto",
-                                   "color": "#ddd", "fontSize": "13px",
-                                   "lineHeight": "1.6"},
+                            style={"flex": "1", "display": "flex", "flexDirection": "column",
+                                   "overflow": "hidden", "minWidth": "0"},
+                            children=[
+                                html.Div(
+                                    style={"display": "flex", "justifyContent": "space-between",
+                                           "alignItems": "baseline", "marginBottom": "4px"},
+                                    children=[
+                                        html.Span("AFTER ▶",
+                                                  style={"color": "#ce93d8", "fontSize": "10px",
+                                                         "fontWeight": "bold", "letterSpacing": "1px"}),
+                                        html.Span(id="hist-after-title",
+                                                  style={"color": "#888", "fontSize": "10px",
+                                                         "textAlign": "right"}),
+                                    ],
+                                ),
+                                html.Div(
+                                    style={"flex": "1", "display": "flex", "justifyContent": "center",
+                                           "alignItems": "center", "overflow": "hidden", "minHeight": "0"},
+                                    children=[
+                                        html.Img(id="hist-after-img",
+                                                 src=HIST_TRANSITIONS[0]["after_url"],
+                                                 style={"maxHeight": "100%", "maxWidth": "100%",
+                                                        "objectFit": "contain", "borderRadius": "4px"}),
+                                    ],
+                                ),
+                            ],
                         ),
                     ],
                 ),
+                # Change map + description (fixed 260 px row)
+                html.Div(
+                    style={"flexShrink": "0", "height": "260px", "display": "flex",
+                           "gap": "10px", "marginTop": "8px", "overflow": "hidden"},
+                    children=[
+                        # Plotly change map
+                        html.Div(
+                            style={"flex": "2", "display": "flex", "flexDirection": "column",
+                                   "minWidth": "0", "overflow": "hidden"},
+                            children=[
+                                html.Div(
+                                    style={"display": "flex", "alignItems": "center",
+                                           "gap": "8px", "marginBottom": "3px"},
+                                    children=[
+                                        html.Span("●", style={"color": "#ff7043", "fontSize": "12px"}),
+                                        html.Span("Waterways buried in this period",
+                                                  style={"color": "#ff7043", "fontSize": "10px",
+                                                         "fontWeight": "bold", "letterSpacing": "0.5px"}),
+                                        html.Span("●", style={"color": "#4fc3f7", "fontSize": "12px",
+                                                              "marginLeft": "10px"}),
+                                        html.Span("Still flowing after",
+                                                  style={"color": "#4fc3f7", "fontSize": "10px"}),
+                                        html.Span("●", style={"color": "#3a3a3a", "fontSize": "12px",
+                                                              "marginLeft": "10px",
+                                                              "WebkitTextStroke": "0.5px #888"}),
+                                        html.Span("Buried before",
+                                                  style={"color": "#888", "fontSize": "10px"}),
+                                    ],
+                                ),
+                                dcc.Graph(
+                                    id="hist-change-map",
+                                    figure=build_change_fig(
+                                        HIST_TRANSITIONS[0]["before_year"],
+                                        HIST_TRANSITIONS[0]["after_year"],
+                                    ),
+                                    style={"flex": "1", "minHeight": "0"},
+                                    config={"scrollZoom": True},
+                                ),
+                            ],
+                        ),
+                        # Description sidebar
+                        html.Div(
+                            id="hist-desc",
+                            style={"flex": "1", "backgroundColor": "#161b22",
+                                   "borderRadius": "8px", "padding": "12px 14px",
+                                   "overflowY": "auto", "color": "#ddd",
+                                   "fontSize": "12px", "lineHeight": "1.55",
+                                   "minWidth": "0"},
+                        ),
+                    ],
+                ),
+                # Slider
                 html.Div(
                     style={"flexShrink": "0", "backgroundColor": "rgba(22,27,34,0.92)",
                            "borderRadius": "8px", "padding": "10px 24px 12px",
-                           "marginTop": "10px",
-                           "boxShadow": "0 2px 8px rgba(0,0,0,0.5)"},
+                           "marginTop": "8px", "boxShadow": "0 2px 8px rgba(0,0,0,0.5)"},
                     children=[
                         html.Div(id="hist-title",
                                  style={"color": "#e0e0e0", "fontSize": "13px",
@@ -467,10 +625,10 @@ app.layout = html.Div(
                                         "letterSpacing": "0.4px"}),
                         dcc.Slider(
                             id="hist-slider",
-                            min=0, max=len(HIST_MAPS) - 1, step=1, value=0,
-                            marks={i: {"label": str(m["year"]),
+                            min=0, max=len(HIST_TRANSITIONS) - 1, step=1, value=0,
+                            marks={i: {"label": str(t["before_year"]),
                                        "style": {"color": "#aaa", "fontSize": "11px"}}
-                                   for i, m in enumerate(HIST_MAPS)},
+                                   for i, t in enumerate(HIST_TRANSITIONS)},
                             tooltip={"placement": "top", "always_visible": False},
                         ),
                     ],
@@ -499,27 +657,42 @@ app.callback(Output("map", "figure"), Input("year-slider", "value"))(update)
 
 
 @app.callback(
-    Output("hist-img",   "src"),
-    Output("hist-title", "children"),
-    Output("hist-desc",  "children"),
+    Output("hist-before-img",   "src"),
+    Output("hist-after-img",    "src"),
+    Output("hist-before-title", "children"),
+    Output("hist-after-title",  "children"),
+    Output("hist-title",        "children"),
+    Output("hist-desc",         "children"),
+    Output("hist-change-map",   "figure"),
     Input("hist-slider", "value"),
 )
 def update_hist(idx):
-    m = HIST_MAPS[idx]
+    t = HIST_TRANSITIONS[idx]
     buried_items = (
-        [html.Li(b, style={"marginBottom": "3px"}) for b in m["buried"]]
-        if m["buried"]
-        else [html.Li("None documented for this period",
-                      style={"color": "#888", "fontStyle": "italic"})]
+        [html.Li(b, style={"marginBottom": "3px", "fontSize": "11px"}) for b in t["buried"]]
+        if t["buried"]
+        else [html.Li("None documented",
+                      style={"color": "#888", "fontStyle": "italic", "fontSize": "11px"})]
     )
     desc_children = [
-        html.P(m["description"], style={"marginTop": "0"}),
-        html.Hr(style={"borderColor": "#333", "margin": "10px 0"}),
-        html.P("Waterways buried by this period:",
-               style={"fontWeight": "bold", "marginBottom": "6px", "color": "#4fc3f7"}),
-        html.Ul(buried_items, style={"paddingLeft": "18px", "margin": "0"}),
+        html.P(t["description"], style={"marginTop": "0", "marginBottom": "6px"}),
+        html.Hr(style={"borderColor": "#333", "margin": "6px 0"}),
+        html.P("Buried in this period:",
+               style={"fontWeight": "bold", "marginBottom": "4px",
+                      "color": "#ff7043", "fontSize": "11px"}),
+        html.Ul(buried_items, style={"paddingLeft": "16px", "margin": "0"}),
     ]
-    return m["url"], m["title"], desc_children
+    span = t["after_year"] - t["before_year"]
+    title = f"{t['before_year']} → {t['after_year']}  ·  {span} years"
+    return (
+        t["before_url"],
+        t["after_url"],
+        t["before_title"],
+        t["after_title"],
+        title,
+        desc_children,
+        build_change_fig(t["before_year"], t["after_year"]),
+    )
 
 
 if __name__ == "__main__":
