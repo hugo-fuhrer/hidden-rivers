@@ -1,0 +1,25 @@
+Goal: Study how buried/culverted “hidden rivers” + insufficient sewer maintenance/aging capacity together drive increasing flood risk across the Greater Toronto Area (GTA) over the last 20 years (2005–2025).
+Core research questions:
+Where do floods cluster relative to hidden rivers in GTA?
+Controlling for rainfall, do older or poorly maintained sewer segments correlate with more frequent/severe flooding?
+Are there interaction effects (e.g., hidden river + undersized/aging sewer) that sharply increase flood probability?
+Scientific rationale: Extreme rainfall is increasingly overwhelming urban drainage; when historic river pathways were converted into culverts/combined sewers, they can “reassert” flow during storms, which should be re-considered with the funding shortage of sewer maintenance, especially in GTA.
+Key datasets:
+Flood incident records: city basement flooding complaints, emergency reports, flood hot-spot logs.
+Sewer network GIS + attributes: storm/sanitary/combined sewers; pipe age, diameter, material, capacity, known bottlenecks; maintenance/inspection logs where available (Sewer System Map for Development – City of Toronto).
+Hidden rivers / historic hydrography: digitized historic creek maps, culvert locations, buried stream alignments, historic wetlands (Lost Rivers of Toronto Map).
+Precipitation & climate: hourly/daily rainfall from Environment Canada + local gauge networks; derived extreme-rain indices.
+Topography & land surface: DEM, imperviousness/land cover; optional SAR imagery for flood extent snapshots.
+Hybrid methodology (GIS + stats + GeoAI):
+GIS overlay & hotspot detection: map floods vs hidden rivers + sewer assets; run clustering/hotspot stats (e.g., Local Moran’s I / Gi*).
+Temporal analysis: trends in heavy rainfall and flood counts; event-based linkage of rain intensity to reported flooding; examine infrastructure aging/backlog signals.
+GeoAI predictive modelling: train ML/DL models using features like rainfall intensity, proximity to buried streams, sewer age/diameter, imperviousness, elevation/slope, in order to predict flood probability/severity.
+Explainability: feature importance/SHAP to identify the most influential drivers and interaction terms.
+Case studies + validation: deep dives in selected hotspots (e.g., buried-creek corridors) and validate with remote sensing/LiDAR-derived flow paths.
+Expected outputs:
+GTA-wide risk hotspot maps showing where hidden rivers + weak sewers coincide.
+A predictive flood susceptibility model and interpretable drivers.
+Evidence-based priority zones for sewer renewal, targeted maintenance, stormwater retrofits, and (where feasible) other blue-green solutions.
+Academic contributions:
+A reproducible framework integrating historical hydrography + infrastructure condition + climate extremes.
+Methodological contribution demonstrating GeoAI for urban flood risk attribution.
