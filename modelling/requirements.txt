@@ -1,0 +1,15 @@
+# Modelling-only dependencies (the Dash app does NOT need these — it just reads the
+# CSV/GeoJSON artifacts the notebooks write into data/processed/).
+# Install:  pip install -r modelling/requirements.txt
+
+scikit-learn>=1.4
+shap>=0.45            # SHAP driver interpretation (falls back to permutation importance)
+matplotlib>=3.8
+mapclassify>=2.6      # choropleth binning for static maps
+jupyterlab>=4.0
+nbconvert>=7.0        # run the notebooks headless (jupyter nbconvert --execute)
+
+# Shared with the app (listed so `pip install -r modelling/requirements.txt` is enough)
+geopandas>=1.1.2
+pandas>=2.2.3
+numpy>=2.2.6

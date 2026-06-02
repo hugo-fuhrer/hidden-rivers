@@ -19,7 +19,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-DATA = Path(__file__).parents[2] / "data/raw"
+DATA = Path(__file__).parents[1] / "data/raw"
 
 CKAN = "https://ckan0.cf.opendata.inter.prod-toronto.ca"
 BOREALIS = "https://borealisdata.ca"

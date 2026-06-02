@@ -9,7 +9,12 @@ import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, callback
 from pathlib import Path
 
-DATA = Path(__file__).parents[2] / "data/raw"
+try:
+    from app import hotspots          # package import (gunicorn / wsgi:application)
+except ImportError:                   # script import (python app/main.py)
+    import hotspots
+
+DATA = Path(__file__).parents[1] / "data/raw"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -466,6 +471,8 @@ app.layout = html.Div(
                         style=TAB_STYLE, selected_style=SEL_TAB_STYLE),
                 dcc.Tab(label="Historical Maps", value="tab-history",
                         style=TAB_STYLE, selected_style=SEL_TAB_STYLE),
+                dcc.Tab(label="Risk Hotspots", value="tab-hotspots",
+                        style=TAB_STYLE, selected_style=SEL_TAB_STYLE),
             ],
         ),
         # ── Tab 1 : interactive map ───────────────────────────────────────────
@@ -635,25 +642,40 @@ app.layout = html.Div(
                 ),
             ],
         ),
+        # ── Tab 3 : risk hotspots ─────────────────────────────────────────────
+        html.Div(
+            id="panel-hotspots",
+            style={"flex": "1", "display": "none", "flexDirection": "column",
+                   "overflow": "hidden"},
+            children=hotspots.panel_children(),
+        ),
     ],
 )
 
 
 @app.callback(
-    Output("panel-map",     "style"),
-    Output("panel-history", "style"),
+    Output("panel-map",      "style"),
+    Output("panel-history",  "style"),
+    Output("panel-hotspots", "style"),
     Input("main-tabs", "value"),
 )
 def switch_tab(tab):
     base_map  = {"flex": "1", "position": "relative", "overflow": "hidden"}
     base_hist = {"flex": "1", "display": "flex", "flexDirection": "column",
                  "overflow": "hidden", "padding": "12px 16px 8px"}
-    if tab == "tab-map":
-        return base_map, {**base_hist, "display": "none"}
-    return {**base_map, "display": "none"}, base_hist
+    base_hot  = {"flex": "1", "display": "flex", "flexDirection": "column",
+                 "overflow": "hidden"}
+    hide = {"display": "none"}
+    if tab == "tab-history":
+        return {**base_map, **hide}, base_hist, {**base_hot, **hide}
+    if tab == "tab-hotspots":
+        return {**base_map, **hide}, {**base_hist, **hide}, base_hot
+    return base_map, {**base_hist, **hide}, {**base_hot, **hide}
 
 
 app.callback(Output("map", "figure"), Input("year-slider", "value"))(update)
+
+hotspots.register_callbacks(app)
 
 
 @app.callback(
