@@ -7,6 +7,7 @@ import geopandas as gpd
 import pandas as pd
 import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, callback
+from flask import redirect, send_from_directory
 from pathlib import Path
 
 try:
@@ -441,6 +442,21 @@ HIST_TRANSITIONS = [
 # ── App layout & callback ─────────────────────────────────────────────────────
 app = Dash(__name__, suppress_callback_exceptions=True)
 server = app.server  # expose Flask app for gunicorn / Render
+
+# ── Scrollytelling story (static site in web/) served at /story ──────────────
+STORY_DIR = Path(__file__).parents[1] / "web"
+
+@server.route("/story")
+def _story_redirect():
+    return redirect("/story/")
+
+@server.route("/story/")
+def _story_index():
+    return send_from_directory(STORY_DIR, "index.html")
+
+@server.route("/story/<path:filename>")
+def _story_asset(filename):
+    return send_from_directory(STORY_DIR, filename)
 
 TAB_STYLE = {
     "color": "#888", "backgroundColor": "#0d1117",

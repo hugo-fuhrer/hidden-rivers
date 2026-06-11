@@ -1,0 +1,190 @@
+/* Hidden Rivers — scroll story ------------------------------------------- */
+:root{
+  --bg:#0d1117; --ink:#e9eef4; --mut:#8b98a8;
+  --cy:#4fc3f7; --or:#ff7043; --grn:#7cc46f; --warm:#ffd27d;
+  --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+     line-height:1.55;overflow-x:hidden}
+a{color:var(--cy);text-decoration:none;border-bottom:1px solid rgba(79,195,247,.35)}
+a:hover{border-bottom-color:var(--cy)}
+
+/* chrome ------------------------------------------------------------------ */
+#bar{position:fixed;top:0;left:0;height:3px;width:100%;z-index:90;
+     background:linear-gradient(90deg,var(--cy),#7adfff);transform-origin:0 50%;
+     transform:scaleX(0);pointer-events:none}
+#chapter{position:fixed;left:18px;bottom:16px;z-index:90;pointer-events:none;
+     font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+     text-transform:uppercase;color:var(--mut);opacity:0;transition:opacity .4s}
+#chapter.on{opacity:.9}
+#flash{position:fixed;inset:0;background:#eaf2ff;opacity:0;z-index:80;
+     pointer-events:none}
+#scrollhint{position:absolute;left:50%;bottom:4.5%;transform:translateX(-50%);
+     z-index:12;display:flex;flex-direction:column;align-items:center;gap:2px;
+     color:#fdfefe;opacity:.85;font-family:var(--mono);font-size:11px;
+     letter-spacing:.3em;text-transform:uppercase;text-shadow:0 1px 8px rgba(20,40,60,.5);
+     animation:hint 2.2s ease-in-out infinite;transition:opacity .5s}
+#scrollhint.off{opacity:0}
+@keyframes hint{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,9px)}}
+
+/* scenes ------------------------------------------------------------------ */
+.scene{position:relative;height:calc(var(--len)*100vh)}
+.sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.pitch{background:#06080c}
+.sky{position:absolute;inset:0;background:linear-gradient(var(--c1,#9fc3dd),var(--c2,#cfe2ee))}
+canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
+     pointer-events:none}
+
+/* narration beats ---------------------------------------------------------- */
+.beat{position:absolute;z-index:10;opacity:0;font-family:var(--serif);
+     font-size:clamp(1.15rem,2.3vw,1.7rem);color:#f4f8fb;
+     text-shadow:0 1px 4px rgba(8,14,22,.65),0 4px 26px rgba(8,14,22,.5);
+     will-change:opacity,transform;pointer-events:none;
+     transform:translateY(calc(var(--dy,12)*1px))}
+.beat a{pointer-events:auto}
+.beat em{font-style:italic}
+.beat .kicker{font-family:var(--mono);font-size:clamp(.65rem,1.1vw,.8rem);
+     letter-spacing:.32em;text-transform:uppercase;color:var(--cy);
+     text-shadow:none;margin-bottom:14px}
+.beat h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.12;font-weight:600;
+     margin-bottom:14px}
+.beat .sub{font-size:clamp(1rem,1.8vw,1.25rem);color:#eef4f9;opacity:.92}
+.b-c{left:50%;top:50%;text-align:center;width:min(92vw,42ch);
+     transform:translate(-50%,-50%) translateY(calc(var(--dy,12)*1px))}
+.b-tl{left:5.5%;top:13%;max-width:30ch;text-align:left}
+.b-tr{right:5.5%;top:13%;max-width:28ch;text-align:right}
+.huge{font-size:clamp(1.9rem,4.6vw,3.4rem);line-height:1.2;width:min(92vw,26ch)}
+.huge .cy{color:var(--cy)}
+.dark-ink{color:#22323f;text-shadow:0 1px 0 rgba(255,255,255,.55),0 0 30px rgba(255,255,255,.5)}
+.dark-ink .kicker{color:#1d6285}
+.dark-ink .sub{color:#34495c;opacity:1}
+
+/* flood scene gets glass panels for legibility over busy art */
+#sc-flood .beat{background:rgba(7,11,17,.58);border-left:3px solid var(--cy);
+     padding:14px 18px;border-radius:0 10px 10px 0;backdrop-filter:blur(5px);
+     -webkit-backdrop-filter:blur(5px);font-size:clamp(1.02rem,1.9vw,1.4rem)}
+#sc-flood .beat.stat strong{color:var(--or);font-family:var(--mono);
+     font-size:1.18em;letter-spacing:.02em}
+#sc-flood .beat strong{color:var(--or)}
+
+/* I · cloud ----------------------------------------------------------------- */
+#sc-cloud .sticky{background:#9fc3dd}
+.cloudlayer{position:absolute;left:-30%;width:160%;top:0;height:100%;
+     will-change:transform;pointer-events:none}
+.puff{position:absolute;border-radius:50%;
+     background:radial-gradient(circle at 38% 34%,
+       rgba(255,255,255,var(--o,.95)) 0 38%,
+       rgba(236,243,248,calc(var(--o,.95)*.75)) 58%,
+       rgba(222,233,242,0) 72%)}
+#cloud-veil{position:absolute;inset:0;background:#e9eef2;opacity:0;
+     pointer-events:none}
+
+/* II · fall ------------------------------------------------------------------ */
+.parallax{position:absolute;inset:0;will-change:transform;pointer-events:none}
+.parallax svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
+#droplet{position:absolute;left:50%;top:38%;width:44px;margin-left:-22px;
+     z-index:6;filter:drop-shadow(0 6px 14px rgba(40,90,130,.45));
+     will-change:transform}
+#altimeter{position:absolute;right:4%;top:50%;transform:translateY(-50%);
+     z-index:10;font-family:var(--mono);font-size:clamp(.8rem,1.4vw,1rem);
+     color:#cfe2ee;letter-spacing:.12em;text-align:right;opacity:.9;
+     border-right:2px solid rgba(207,226,238,.5);padding-right:12px}
+
+/* III · flood ---------------------------------------------------------------- */
+#street-flood,#street-future{position:absolute;inset:0;width:100%;height:100%}
+
+/* V · rivers map -------------------------------------------------------------- */
+#rivermap{position:absolute;inset:0;width:100%;height:100%}
+#map-hud{position:absolute;top:7%;right:5%;z-index:10;text-align:right;
+     pointer-events:none}
+#map-year{font-family:var(--mono);font-size:clamp(2.4rem,6vw,4.4rem);
+     color:var(--cy);font-weight:600;letter-spacing:.04em;line-height:1;
+     text-shadow:0 0 28px rgba(79,195,247,.35)}
+#map-count{font-family:var(--mono);font-size:clamp(.75rem,1.4vw,.95rem);
+     color:var(--mut);margin-top:8px}
+#map-count b{color:var(--or);font-weight:600}
+.step{position:absolute;z-index:10;left:4.5%;top:50%;pointer-events:none;
+     transform:translateY(-44%) translateY(calc(var(--dy,12)*1px));
+     width:min(36ch,38%);background:rgba(9,13,20,.78);backdrop-filter:blur(6px);
+     -webkit-backdrop-filter:blur(6px);border-left:3px solid var(--cy);
+     border-radius:0 12px 12px 0;padding:20px 22px;opacity:0;
+     will-change:opacity,transform}
+.step h3{font-family:var(--serif);font-size:clamp(1.2rem,2.1vw,1.6rem);
+     margin-bottom:8px;color:#fff}
+.step p{font-size:clamp(.88rem,1.5vw,1.02rem);color:#cdd9e5}
+.step b{color:#fff}
+#map-src{position:absolute;left:4.5%;bottom:4%;z-index:10;max-width:60ch;
+     font-size:11px;color:#5d6b7c;line-height:1.5}
+
+/* VI · daylighting (free flow) ------------------------------------------------ */
+#sc-daylight{background:linear-gradient(#06080c,#0b1016 14%,#0b1016 86%,#0a1219);
+     padding:16vh 0 10vh}
+#sc-daylight .wrap{max-width:900px;margin:0 auto;padding:0 26px}
+#sc-daylight h2{font-family:var(--serif);font-size:clamp(2rem,5vw,3.4rem);
+     margin-bottom:22px}
+#sc-daylight .lede{font-size:clamp(1.05rem,2vw,1.3rem);color:#d7e1ea;
+     max-width:60ch;margin-bottom:7vh}
+#sc-daylight .lede b{color:var(--cy)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:7vh}
+.card{border:1px solid #1c2634;border-radius:14px;padding:22px 22px 18px;
+     background:linear-gradient(150deg,#101723,#0b1016)}
+.card svg{width:42px;height:42px;margin-bottom:12px}
+.i-blue{fill:none;stroke:var(--cy);stroke-width:2.4;stroke-linecap:round;
+     stroke-linejoin:round}
+.i-blue.f{opacity:.4}
+.card h4{font-family:var(--serif);font-size:1.12rem;margin-bottom:6px}
+.card p{font-size:.92rem;color:#b9c6d3}
+.case{border:1px solid #1d2c3a;border-radius:14px;padding:24px 26px;
+     margin-bottom:18px;background:linear-gradient(135deg,#0e1825,#0a0e14)}
+.case .case-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.26em;
+     text-transform:uppercase;color:var(--cy);margin-bottom:10px}
+.case p{color:#d2dde7;font-size:clamp(.95rem,1.7vw,1.08rem)}
+.kicker2{margin:6vh auto 0;max-width:56ch;text-align:center;color:var(--mut);
+     font-size:clamp(.9rem,1.6vw,1.05rem)}
+.bridge{margin:9vh auto 6vh;text-align:center;font-family:var(--serif);
+     font-style:italic;font-size:clamp(1.3rem,2.8vw,2rem);color:#eef4f9;
+     max-width:34ch}
+.reveal{opacity:0;transform:translateY(26px);
+     transition:opacity .8s ease,transform .8s ease}
+.reveal.vis{opacity:1;transform:none}
+.cards .card:nth-child(2){transition-delay:.1s}
+.cards .card:nth-child(3){transition-delay:.2s}
+.cards .card:nth-child(4){transition-delay:.3s}
+
+/* VII · finale ----------------------------------------------------------------- */
+#finale{background:radial-gradient(closest-side,rgba(7,13,18,.72),rgba(7,13,18,.5) 48%,rgba(7,13,18,0) 96%);
+     padding:11vh 9vw}
+#finale h2{font-family:var(--serif);font-size:clamp(2.4rem,6vw,4.2rem);
+     color:#fff;margin-bottom:12px;text-shadow:0 2px 24px rgba(10,30,40,.55)}
+#finale .sub{font-size:clamp(1.05rem,2vw,1.3rem);color:#f2f7f5}
+#finale .links{margin-top:26px;font-family:var(--sans);
+     font-size:clamp(.85rem,1.5vw,1rem)}
+#finale .links a{background:rgba(8,14,20,.45);padding:6px 12px;border-radius:999px;
+     border:1px solid rgba(79,195,247,.4)}
+
+/* footer ------------------------------------------------------------------------ */
+footer{background:#06080c;padding:9vh 26px 12vh;text-align:center}
+footer p{max-width:860px;margin:0 auto 14px;color:#aab7c4;font-size:.92rem}
+footer .srcs{font-size:.74rem;color:#5d6b7c;line-height:1.7}
+footer code{font-family:var(--mono);color:#7d8ea0}
+
+/* small screens ------------------------------------------------------------------ */
+@media (max-width:760px){
+  .b-tl,.b-tr{left:6%;right:6%;max-width:none;text-align:left;top:10%}
+  #sc-flood .beat{top:auto;bottom:30%}
+  .step{left:4%;right:4%;width:auto;top:auto;bottom:7%;
+        transform:translateY(calc(var(--dy,12)*1px));
+        max-height:46%;overflow:auto}
+  #map-src{display:none}
+  #map-hud{top:5%;right:5%}
+  .cards{grid-template-columns:1fr}
+  #altimeter{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{transition:none}
+  #scrollhint{animation:none}
+}

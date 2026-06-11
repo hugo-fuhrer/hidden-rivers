@@ -12,6 +12,11 @@ hidden-rivers/
 ├── app/                 # Dash visualization
 │   ├── main.py          #   year-slider map, historical maps, Risk Hotspots tab
 │   └── hotspots.py      #   builds the Risk Hotspots tab from modelling artifacts
+├── web/                 # scrollytelling story site (static — no build step)
+│   ├── index.html       #   "Hidden Rivers" interactive scroll story
+│   ├── main.js · style.css
+│   ├── rivers-data.js   #   generated from the Lost Rivers GeoJSON
+│   └── tools/build_rivers_data.py
 ├── modelling/           # research notebooks (the model + hotspot analysis)
 │   ├── notebooks/
 │   │   ├── 01_build_features.ipynb      # ward × year panel + static infra features
@@ -62,10 +67,27 @@ basement flooding) · [Lost Rivers — Borealis Dataverse](https://doi.org/10.56
 (buried waterways) · [Open-Meteo ERA5](https://open-meteo.com) (precipitation) ·
 [U of T Map & Data Library](http://maps.library.utoronto.ca) (historical maps).
 
+## The story site
+
+`web/` is a scroll-driven story of the July 16, 2024 Toronto flood: you start as a
+droplet in a storm cloud, fall through the skyline, flood a Queen St E streetscape
+(streetcar included), then descend into the buried-rivers map — drawn live from the
+same Lost Rivers dataset the app uses — learn why the creeks were buried and what
+daylighting (Zurich, London) gives back, and end on the same street reimagined with
+its creek daylit and swimmable.
+
+```bash
+open web/index.html                        # works straight from the filesystem
+# or via the app:  python app/main.py  →  http://127.0.0.1:8050/story
+```
+
+No build step. To refresh the embedded river data after changing the source GeoJSON:
+`python web/tools/build_rivers_data.py`.
+
 ## Run the app
 
 ```bash
-python app/main.py            # http://127.0.0.1:8050
+python app/main.py            # http://127.0.0.1:8050  (story at /story)
 # or, deploy entry:  gunicorn wsgi:application
 ```
 

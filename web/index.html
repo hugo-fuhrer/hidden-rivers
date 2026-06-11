@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hidden Rivers — scroll through the 2024 Toronto flood</title>
+<meta name="description" content="A scroll-driven story: fall as a raindrop into the July 16, 2024 Toronto flood, discover the city's buried rivers, and see the street as it could be — with its creek daylighted.">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1C8 1 3 7.5 3 10.5a5 5 0 0 0 10 0C13 7.5 8 1 8 1Z' fill='%234fc3f7'/></svg>">
+</head>
+<body>
+
+<div id="bar"></div>
+<div id="chapter"></div>
+<div id="flash"></div>
+
+<main>
+
+<!-- ════════════ I · THE CLOUD ════════════ -->
+<section class="scene" id="sc-cloud" style="--len:3.4" data-name="I · The cloud">
+  <div class="sticky">
+    <div class="sky" id="cloud-sky"></div>
+    <div class="cloudlayer" id="cl-back"></div>
+    <div class="cloudlayer" id="cl-mid"></div>
+    <div class="cloudlayer" id="cl-front"></div>
+    <div id="cloud-veil"></div>
+
+    <div class="beat b-c dark-ink" data-a="-0.25" data-b="0.15">
+      <p class="kicker">Toronto · July 16, 2024</p>
+      <h1>It begins over the lake.</h1>
+      <p class="sub">A heat dome sits on southern Ontario. Lake Ontario is bath-warm,
+        and the air above it is loaded.</p>
+    </div>
+    <p class="beat b-c dark-ink" data-a="0.24" data-b="0.40">You are up here — one droplet
+      in a storm cell the size of the city.</p>
+    <p class="beat b-c dark-ink" data-a="0.48" data-b="0.63">Warm air holds more water —
+      about 7&thinsp;% more for every degree. This air has been warming for a century.</p>
+    <p class="beat b-c" data-a="0.72" data-b="0.90">The cloud can’t carry it all.<br>
+      Around midday, it lets go.</p>
+
+    <div id="scrollhint"><span>scroll</span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 4v14m0 0 6-6m-6 6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+</section>
+
+<!-- ════════════ II · THE FALL ════════════ -->
+<section class="scene" id="sc-fall" style="--len:4.2" data-name="II · The fall">
+  <div class="sticky">
+    <div class="sky" id="fall-sky"></div>
+    <div class="parallax" id="skyline-far"></div>
+    <div class="parallax" id="skyline-mid"></div>
+    <div class="parallax" id="skyline-near"></div>
+    <svg id="droplet" viewBox="0 0 60 80" aria-hidden="true">
+      <path d="M30 4C30 4 10 32 10 48a20 20 0 0 0 40 0C50 32 30 4 30 4Z"
+            fill="#bfe3f7" fill-opacity="0.92"/>
+      <path d="M22 44a9 9 0 0 0 5 12" fill="none" stroke="#fff" stroke-opacity="0.8"
+            stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div id="altimeter">2 400 m</div>
+
+    <p class="beat b-tl" data-a="0.06" data-b="0.20">12:48 p.m. — the third band of
+      storms that day stalls over the core.</p>
+    <p class="beat b-tr" data-a="0.30" data-b="0.46">Below you: a city that paved its
+      valleys and pipes its rain.</p>
+    <p class="beat b-tl" data-a="0.54" data-b="0.70">Much of the old core still drains
+      through <em>combined</em> sewers — one Victorian pipe for sewage and storm together.</p>
+    <p class="beat b-tr" data-a="0.78" data-b="0.93">They were sized for another climate.</p>
+  </div>
+</section>
+
+<!-- ════════════ III · THE FLOOD ════════════ -->
+<section class="scene" id="sc-flood" style="--len:4.8" data-name="III · The flood">
+  <div class="sticky">
+    <div class="sky" id="flood-sky"></div>
+    <svg id="street-flood" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
+         aria-label="A Toronto street with a streetcar, cars and pedestrians, flooding as rain falls"></svg>
+
+    <p class="beat b-tl" data-a="0.02" data-b="0.15">You land on Queen Street East,
+      at River Street.</p>
+    <p class="beat b-tl" data-a="0.20" data-b="0.33">For a while, the drains keep up.</p>
+    <p class="beat b-tl" data-a="0.38" data-b="0.52">Then they don’t.
+      <strong>97.8&nbsp;mm</strong> falls at Pearson — a month of rain in a day.</p>
+    <p class="beat b-tl stat" data-a="0.57" data-b="0.71">Union Station floods.
+      The Don Valley Parkway becomes a river.<br><strong>167,000</strong> customers lose power.</p>
+    <p class="beat b-tl stat" data-a="0.78" data-b="0.94"><strong>$940&nbsp;million+</strong>
+      in insured damage.<br>Toronto’s third “100-year storm” since 2013.</p>
+  </div>
+</section>
+
+<!-- ════════════ IV · THE TURN ════════════ -->
+<section class="scene" id="sc-pivot" style="--len:2.4" data-name="IV · The turn">
+  <div class="sticky pitch">
+    <p class="beat b-c huge" data-a="0.10" data-b="0.45">It doesn’t have to be this way.</p>
+    <p class="beat b-c huge" data-a="0.58" data-b="0.95">Because this flood followed a map —
+      <span class="cy">one drawn long before the city existed.</span></p>
+  </div>
+</section>
+
+<!-- ════════════ V · THE HIDDEN RIVERS ════════════ -->
+<section class="scene" id="sc-rivers" style="--len:5.6" data-name="V · The hidden rivers">
+  <div class="sticky pitch">
+    <canvas id="rivermap"></canvas>
+    <div id="map-hud">
+      <div id="map-year">1830</div>
+      <div id="map-count"><b>0&nbsp;km</b> buried</div>
+    </div>
+
+    <div class="step" data-a="0.015" data-b="0.150">
+      <h3>A city built on water</h3>
+      <p>Before Toronto, the land drained itself. <b><span id="total-km">360</span>&nbsp;km</b>
+      of creeks, brooks and rivers wound through ravines and marshes to the lake.
+      The first maps of York are full of water.</p>
+    </div>
+    <div class="step" data-a="0.175" data-b="0.315">
+      <h3>The creeks become sewers</h3>
+      <p>The growing city used its creeks as drains. Mills, privies and slaughterhouses
+      emptied into them; cholera and typhoid followed. The Victorian cure: put the creek
+      in a brick pipe and sell the land on top. Lower Taddle Creek went under in
+      <b>1852</b>.</p>
+    </div>
+    <div class="step" data-a="0.340" data-b="0.490">
+      <h3>The great erasure</h3>
+      <p>In 1882, a plan to keep the ravines as parkland lost at council. Within a decade
+      <b>Garrison Creek</b> — all 7&nbsp;km of it — was sealed into Canada’s largest brick
+      sewer, and the lower Don was straightened, severing twelve tributaries.</p>
+    </div>
+    <div class="step" data-a="0.515" data-b="0.645">
+      <h3>Annex, survey, pipe, repeat</h3>
+      <p>Every annexed town brought creeks; every creek got a culvert. After Hurricane
+      Hazel killed 81 people in 1954, even “flood control” meant more concrete.
+      The expressways finished the job.</p>
+    </div>
+    <div class="step" data-a="0.665" data-b="0.780">
+      <h3><span id="buried-km">293</span>&nbsp;km in the dark</h3>
+      <p>By 1975, barely a stream in the old city still saw daylight. Of the
+      <span id="total-km2">360</span>&nbsp;km mapped here, <b><span id="buried-km2">293</span>&nbsp;km</b>
+      now run through pipes beneath streets, schoolyards and parking lots.</p>
+    </div>
+    <div class="step" data-a="0.805" data-b="0.975">
+      <h3>Water remembers</h3>
+      <p>Bury a river and it doesn’t leave — it waits. In a cloudburst the old creeks fill
+      first: manholes lift and basements flood along valleys the street grid pretends
+      aren’t there. <b>The 2024 flood traced this map.</b></p>
+    </div>
+
+    <div id="map-src">Data: Lost Rivers of Toronto — Borealis Dataverse (doi:10.5683/SP2/TSJSQZ).
+      Cyan: still at the surface · grey: buried · orange: buried around the year shown.</div>
+  </div>
+</section>
+
+<!-- ════════════ VI · DAYLIGHTING (free-flow) ════════════ -->
+<section id="sc-daylight" data-name="VI · Daylighting">
+  <div class="wrap">
+    <h2 class="reveal">There is another way.</h2>
+    <p class="lede reveal"><b>Daylighting</b> is the opposite of burial: digging a stream
+    out of its culvert and giving it an open, planted channel again — room to run,
+    room to flood, room to be seen.</p>
+
+    <div class="cards">
+      <div class="card reveal">
+        <svg viewBox="0 0 48 48"><path d="M6 34c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue"/><path d="M6 24c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue f"/><path d="M24 4v10m0 0 4-4m-4 4-4-4" class="i-blue"/></svg>
+        <h4>Room for cloudbursts</h4>
+        <p>An open channel with floodable banks holds many times what a buried pipe can.
+        Parks designed to flood mean basements that don’t.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="22" r="9" class="i-blue"/><path d="M24 6v4M24 34v4M8 22h4M36 22h4M12.7 10.7l2.8 2.8M32.5 30.5l2.8 2.8M35.3 10.7l-2.8 2.8M15.5 30.5l-2.8 2.8" class="i-blue"/></svg>
+        <h4>Cooler streets</h4>
+        <p>Open water and the trees that line it knock degrees off summer heat
+        that pavement only stores up.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 48 48"><path d="M8 40c10 0 8-26 26-30-2 8 2 10 6 10-6 4-4 22-22 22-6 0-10-2-10-2Z" class="i-blue"/><path d="M8 40c8-8 14-12 22-16" class="i-blue f"/></svg>
+        <h4>Living corridors</h4>
+        <p>Daylighted reaches see fish, herons and dragonflies return within seasons —
+        and people follow them.</p>
+      </div>
+      <div class="card reveal">
+        <svg viewBox="0 0 48 48"><path d="M10 38V22m9 16V14m9 24V26m9 12V10" class="i-blue"/><path d="M6 42h36" class="i-blue"/></svg>
+        <h4>Cheaper than bigger pipes</h4>
+        <p>Aging culverts fail expensively. When one must be rebuilt anyway, opening it
+        often costs less — and yields a park instead of a buried liability.</p>
+      </div>
+    </div>
+
+    <div class="case reveal">
+      <div class="case-tag">Zurich · the <i>Bachkonzept</i></div>
+      <p>Since 1988, Zurich has daylighted <b>more than 20&nbsp;km</b> of buried brooks —
+      partly to keep clean stream water out of its overloaded sewers. Today brooks run
+      in the open beside tram lines, and on hot days the whole city swims in its rivers.</p>
+    </div>
+    <div class="case reveal">
+      <div class="case-tag">London · the River Quaggy</div>
+      <p>For decades the Quaggy ran in concrete culverts beneath Lewisham and Greenwich.
+      In 2003 it was set loose into <b>Sutcliffe Park</b>, regraded as a wetland that is
+      <i>allowed</i> to flood. The park now stores the storm water that once filled
+      living rooms — protecting hundreds of homes — and the kingfishers are back.</p>
+    </div>
+
+    <p class="kicker2 reveal">Seoul demolished an expressway to free the Cheonggyecheon.
+    Sheffield, Aarhus, Yonkers… no city that has opened a river has wanted to bury it again.</p>
+    <p class="bridge reveal">Now picture that corner of Queen Street, a few storms from now —</p>
+  </div>
+</section>
+
+<!-- ════════════ VII · THE CREEK ════════════ -->
+<section class="scene" id="sc-future" style="--len:4.6" data-name="VII · The creek">
+  <div class="sticky">
+    <div class="sky" id="future-sky"></div>
+    <svg id="street-future" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
+         aria-label="The same Toronto street, transformed: a clear daylighted creek where the flooded lanes were, people swimming, the streetcar passing behind"></svg>
+
+    <p class="beat b-tl" data-a="0.04" data-b="0.18">Same street. Same rain.</p>
+    <p class="beat b-tl" data-a="0.30" data-b="0.44">But now the water has somewhere to be.</p>
+    <p class="beat b-tl" data-a="0.54" data-b="0.66">A creek that swallows the cloudburst in April —</p>
+    <p class="beat b-tl" data-a="0.70" data-b="0.84">— and holds the whole neighbourhood in July.</p>
+
+    <div class="beat b-c" id="finale" data-a="0.88" data-b="1.30">
+      <h2>Daylight the rivers.</h2>
+      <p class="sub">The maps still know where they are.</p>
+      <p class="links"><a href="https://github.com/hugo-fuhrer/hidden-rivers">About this project</a>
+        · <a href="/">Explore the data — interactive map</a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Hidden Rivers</b> — a scrollable story built on the research repo
+  <a href="https://github.com/hugo-fuhrer/hidden-rivers">hugo-fuhrer/hidden-rivers</a>.
+  The river map uses the same Lost Rivers dataset as the project’s Dash explorer.</p>
+  <p class="srcs">Sources: Environment &amp; Climate Change Canada (97.8&nbsp;mm at Toronto Pearson,
+  July&nbsp;16&nbsp;2024); Toronto Hydro (~167,000 customers without power); Insurance Bureau of
+  Canada (&gt;$940&nbsp;M insured losses); <i>Lost Rivers of Toronto</i>, Borealis Dataverse
+  doi:10.5683/SP2/TSJSQZ; City of Toronto Open Data; Stadt Zürich “Bachkonzept”;
+  Quaggy Waterways Action Group / Environment Agency (Sutcliffe Park, 2003);
+  ECCC archives (Hurricane Hazel, 1954).</p>
+  <p class="srcs">Numbers shown on the river map (360&nbsp;km mapped · 293&nbsp;km buried) are computed
+  directly from the dataset by <code>web/tools/build_rivers_data.py</code>.</p>
+</footer>
+
+<script src="rivers-data.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
