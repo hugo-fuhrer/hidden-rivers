@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hidden Rivers — scroll through the 2024 Toronto flood</title>
-<meta name="description" content="A scroll-driven story: fall as a raindrop into the July 16, 2024 Toronto flood, discover the city's buried rivers, and see the street as it could be — with its creek daylighted.">
+<title>Hidden Rivers — drive, vote, bury, daylight: Toronto's lost creeks</title>
+<meta name="description" content="An interactive scroll story: lose a rigged commute in the July 2024 Toronto flood, cast the 1882 vote that rigged it, bury the creeks yourself, then dig them back into daylight.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1C8 1 3 7.5 3 10.5a5 5 0 0 0 10 0C13 7.5 8 1 8 1Z' fill='%234fc3f7'/></svg>">
 </head>
@@ -81,68 +81,263 @@
       <strong>97.8&nbsp;mm</strong> falls at Pearson — a month of rain in a day.</p>
     <p class="beat b-tl stat" data-a="0.57" data-b="0.71">Union Station floods.
       The Don Valley Parkway becomes a river.<br><strong>167,000</strong> customers lose power.</p>
-    <p class="beat b-tl stat" data-a="0.78" data-b="0.94"><strong>$940&nbsp;million+</strong>
-      in insured damage.<br>Toronto’s third “100-year storm” since 2013.</p>
+    <p class="beat b-tl stat" data-a="0.76" data-b="0.99">The grey sedan with its hazards on,
+      trying to turn out of the water?<br><strong>That’s you. Get home.</strong></p>
   </div>
 </section>
 
-<!-- ════════════ IV · THE TURN ════════════ -->
-<section class="scene" id="sc-pivot" style="--len:2.4" data-name="IV · The turn">
+<!-- ════════════ III½ · GET HOME (the rigged commute) ════════════ -->
+<section class="scene game" id="sc-drive" style="--len:2.2" data-name="III½ · Get home">
   <div class="sticky pitch">
-    <p class="beat b-c huge" data-a="0.10" data-b="0.45">It doesn’t have to be this way.</p>
-    <p class="beat b-c huge" data-a="0.58" data-b="0.95">Because this flood followed a map —
-      <span class="cy">one drawn long before the city existed.</span></p>
+    <canvas id="drive-cv" class="gamecv" tabindex="-1"></canvas>
+    <div class="ghud">
+      <span id="drive-clock">6:12 p.m.</span>
+      <span class="ghint">WASD / arrows · Esc pauses</span>
+    </div>
+    <div class="dpad" id="drive-dpad"></div>
+
+    <div class="engage" id="drive-engage">
+      <p class="ekick">6:12 p.m. · Queen St E</p>
+      <h3>Get home.</h3>
+      <p>WASD or arrow keys to drive. Avoid flooded streets.
+         That’s it. That’s the whole game.</p>
+      <div class="ebtns">
+        <button class="g-start" type="button">Start driving</button>
+        <button class="g-skip" type="button">Skip — let it happen</button>
+      </div>
+    </div>
+    <div class="replaychip" id="drive-replay">
+      <button class="g-start" type="button">↺ Replay the commute</button>
+    </div>
+    <div class="pausesheet" id="drive-pause">
+      <div class="pbox">
+        <button class="g-resume" type="button">Resume</button>
+        <button class="g-restart" type="button">Restart</button>
+        <button class="g-skip2" type="button">Skip this part</button>
+      </div>
+    </div>
+
+    <div class="govl" id="drive-loss">
+      <div class="gcard">
+        <p class="ekick">ENGINE DEAD · 6:13 P.M.</p>
+        <h3>The city is dark. You’re walking.</h3>
+        <p>You did nothing wrong. Replay it in your head: every route you tried
+           was already blocked, or about to be.</p>
+        <p class="greveal">The glowing lines behind this card are why. <b>The routes
+           that failed you trace Garrison Creek. It was buried in 1884. It never
+           left.</b></p>
+        <p class="gstats">You lasted <b id="drive-surv">—</b> ·
+           Water at your intersection: 1.4&nbsp;m and rising ·
+           167,000 customers without power · DVP closed · Union Station flooding</p>
+        <p class="gfoot">Insured damage tonight: $940&nbsp;million and counting.
+           Toronto’s third “100-year storm” since 2013.</p>
+        <button class="g-done" type="button">Get out and walk →</button>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ════════════ V · THE HIDDEN RIVERS ════════════ -->
-<section class="scene" id="sc-rivers" style="--len:5.6" data-name="V · The hidden rivers">
+<!-- ════════════ III¾ · WALKING HOME ════════════ -->
+<section class="scene" id="sc-walkhome" style="--len:1.8" data-name="III¾ · Walking home">
   <div class="sticky pitch">
-    <canvas id="rivermap"></canvas>
-    <div id="map-hud">
-      <div id="map-year">1830</div>
-      <div id="map-count"><b>0&nbsp;km</b> buried</div>
+    <div id="wh-stage">
+      <div id="wh-cone"></div>
+      <svg id="wh-fig" viewBox="0 0 60 110" aria-hidden="true">
+        <circle cx="30" cy="18" r="10" fill="#0b0e12"/>
+        <path d="M20 30 Q30 24 40 30 L37 70 L23 70 Z" fill="#0b0e12"/>
+        <path id="wh-legs" d="M26 70 L20 104 M34 70 L40 104" stroke="#0b0e12" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div id="wh-plaque">
+        <span>GARRISON CREEK</span><small>buried 1884 · it never left</small>
+      </div>
+    </div>
+    <p class="beat b-tl" data-a="0.06" data-b="0.30">Twelve blocks. Knee-deep at the
+      corners that shouldn’t be deep at all.</p>
+    <p class="beat b-tl" data-a="0.38" data-b="0.62">Feel cheated? Good.
+      <strong>Hold that thought for 142 years.</strong></p>
+    <p class="beat b-tr" data-a="0.70" data-b="0.94">Your flashlight catches a plaque
+      bolted to a bridge railing — a bridge over <em>nothing</em>.</p>
+  </div>
+</section>
+
+<!-- ════════════ REWIND ════════════ -->
+<section class="scene" id="sc-rewind" style="--len:2.2" data-name="⏮ Rewind">
+  <div class="sticky pitch" id="rw-sticky">
+    <div id="rw-year">2024</div>
+    <p class="beat b-c rw-cap" data-a="0.10" data-b="0.26">1954 — Hazel kills 81.
+      The lesson learned is <em>more concrete</em>.</p>
+    <p class="beat b-c rw-cap" data-a="0.32" data-b="0.48">1924 — the last open stretch
+      of Garrison Creek goes into the pipe.</p>
+    <p class="beat b-c rw-cap" data-a="0.54" data-b="0.70">1884 — Canada’s largest brick
+      sewer swallows the creek whole.</p>
+    <p class="beat b-c rw-cap" data-a="0.78" data-b="0.96">1882 — a city council chamber,
+      a gas lamp, and one ballot. <strong>Yours.</strong></p>
+  </div>
+</section>
+
+<!-- ════════════ IV · THE VOTE (1882) ════════════ -->
+<section id="sc-vote" data-name="IV · The vote">
+  <div class="chamber">
+    <p class="vkick">CITY COUNCIL CHAMBER · TORONTO · 1882 · SPECIAL SESSION</p>
+    <h2>The ravines are killing people. Choose.</h2>
+    <p class="vsetup">Garrison Creek runs grey with the waste of ten thousand privies,
+      and the physicians say the next cholera season will not knock before it enters.
+      The ledger is bled white — the old debts have come due, and the treasury cannot
+      pay for both beauty and survival. Tonight, council decides what becomes of
+      Toronto’s creeks — and yours is the deciding ballot.</p>
+
+    <div id="vote-ticker" aria-live="off">FEVER DEATHS THIS SEASON: 211</div>
+
+    <div class="vcards">
+      <div class="vcard va" id="vote-a">
+        <h3>A System of Parks &amp; Boulevards</h3>
+        <p class="vtag">the beautiful gamble</p>
+        <p>Save the ravines as a chain of public gardens — promenades, footbridges,
+           the creeks cleansed and kept in daylight for every generation after us.
+           Twenty years of work, a fortune in land the city must buy back, and
+           nothing — <em>nothing</em> — for the families burying their children this
+           summer. A magnificent city, someday. If the city lives that long.</p>
+        <button class="vbtn" type="button">Vote for the Parks Plan — costly · slow · unproven</button>
+        <div id="vote-toast">The City Engineer interjects: “With respect, Councillor —
+          the parks plan costs $1.1&nbsp;million we do not have, and cholera does not
+          wait for gardens.”</div>
+      </div>
+      <div class="vcard vb" id="vote-b">
+        <h3>Sanitary Improvement &amp; Industrial Expansion</h3>
+        <p class="vtag">the responsible choice</p>
+        <p>Entomb the creeks in brick sewers, fill the ravines, and sell the level
+           land for factories, rail yards and homes. The Engineer’s crews break
+           ground within the month; the land sales refill the treasury by spring;
+           the stench — and the sickness it carries — goes underground for good.
+           London has proven it. Toronto can afford it. Your constituents will live
+           to thank you.</p>
+        <button class="vbtn" type="button">Vote to Bury the Creeks — immediate · funded · safe</button>
+      </div>
     </div>
 
-    <div class="step" data-a="0.015" data-b="0.150">
-      <h3>A city built on water</h3>
-      <p>Before Toronto, the land drained itself. <b><span id="total-km">360</span>&nbsp;km</b>
-      of creeks, brooks and rivers wound through ravines and marshes to the lake.
-      The first maps of York are full of water.</p>
+    <div id="vote-result"></div>
+
+    <div id="vote-modal" role="dialog" aria-modal="true" aria-label="Point of order">
+      <div class="vmbox">
+        <p class="vmkick">POINT OF ORDER</p>
+        <p>City Council warns this will bankrupt your ward and leave the cholera
+           outbreak unchecked. The Medical Officer of Health is on his feet. The
+           gallery is shouting. <b>Are you certain?</b></p>
+        <button class="v-reconsider" type="button">Reconsider — vote to bury the creeks</button>
+        <button class="v-certain" type="button">I am certain. Parks.</button>
+      </div>
     </div>
-    <div class="step" data-a="0.175" data-b="0.315">
-      <h3>The creeks become sewers</h3>
-      <p>The growing city used its creeks as drains. Mills, privies and slaughterhouses
-      emptied into them; cholera and typhoid followed. The Victorian cure: put the creek
-      in a brick pipe and sell the land on top. Lower Taddle Creek went under in
-      <b>1852</b>.</p>
+  </div>
+</section>
+
+<!-- ════════════ IV½ · THE BURYING YEARS (game) ════════════ -->
+<section class="scene game" id="sc-bury" style="--len:2.2" data-name="IV½ · The burying years">
+  <div class="sticky pitch">
+    <canvas id="bury-cv" class="gamecv" tabindex="-1"></canvas>
+    <div class="ghud bury-hud">
+      <span class="bh-cell"><small>POPULATION</small><b id="bury-pop">86,000</b></span>
+      <span class="bh-year" id="bury-year">1880</span>
+      <span class="bh-cell bh-right"><small>1 second = 1 year</small><b>→ 1930</b></span>
     </div>
-    <div class="step" data-a="0.340" data-b="0.490">
-      <h3>The great erasure</h3>
-      <p>In 1882, a plan to keep the ravines as parkland lost at council. Within a decade
-      <b>Garrison Creek</b> — all 7&nbsp;km of it — was sealed into Canada’s largest brick
-      sewer, and the lower Don was straightened, severing twelve tributaries.</p>
+    <div id="bury-sick"><i id="bury-sickfill"></i><em>EPIDEMIC</em><small>SICKNESS</small></div>
+
+    <div class="engage" id="bury-engage">
+      <p class="ekick">1880 → 1930 · ONE SECOND = ONE YEAR</p>
+      <h3>Bury them. All of them. Faster.</h3>
+      <p>Council voted. You’re the City Engineer now. Click or drag along the creeks
+         to lay culverts and fill the ravines — before the sickness outruns the
+         city’s growth.</p>
+      <div class="ebtns">
+        <button class="g-start" type="button">Break ground</button>
+        <button class="g-skip" type="button">Let the engineers handle it — skip</button>
+      </div>
     </div>
-    <div class="step" data-a="0.515" data-b="0.645">
-      <h3>Annex, survey, pipe, repeat</h3>
-      <p>Every annexed town brought creeks; every creek got a culvert. After Hurricane
-      Hazel killed 81 people in 1954, even “flood control” meant more concrete.
-      The expressways finished the job.</p>
+    <div class="replaychip" id="bury-replay">
+      <button class="g-start" type="button">↺ Replay the burying years</button>
     </div>
-    <div class="step" data-a="0.665" data-b="0.780">
-      <h3><span id="buried-km">293</span>&nbsp;km in the dark</h3>
-      <p>By 1975, barely a stream in the old city still saw daylight. Of the
-      <span id="total-km2">360</span>&nbsp;km mapped here, <b><span id="buried-km2">293</span>&nbsp;km</b>
-      now run through pipes beneath streets, schoolyards and parking lots.</p>
-    </div>
-    <div class="step" data-a="0.805" data-b="0.975">
-      <h3>Water remembers</h3>
-      <p>Bury a river and it doesn’t leave — it waits. In a cloudburst the old creeks fill
-      first: manholes lift and basements flood along valleys the street grid pretends
-      aren’t there. <b>The 2024 flood traced this map.</b></p>
+    <div class="pausesheet" id="bury-pause">
+      <div class="pbox">
+        <button class="g-resume" type="button">Resume</button>
+        <button class="g-restart" type="button">Restart</button>
+        <button class="g-skip2" type="button">Skip this part</button>
+      </div>
     </div>
 
-    <div id="map-src">Data: Lost Rivers of Toronto — Borealis Dataverse (doi:10.5683/SP2/TSJSQZ).
+    <div class="govl" id="bury-win">
+      <div class="gcard">
+        <p class="ekick">1930</p>
+        <h3>THE CITY IS SAFE.</h3>
+        <p class="gsub">It cost you every river it had.</p>
+        <p class="gstats">293&nbsp;km of creeks now run in the dark ·
+           Sickness: collapsing · Population: 631,000 and climbing</p>
+        <p>This was the right call in 1882. <b>Hold both of those thoughts.</b></p>
+        <button class="g-done" type="button">Fast-forward a century →</button>
+      </div>
+    </div>
+    <div class="govl" id="bury-fail">
+      <div class="gcard">
+        <p class="ekick">GAME OVER · EPIDEMIC OUTBREAK</p>
+        <h3>EPIDEMIC — <span data-year>1894</span></h3>
+        <p>Typhoid swept the wards faster than your crews could lay brick.
+           The creeks you spared became the sewers that killed.</p>
+        <div class="ebtns">
+          <button class="g-retry" type="button">Try again</button>
+          <button class="g-concede" type="button">Let the engineers take over →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ V · THE CENTURY (consequences) ════════════ -->
+<section class="scene" id="sc-century" style="--len:6" data-name="V · The century">
+  <div class="sticky pitch">
+    <canvas id="cmap"></canvas>
+    <div id="cy-hud">
+      <div id="cy-year">1930</div>
+      <div class="cy-row"><span>population</span><b id="cy-pop">631,000</b></div>
+      <div class="cy-row"><span>creek buried</span><b id="cy-km">— km</b></div>
+      <div class="cy-row"><span>paved surface</span><b id="cy-imp">28%</b></div>
+    </div>
+
+    <div class="step" data-a="0.015" data-b="0.145">
+      <h3>The pipes won</h3>
+      <p>By 1930 the city above forgot the water below. The creeks ran in brick,
+      under streets named for them — and the brick was already forty years old.</p>
+    </div>
+    <div class="step" data-a="0.17" data-b="0.30">
+      <h3>Then medicine solved the wrong half</h3>
+      <p>Chlorination. Vaccines. Treatment plants. By mid-century the diseases that
+      justified burying the rivers were beaten — by <b>medicine</b>, not by the pipes.
+      Nobody went back to ask what the pipes were for now. They just kept getting older.</p>
+    </div>
+    <div class="step" data-a="0.325" data-b="0.46">
+      <h3>One pipe, two jobs</h3>
+      <p>The old city still drains through <b>combined sewers</b>: sewage and stormwater
+      share one Victorian tunnel. Dry day — it all reaches the treatment plant.
+      Cloudburst — the tunnel chokes, and the overflow goes straight to the lake, raw.
+      They built outfalls for exactly this. Toronto still has dozens.</p>
+    </div>
+    <div class="step" data-a="0.485" data-b="0.62">
+      <h3>And the city sealed the sponge</h3>
+      <p>Hurricane Hazel, 1954: 81 dead, and the lesson learned was <b>more concrete</b>.
+      Every decade paved more of the watershed. Rain that once soaked into ravine soil
+      now arrives at the old brick all at once, carrying the whole sky with it.</p>
+    </div>
+    <div class="step" data-a="0.645" data-b="0.78">
+      <h3>A solution becomes a time bomb</h3>
+      <p>Here is the trap in one sentence: we cured the sickness with medicine but kept
+      the cure we’d built for it — and that cure, aging and undersized and locked under
+      a century of city, is now the <b>cause</b> of the flooding. Page one of this story
+      was not weather. It was plumbing.</p>
+    </div>
+    <div class="step" data-a="0.81" data-b="0.965">
+      <h3>You’ve seen what happens next</h3>
+      <p>July 16, 2024. <b>97.8&nbsp;mm</b> at Pearson. A grey sedan at a rail underpass.
+      Which is where you came in. So — what would it take to take it back?</p>
+    </div>
+
+    <div id="cy-src">Data: Lost Rivers of Toronto — Borealis Dataverse (doi:10.5683/SP2/TSJSQZ).
       Cyan: still at the surface · grey: buried · orange: buried around the year shown.</div>
   </div>
 </section>
@@ -198,7 +393,75 @@
 
     <p class="kicker2 reveal">Seoul demolished an expressway to free the Cheonggyecheon.
     Sheffield, Aarhus, Yonkers… no city that has opened a river has wanted to bury it again.</p>
-    <p class="bridge reveal">Now picture that corner of Queen Street, a few storms from now —</p>
+    <p class="bridge reveal">Toronto’s turn. The old Garrison alignment runs right through
+    Christie Pits, Bickford and Trinity Bellwoods — those parks were never a coincidence.
+    Get in the dozer.</p>
+  </div>
+</section>
+
+<!-- ════════════ VI½ · THE DAYLIGHTING RUN (game) ════════════ -->
+<section class="scene game" id="sc-dozer" style="--len:2.2" data-name="VI½ · The daylighting run">
+  <div class="sticky pitch">
+    <canvas id="dozer-cv" class="gamecv" tabindex="-1"></canvas>
+    <div class="ghud dz-top">
+      <span id="dozer-eta">STORM ETA 2:00</span>
+      <canvas id="dozer-radar" width="110" height="110"></canvas>
+    </div>
+    <div id="dz-gauges">
+      <div class="gauge" id="dz-heat"><small>🌡 heat island</small><i class="gbar"><b class="gfill"></b><u class="gtick" style="left:50%"></u></i><span class="gnum">34°C</span></div>
+      <div class="gauge" id="dz-flood"><small>🌊 flood risk</small><i class="gbar"><b class="gfill"></b><u class="gtick" style="left:29%"></u></i><span class="gnum">78%</span></div>
+      <div class="gauge" id="dz-cso"><small>💸 CSO overload</small><i class="gbar"><b class="gfill"></b><u class="gtick" style="left:31%"></u></i><span class="gnum">$120M/yr</span></div>
+      <div class="gauge" id="dz-species"><small>🐦 species</small><i class="gbar"><b class="gfill"></b><u class="gtick" style="left:62%"></u></i><span class="gnum">3</span></div>
+    </div>
+    <div class="dpad" id="dozer-dpad"></div>
+
+    <div class="engage" id="dozer-engage">
+      <p class="ekick">GARRISON CREEK ALIGNMENT · PRESENT DAY</p>
+      <h3>Dig it back up.</h3>
+      <p>Drive the dozer along the glowing creek path — W/↑ forward, A/D steer.
+         The crew behind you does the rest: channel, banks, parkland.
+         A storm cell is forming over the lake. <b>Beat it.</b></p>
+      <div class="ebtns">
+        <button class="g-start" type="button">Start the dozer</button>
+        <button class="g-skip" type="button">Skip — watch the crews work</button>
+      </div>
+    </div>
+    <div class="replaychip" id="dozer-replay">
+      <button class="g-start" type="button">↺ Run the dozer again</button>
+    </div>
+    <div class="pausesheet" id="dozer-pause">
+      <div class="pbox">
+        <button class="g-resume" type="button">Resume</button>
+        <button class="g-restart" type="button">Restart</button>
+        <button class="g-skip2" type="button">Skip this part</button>
+      </div>
+    </div>
+
+    <div class="govl" id="dozer-win">
+      <div class="gcard">
+        <p class="ekick">ALL GAUGES GREEN</p>
+        <h3>THE CREEK RUNS IN DAYLIGHT</h3>
+        <p>Four gauges green. The storm still came — storms always come now.
+           But it landed on a city with somewhere to put it.</p>
+        <p class="gstats">Heat: −3&nbsp;°C · Flood risk: 11% ·
+           Treatment overload: −$83M/yr · Species: 61 and counting</p>
+        <button class="g-done" type="button">See it rain on this street →</button>
+      </div>
+    </div>
+    <div class="govl" id="dozer-fail">
+      <div class="gcard">
+        <p class="ekick">FLASH FLOOD WARNING — TORONTO &amp; EAST YORK</p>
+        <h3>COMMUNITY UNPREPARED</h3>
+        <p>The storm beat you to it.</p>
+        <p class="gstats">Heat-stroke admissions: 312 · Wetland species count:
+           collapsing · Basement flooding reports: 4,100 and rising</p>
+        <p>Half a creek helps nobody downstream of the other half.</p>
+        <div class="ebtns">
+          <button class="g-retry" type="button">Run it back</button>
+          <button class="g-concede" type="button">Watch the crews finish — skip</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -209,16 +472,18 @@
     <svg id="street-future" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
          aria-label="The same Toronto street, transformed: a clear daylighted creek where the flooded lanes were, people swimming, the streetcar passing behind"></svg>
 
-    <p class="beat b-tl" data-a="0.04" data-b="0.18">Same street. Same rain.</p>
-    <p class="beat b-tl" data-a="0.30" data-b="0.44">But now the water has somewhere to be.</p>
+    <p class="beat b-tl" data-a="0.04" data-b="0.18">Same street. Same storm.</p>
+    <p class="beat b-tl" data-a="0.30" data-b="0.44">Different map.</p>
     <p class="beat b-tl" data-a="0.54" data-b="0.66">A creek that swallows the cloudburst in April —</p>
     <p class="beat b-tl" data-a="0.70" data-b="0.84">— and holds the whole neighbourhood in July.</p>
 
     <div class="beat b-c" id="finale" data-a="0.88" data-b="1.30">
+      <p id="vote-echo" class="echo"></p>
       <h2>Daylight the rivers.</h2>
       <p class="sub">The maps still know where they are.</p>
-      <p class="links"><a href="https://github.com/hugo-fuhrer/hidden-rivers">About this project</a>
-        · <a href="/">Explore the data — interactive map</a></p>
+      <p class="links"><a href="/">Explore the data — interactive map</a>
+        · <a href="http://lostrivers.ca">Walk a lost river this weekend</a>
+        · <a href="https://github.com/hugo-fuhrer/hidden-rivers">Read the research</a></p>
     </div>
   </div>
 </section>
@@ -226,20 +491,29 @@
 </main>
 
 <footer>
-  <p><b>Hidden Rivers</b> — a scrollable story built on the research repo
+  <p><b>Hidden Rivers</b> — an interactive story built on the research repo
   <a href="https://github.com/hugo-fuhrer/hidden-rivers">hugo-fuhrer/hidden-rivers</a>.
-  The river map uses the same Lost Rivers dataset as the project’s Dash explorer.</p>
+  The river maps use the same Lost Rivers dataset as the project’s Dash explorer.</p>
   <p class="srcs">Sources: Environment &amp; Climate Change Canada (97.8&nbsp;mm at Toronto Pearson,
   July&nbsp;16&nbsp;2024); Toronto Hydro (~167,000 customers without power); Insurance Bureau of
   Canada (&gt;$940&nbsp;M insured losses); <i>Lost Rivers of Toronto</i>, Borealis Dataverse
   doi:10.5683/SP2/TSJSQZ; City of Toronto Open Data; Stadt Zürich “Bachkonzept”;
   Quaggy Waterways Action Group / Environment Agency (Sutcliffe Park, 2003);
-  ECCC archives (Hurricane Hazel, 1954).</p>
-  <p class="srcs">Numbers shown on the river map (360&nbsp;km mapped · 293&nbsp;km buried) are computed
-  directly from the dataset by <code>web/tools/build_rivers_data.py</code>.</p>
+  ECCC archives (Hurricane Hazel, 1954); Census of Canada (population, 1881–1931).</p>
+  <p class="srcs">The mini-games are illustrative simulations — their dashboards are tuned for
+  story, not measurement. The map data and the storm statistics are real, computed from the
+  cited datasets by <code>web/tools/build_rivers_data.py</code>.</p>
 </footer>
 
 <script src="rivers-data.js"></script>
+<script src="js/core.js"></script>
+<script src="js/copy.js"></script>
+<script src="js/input.js"></script>
+<script src="js/island.js"></script>
+<script src="js/games/drive.js"></script>
+<script src="js/games/vote.js"></script>
+<script src="js/games/bury.js"></script>
+<script src="js/games/dozer.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
