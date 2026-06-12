@@ -69,20 +69,39 @@ basement flooding) · [Lost Rivers — Borealis Dataverse](https://doi.org/10.56
 
 ## The story site
 
-`web/` is a scroll-driven story of the July 16, 2024 Toronto flood: you start as a
-droplet in a storm cloud, fall through the skyline, flood a Queen St E streetscape
-(streetcar included), then descend into the buried-rivers map — drawn live from the
-same Lost Rivers dataset the app uses — learn why the creeks were buried and what
-daylighting (Zurich, London) gives back, and end on the same street reimagined with
-its creek daylit and swimmable.
+`web/` is an interactive scroll story (v2 — see `docs/story-v2-spec.md`) of the
+July 16, 2024 Toronto flood and the 142 years of plumbing behind it. You fall as a
+droplet into the flooding Queen St E streetscape, then play through the history:
+
+1. **Get Home** — a top-down driving mini-game that is structurally rigged: the flood
+   rises along the real buried-creek alignments, a Director blocks every escape route
+   (always telegraphed, never instant), and the loss screen reveals that the streets
+   that failed you trace Garrison Creek.
+2. **The 1882 vote** — a pressure-vote between the Parks plan and burying the creeks.
+   The interface pushes you to bury them; if you insist on parks, the chamber outvotes
+   you 18–3. The finale remembers your ballot.
+3. **The burying years** — drag-paint culverts over five creeks, 1 s = 1 year
+   (1880–1930), racing a sickness meter against the population boom. Idle play ends in
+   `EPIDEMIC`; winning costs the city every river it had.
+4. **The century** — scroll-bound fast-forward (1930–2024) over the real Lost Rivers
+   map: aging combined sewers, Hazel, and how medicine fixed the sickness while the
+   pipes became the flood.
+5. **The daylighting run** — drive a dozer along the Garrison alignment; the crew
+   behind you spawns creek and parkland while four live gauges (heat, flood risk, CSO
+   cost, species) race a 120-second storm ETA.
+6. The same street, daylit and swimmable, closing the loop.
+
+Every game is skippable (autopilot), pausable (`Esc`), replayable, and
+keyboard-accessible with a touch d-pad on mobile; results persist in `sessionStorage`.
 
 ```bash
 open web/index.html                        # works straight from the filesystem
 # or via the app:  python app/main.py  →  http://127.0.0.1:8050/story
 ```
 
-No build step. To refresh the embedded river data after changing the source GeoJSON:
-`python web/tools/build_rivers_data.py`.
+No build step; everything is vanilla JS (`web/js/` — core/input/island systems plus
+one file per game). To refresh the embedded river data after changing the source
+GeoJSON: `python web/tools/build_rivers_data.py`.
 
 ## Run the app
 

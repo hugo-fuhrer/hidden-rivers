@@ -624,25 +624,86 @@ function wavePath(width, amp, lam) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   IV · THE TURN
+   III¾ · WALKING HOME — dark bridge to the rewind
    ═══════════════════════════════════════════════════════════════════════ */
-scene("sc-pivot", p => { rain.target = (1 - map(p, 0, .3)) * .3; });
+{
+  const fig = document.getElementById("wh-fig");
+  const legs = document.getElementById("wh-legs");
+  const cone = document.getElementById("wh-cone");
+  const plaque = document.getElementById("wh-plaque");
+  scene("sc-walkhome", (p, t) => {
+    const x = lerp(6, 58, ease(p));
+    const bob = REDUCED ? 0 : Math.sin(t * 6) * 2;
+    fig.style.transform = `translateX(${x.toFixed(2)}vw) translateY(${bob.toFixed(1)}px)`;
+    cone.style.transform = `translateX(${x.toFixed(2)}vw)`;
+    if (!REDUCED) legs.setAttribute("d", Math.sin(t * 7) > 0
+      ? "M26 70 L18 104 M34 70 L42 104" : "M26 70 L24 104 M34 70 L36 104");
+    plaque.classList.toggle("lit", p > .64);
+    rain.target = .35; rain.host = "sc-walkhome";
+  });
+  rainCanvas("sc-walkhome");
+}
 
 /* ════════════════════════════════════════════════════════════════════════
-   V · THE HIDDEN RIVERS — canvas map of the real dataset
+   ⏮ REWIND — 2024 → 1882
+   ═══════════════════════════════════════════════════════════════════════ */
+{
+  const yEl = document.getElementById("rw-year");
+  const sticky = document.getElementById("rw-sticky");
+  const STOPS = [[0, 2024], [.22, 1954], [.46, 1924], [.72, 1884], [.92, 1882], [1, 1882]];
+  let crossed = new Set();
+  scene("sc-rewind", (p, t) => {
+    let year = 1882;
+    for (let i = 1; i < STOPS.length; i++) {
+      if (p <= STOPS[i][0]) {
+        year = Math.round(lerp(STOPS[i - 1][1], STOPS[i][1], map(p, STOPS[i - 1][0], STOPS[i][0])));
+        break;
+      }
+    }
+    yEl.textContent = year;
+    for (const [pp] of STOPS) {
+      if (pp > 0 && pp < 1 && p > pp && !crossed.has(pp)) { crossed.add(pp); flash(.35); }
+    }
+    if (p < .02) crossed = new Set();
+    const j = REDUCED ? 0 : Math.sin(t * 57) * 2.4 * map(p, .03, .12) * (1 - map(p, .85, .98));
+    yEl.style.transform = `translate(-50%,-50%) translateX(${j.toFixed(1)}px)`;
+    sticky.style.filter = `sepia(${(ease(p) * .75).toFixed(2)}) saturate(${(1 - ease(p) * .35).toFixed(2)})`;
+    rain.target = (1 - p) * .3; rain.host = p < .5 ? "sc-rewind" : rain.host;
+  });
+  rainCanvas("sc-rewind");
+}
+
+/* ── game islands: engage cards + atmosphere; the games own their input ── */
+for (const gid of ["drive", "bury", "dozer"]) {
+  const sid = "sc-" + gid;
+  if (!document.getElementById(sid)) continue;
+  scene(sid, p => {
+    if (window.HR && HR.island) HR.island.maybeShow(gid, p);
+    if (gid === "drive") { rain.target = .6; rain.host = sid; }
+  });
+}
+rainCanvas("sc-drive");
+
+/* ════════════════════════════════════════════════════════════════════════
+   V · THE CENTURY — 1930 → 2024 over the real lost-rivers map
    ═══════════════════════════════════════════════════════════════════════ */
 {
   const D = window.RIVERS_DATA, M = D.meta;
-  document.getElementById("total-km").textContent = Math.round(M.totalKm);
-  document.getElementById("total-km2").textContent = Math.round(M.totalKm);
-  document.getElementById("buried-km").textContent = Math.round(M.buriedKm);
-  document.getElementById("buried-km2").textContent = Math.round(M.buriedKm);
-
-  const cnv = document.getElementById("rivermap");
-  const yearEl = document.getElementById("map-year");
-  const countEl = document.getElementById("map-count");
+  const cnv = document.getElementById("cmap");
+  const yearEl = document.getElementById("cy-year");
+  const popEl = document.getElementById("cy-pop");
+  const kmEl = document.getElementById("cy-km");
+  const impEl = document.getElementById("cy-imp");
   const buried = D.segs.filter(s => s.y < 9999);        // sorted by year already
   const cumKm = []; { let a = 0; for (const s of buried) { a += s.km; cumKm.push(a); } }
+
+  const POPC = [[1930, 631], [1951, 1117], [1971, 2089], [1991, 2275], [2011, 2615], [2024, 2800]];
+  function popC(year) {
+    for (let i = 1; i < POPC.length; i++)
+      if (year <= POPC[i][0])
+        return lerp(POPC[i - 1][1], POPC[i][1], map(year, POPC[i - 1][0], POPC[i][0]));
+    return 2800;
+  }
 
   const LABELS = [
     { n: "Garrison Creek", lat: 43.649, lon: -79.4115, from: 1886 },
@@ -666,20 +727,22 @@ scene("sc-pivot", p => { rain.target = (1 - map(p, 0, .3)) * .3; });
     const oy = (H - M.h * sc) / 2 - H * .02;
     fit = { sc, ox, oy, dpr, W, H };
   }
-  function yearAt(p) {
-    if (p < .16) return 1828;
-    if (p < .60) return Math.round(lerp(1828, 1980, easeIO(map(p, .16, .60))));
-    if (p < .79) return Math.round(lerp(1980, 2016, map(p, .60, .79)));
-    return 2024;
-  }
-  scene("sc-rivers", (p, t) => {
+  const yearAt = p => Math.min(2024, Math.round(1930 + 94 * easeIO(p)));
+  const FLASH_YEARS = [1954, 2005, 2013, 2018, 2024];
+  let flashed = new Set();
+
+  scene("sc-century", (p, t) => {
     if (!fit) refit();
     const f = fit, ctx = cnv.getContext("2d");
     ctx.clearRect(0, 0, f.W, f.H);
     ctx.lineCap = "round"; ctx.lineJoin = "round";
     const year = yearAt(p);
-    const ghost = ease(map(p, .80, .90));               // "water remembers" pulse
+    const ghost = ease(map(p, .80, .92));               // "you've seen what happens next"
     const dprS = f.dpr;
+
+    for (const fy of FLASH_YEARS)
+      if (year >= fy && !flashed.has(fy)) { flashed.add(fy); flash(fy === 1954 ? .8 : .5); }
+    if (p < .01) flashed = new Set();
 
     /* buried */
     ctx.lineWidth = 1.1 * dprS;
@@ -730,7 +793,7 @@ scene("sc-pivot", p => { rain.target = (1 - map(p, 0, .3)) * .3; });
     for (const L of LABELS) {
       let a = L.from === 0 ? 1 : c01((year - L.from) / 8);
       if (a <= 0) continue;
-      a *= ease(map(p, .03, .09));
+      a *= ease(map(p, .01, .05));
       const x = L.mx * f.sc + f.ox, y = L.my * f.sc + f.oy;
       if (L.lake) {
         ctx.fillStyle = `rgba(93,107,124,${(a * .9).toFixed(2)})`;
@@ -745,15 +808,17 @@ scene("sc-pivot", p => { rain.target = (1 - map(p, 0, .3)) * .3; });
       ctx.fillText(" " + L.n, x + 3 * dprS, y);
     }
 
-    /* HUD */
-    yearEl.textContent = p > .79 ? "today" : year;
+    /* counters */
+    yearEl.textContent = p > .95 ? "today" : year;
+    popEl.textContent = Math.round(popC(year)).toLocaleString("en-CA") + ",000";
     let km = 0;
     if (buried.length) {
-      let lo = 0, hi = buried.length;                    // first index with y >= year? → count y < year
+      let lo = 0, hi = buried.length;                    // count segments with y < year
       while (lo < hi) { const mid = lo + hi >> 1; buried[mid].y < year ? lo = mid + 1 : hi = mid; }
       km = lo ? cumKm[lo - 1] : 0;
     }
-    countEl.innerHTML = `<b>${Math.round(km)}&nbsp;km</b> buried`;
+    kmEl.textContent = Math.round(km) + " km";
+    impEl.textContent = Math.round(lerp(24, 64, map(year, 1930, 2024))) + "%";
   });
   /* Path2D cache (per segment per fit) */
   let pathCache = new WeakMap(), cacheKey = null;
