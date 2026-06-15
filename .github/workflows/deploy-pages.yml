@@ -1,0 +1,51 @@
+name: Deploy story site to GitHub Pages
+
+# Publishes the static scrollytelling site in web/ to GitHub Pages so anyone
+# can view it at https://hugo-fuhrer.github.io/hidden-rivers/
+
+on:
+  # Deploy on every push to the default branch that touches the site
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/deploy-pages.yml"
+  # Allow running it by hand from the Actions tab
+  workflow_dispatch:
+
+# Permissions needed to deploy to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment; don't cancel an in-progress publish
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          # Turn Pages on automatically (with the GitHub Actions source) the
+          # first time this runs, so no manual repo-settings step is required.
+          enablement: true
+
+      - name: Upload web/ as the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

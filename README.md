@@ -103,6 +103,14 @@ No build step; everything is vanilla JS (`web/js/` — core/input/island systems
 one file per game). To refresh the embedded river data after changing the source
 GeoJSON: `python web/tools/build_rivers_data.py`.
 
+### Hosting (GitHub Pages)
+
+The story site is published publicly at **https://hugo-fuhrer.github.io/hidden-rivers/**.
+`.github/workflows/deploy-pages.yml` deploys `web/` to GitHub Pages on every push to
+`main` that touches the site (it can also be run by hand from the **Actions** tab). The
+first run enables Pages automatically with the *GitHub Actions* source. All asset paths
+are relative, so the site works unchanged under the `/hidden-rivers/` project subpath.
+
 ## Run the app
 
 ```bash
