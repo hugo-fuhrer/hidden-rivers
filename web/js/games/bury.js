@@ -43,6 +43,7 @@
   }
 
   const K1 = .34, K2 = 2.0, RATE = .9, BUILD_T = .8;
+  const A = () => (window.HR && HR.audio) ? HR.audio : null;
   const cv = document.getElementById("bury-cv");
   const yearEl = document.getElementById("bury-year");
   const popEl = document.getElementById("bury-pop");
@@ -53,10 +54,12 @@
 
   let segState, year, sick, budget, mode, auto, doneYear;
   let running = false, paused = false, raf = 0, lastT = 0, pointer = null;
+  const blade = { x: .5, y: .5, vis: false, push: 0 };     // the dozer's blade
 
   function init() {
-    segState = SEGS.map(() => ({ s: 0, b: 0 }));         // 0 open · 1 building · 2 buried
+    segState = SEGS.map(() => ({ s: 0, b: 0 }));         // 0 open · 1 filling · 2 buried
     year = 1880; sick = 8; budget = 0; mode = "play"; doneYear = 0; pointer = null;
+    blade.vis = false; blade.push = 0;
     winEl.classList.remove("on"); failEl.classList.remove("on");
   }
 
@@ -84,8 +87,17 @@
         const i = segState.findIndex(s => s.s === 0);
         if (i !== -1 && budget >= 1) { segState[i].s = 1; budget -= 1; }
       }
-      for (const s of segState)
-        if (s.s === 1 && (s.b += dt * speed / BUILD_T) >= 1) { s.s = 2; s.b = 1; }
+      let filling = 0;
+      for (const s of segState) {
+        if (s.s === 1) {
+          filling++;
+          if ((s.b += dt * speed / BUILD_T) >= 1) {
+            s.s = 2; s.b = 1;
+            const a = A(); if (a) a.sfx.build();          // gravel dumped, section sealed
+          }
+        }
+      }
+      const a = A(); if (a) a.dozerLoad(filling ? .9 : (pointer ? .5 : .15));
 
       /* sickness: exposed creeks × the people living on top of them */
       const sr = sprawlRadius();
@@ -104,6 +116,7 @@
         mode = "lost";
         const fy = failEl.querySelector("[data-year]");
         if (fy) fy.textContent = Math.round(year);
+        const a = A(); if (a) { a.dozerStop(); a.sfx.fail(); }
         HR.live(HR.COPY.bury.epidemic(Math.round(year)));
         failEl.classList.add("on");
       } else if (buriedCount() === N) {
@@ -113,7 +126,10 @@
     } else if (mode === "won") {
       year = Math.min(1930, year + dt * 10);             // montage to 1930
       sick = Math.max(0, sick - dt * 30);
-      if (year >= 1930) { mode = "shown"; winEl.classList.add("on"); }
+      if (year >= 1930) {
+        mode = "shown"; winEl.classList.add("on");
+        const a = A(); if (a) { a.dozerStop(); a.sfx.win(); }
+      }
     }
   }
 
@@ -175,14 +191,48 @@
         ctx.strokeStyle = `rgba(127,212,255,${((.6 + .3 * Math.sin(t * 2.4 + i)) * a).toFixed(2)})`;
         ctx.lineWidth = 2.6 * dpr;
         ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        if (s.s === 1) {                                 // brick culvert creeping over it
-          ctx.strokeStyle = "#8a4a32"; ctx.lineWidth = 8 * dpr;
-          ctx.setLineDash([6 * dpr, 4 * dpr]);
-          ctx.beginPath(); ctx.moveTo(x1, y1);
-          ctx.lineTo(U.lerp(x1, x2, s.b), U.lerp(y1, y2, s.b)); ctx.stroke();
-          ctx.setLineDash([]);
+        if (s.s === 1) {                                 // dirt + gravel pushed over it
+          const fx = U.lerp(x1, x2, s.b), fy = U.lerp(y1, y2, s.b);
+          ctx.lineCap = "round";
+          ctx.strokeStyle = "#5a3d24"; ctx.lineWidth = 12 * dpr; // earth mound
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(fx, fy); ctx.stroke();
+          ctx.strokeStyle = "#7a5836"; ctx.lineWidth = 6 * dpr;  // lighter crown
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(fx, fy); ctx.stroke();
+          ctx.fillStyle = "rgba(196,176,144,.85)";              // gravel speckle
+          for (let g = 0; g < 7; g++) {
+            const tt = (g + 1) / 8 * s.b;
+            ctx.fillRect(U.lerp(x1, x2, tt) + ((g * 53 % 7) - 3) * dpr,
+                         U.lerp(y1, y2, tt) + ((g * 31 % 7) - 3) * dpr, 1.8 * dpr, 1.8 * dpr);
+          }
+          /* a heap of fill at the working face */
+          ctx.fillStyle = "#6b4a2c";
+          ctx.beginPath(); ctx.arc(fx, fy, 6 * dpr, 0, 6.3); ctx.fill();
         }
       }
+    }
+
+    /* the bulldozer the player drives — follows the cursor / touch, blade
+       lowered and shoving a pile of fill while a section is being buried */
+    blade.push += ((pointer ? 1 : 0) - blade.push) * .2;
+    if (blade.vis && (mode === "play" || mode === "won")) {
+      const [bx, by] = PX(blade.x, blade.y);
+      const sgn = blade.x > .5 ? -1 : 1;                  // face toward mid-map
+      ctx.save(); ctx.translate(bx, by); ctx.scale(sgn, 1);
+      /* dirt being pushed */
+      if (blade.push > .05) {
+        ctx.fillStyle = `rgba(120,86,52,${(.8 * blade.push).toFixed(2)})`;
+        ctx.beginPath(); ctx.ellipse(15 * dpr, 6 * dpr, 9 * dpr * blade.push, 5 * dpr, 0, 0, 6.3); ctx.fill();
+      }
+      ctx.fillStyle = "#2b2f35";                          // treads
+      ctx.fillRect(-13 * dpr, -11 * dpr, 24 * dpr, 5 * dpr);
+      ctx.fillRect(-13 * dpr, 6 * dpr, 24 * dpr, 5 * dpr);
+      ctx.fillStyle = "#f2c12e";                          // body
+      ctx.fillRect(-11 * dpr, -7 * dpr, 20 * dpr, 14 * dpr);
+      ctx.fillStyle = "#1d2126";                          // cab
+      ctx.fillRect(-7 * dpr, -4 * dpr, 8 * dpr, 8 * dpr);
+      ctx.fillStyle = "#d8d8d2";                          // blade
+      ctx.fillRect(11 * dpr, -10 * dpr, 4 * dpr, 20 * dpr);
+      ctx.restore();
     }
 
     /* HUD */
@@ -217,25 +267,27 @@
     return [((e.clientX - r.left) * dpr - ox) / S,
             ((e.clientY - r.top) * dpr - oy) / (S * .94)];
   }
-  cv.addEventListener("pointerdown", e => { pointer = norm(e); tryBuild(...pointer); });
-  cv.addEventListener("pointermove", e => { if (pointer) pointer = norm(e); });
+  cv.addEventListener("pointerdown", e => { pointer = norm(e); blade.x = pointer[0]; blade.y = pointer[1]; blade.vis = true; tryBuild(...pointer); });
+  cv.addEventListener("pointermove", e => { const n = norm(e); blade.x = n[0]; blade.y = n[1]; blade.vis = true; if (pointer) pointer = n; });
   addEventListener("pointerup", () => { pointer = null; });
 
+  function begin2() { const a = A(); if (a) a.dozerStart(); }
   const game = {
     id: "bury", sceneId: "sc-bury",
-    start: () => begin(false),
-    skip: () => begin(true),
-    restart: () => begin(auto),
-    stop() { running = false; cancelAnimationFrame(raf); },
-    pause() { paused = true; },
-    resume() { paused = false; lastT = performance.now() / 1000; },
+    start: () => { begin(false); begin2(); },
+    skip: () => { begin(true); begin2(); },
+    restart: () => { begin(auto); begin2(); },
+    stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
+    pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
+    resume() { paused = false; lastT = performance.now() / 1000;
+               const a = A(); if (a && (mode === "play" || mode === "won")) a.dozerStart(); },
   };
   HR.island.register(game);
   const winDone = winEl.querySelector(".g-done");
   if (winDone) winDone.addEventListener("click", () =>
     HR.island.finish(game, "win", { finishYear: doneYear }));
   const retry = failEl.querySelector(".g-retry");
-  if (retry) retry.addEventListener("click", () => { failEl.classList.remove("on"); begin(false); });
+  if (retry) retry.addEventListener("click", () => { failEl.classList.remove("on"); begin(false); begin2(); });
   const concede = failEl.querySelector(".g-concede");
   if (concede) concede.addEventListener("click", () =>
     HR.island.finish(game, "epidemic", { finishYear: Math.round(year || 1894) }));

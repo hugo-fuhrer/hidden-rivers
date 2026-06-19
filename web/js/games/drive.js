@@ -73,6 +73,9 @@
   const clockEl = document.getElementById("drive-clock");
   const lossEl = document.getElementById("drive-loss");
   const survEl = document.getElementById("drive-surv");
+  const stormFill = document.getElementById("drive-stormfill");
+  const stormWrap = document.getElementById("drive-storm");
+  const A = () => (window.HR && HR.audio) ? HR.audio : null;
 
   function init() {
     st = new Uint8Array(NE); tT = new Float32Array(NE); fT = new Float32Array(NE).fill(-1);
@@ -217,6 +220,7 @@
 
   function beginDying() {
     mode = "dying"; dyingT = 0;
+    const a = A(); if (a) { a.engineStop(); a.sfx.fail(); }
     HR.live(HR.COPY.drive.dead);
   }
   function updateDying(dt) {
@@ -232,6 +236,7 @@
   /* ── movement ───────────────────────────────────────────────────────── */
   function movePlayer(dt) {
     const ax = auto ? autoAxes() : HR.input.axes;
+    const aud = A(); if (aud && mode === "play") aud.engineRev(player.moving ? .55 : .12);
     if (player.bump > 0) { player.bump -= dt; return; }
     if (player.moving) {
       /* allow mid-edge reverse */
@@ -258,6 +263,7 @@
       player.tx = nx; player.ty = ny; player.prog = 0; player.moving = true;
     } else {
       player.bump = .45; player.bdx = dx; player.bdy = dy;  // nose in, back out
+      const a = A(); if (a) { a.sfx.splash(); a.engineRev(.15); }
     }
   }
   function autoAxes() {
@@ -330,10 +336,43 @@
       }
     }
 
+    /* gridlock: stalled, hazard-blinking cars jam the flooded streets — the
+       city seizing up around you (cosmetic; the rig still lives in `st`) */
+    {
+      const blink = Math.sin(t * 6) > 0;
+      const carAt = (x1, y1, x2, y2, hue) => {
+        const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        const ang = Math.atan2(y2 - y1, x2 - x1);
+        ctx.save(); ctx.translate(mx, my); ctx.rotate(ang);
+        ctx.fillStyle = hue;
+        ctx.fillRect(-9 * dpr, -5 * dpr, 18 * dpr, 10 * dpr);
+        ctx.fillStyle = "#10151b"; ctx.fillRect(-2 * dpr, -4 * dpr, 6 * dpr, 8 * dpr);
+        ctx.fillStyle = blink ? "rgba(255,158,27,.95)" : "rgba(255,158,27,.12)";
+        ctx.fillRect(-9 * dpr, -5 * dpr, 2 * dpr, 3 * dpr);
+        ctx.fillRect(-9 * dpr, 2 * dpr, 2 * dpr, 3 * dpr);
+        ctx.restore();
+      };
+      const HUES = ["#7d8893", "#5c6b78", "#8a6d5a", "#6d7d8a"];
+      for (let e = 0; e < NE; e++) {
+        if (st[e] !== 2) continue;
+        const hsh = (e * 2654435761 >>> 0) % 100;
+        if (hsh >= 36) continue;                          // ~1 in 3 flooded edges jams
+        const [ax, ay, bx2, by2] = edgeEnds(e);
+        const k = .32 + (hsh % 5) * .09;                  // park it along the edge
+        const [x1, y1] = PX(U.lerp(ax, bx2, k), U.lerp(ay, by2, k));
+        const [x2, y2] = PX(U.lerp(ax, bx2, k + .12), U.lerp(ay, by2, k + .12));
+        carAt(x1, y1, x2, y2, HUES[hsh % 4]);
+      }
+    }
+
     /* HOME pin */
     {
       const [hx, hy] = PX(HOME.x, HOME.y);
       const pulse = 1 + .12 * Math.sin(t * 2.4);
+      /* a wider beacon halo so the goal reads at a glance */
+      ctx.strokeStyle = `rgba(124,196,111,${(.3 + .2 * Math.sin(t * 2.4)).toFixed(2)})`;
+      ctx.lineWidth = 2 * dpr;
+      ctx.beginPath(); ctx.arc(hx, hy, 26 * dpr * pulse, 0, 6.3); ctx.stroke();
       ctx.strokeStyle = "rgba(124,196,111,.85)"; ctx.lineWidth = 2 * dpr;
       ctx.beginPath(); ctx.arc(hx, hy, 13 * dpr * pulse, 0, 6.3); ctx.stroke();
       ctx.fillStyle = "#7cc46f";
@@ -342,6 +381,11 @@
       ctx.lineTo(hx + 4 * dpr, hy - 1 * dpr); ctx.lineTo(hx + 4 * dpr, hy + 6 * dpr);
       ctx.lineTo(hx - 4 * dpr, hy + 6 * dpr); ctx.lineTo(hx - 4 * dpr, hy - 1 * dpr);
       ctx.lineTo(hx - 7 * dpr, hy - 1 * dpr); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "rgba(124,196,111,.95)";
+      ctx.font = `700 ${11 * dpr}px ui-monospace,Menlo,monospace`;
+      ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+      ctx.fillText("HOME", hx, hy - 16 * dpr);
+      ctx.textAlign = "start"; ctx.textBaseline = "alphabetic";
     }
 
     /* player car */
@@ -403,6 +447,12 @@
       const mins = 12 + Math.floor(elapsed / 10);
       clockEl.textContent = `6:${String(mins).padStart(2, "0")} p.m.`;
     }
+    /* storm meter: fills as the flood gathers; turns hot near the endgame */
+    if (stormFill) {
+      const sp = U.c01(elapsed / 85);
+      stormFill.style.width = (sp * 100).toFixed(0) + "%";
+      if (stormWrap) stormWrap.classList.toggle("hot", endgame || sp > .62);
+    }
   }
 
   /* ── loop / lifecycle ───────────────────────────────────────────────── */
@@ -417,6 +467,7 @@
   function begin(asAuto) {
     init(); auto = asAuto; running = true; paused = false;
     lastT = performance.now() / 1000;
+    const a = A(); if (a) a.engineStart();
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
@@ -426,9 +477,10 @@
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),
-    stop() { running = false; cancelAnimationFrame(raf); },
-    pause() { paused = true; },
-    resume() { paused = false; lastT = performance.now() / 1000; },
+    stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.engineStop(); },
+    pause() { paused = true; const a = A(); if (a) a.engineStop(); },
+    resume() { paused = false; lastT = performance.now() / 1000;
+               const a = A(); if (a && mode === "play") a.engineStart(); },
   };
   HR.island.register(game);
   HR.input.dpad(document.getElementById("drive-dpad"));

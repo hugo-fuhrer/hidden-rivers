@@ -80,9 +80,9 @@ droplet into the flooding Queen St E streetscape, then play through the history:
 2. **The 1882 vote** — a pressure-vote between the Parks plan and burying the creeks.
    The interface pushes you to bury them; if you insist on parks, the chamber outvotes
    you 18–3. The finale remembers your ballot.
-3. **The burying years** — drag-paint culverts over five creeks, 1 s = 1 year
-   (1880–1930), racing a sickness meter against the population boom. Idle play ends in
-   `EPIDEMIC`; winning costs the city every river it had.
+3. **The burying years** — drive a bulldozer that shoves dirt and gravel over five
+   creeks, 1 s = 1 year (1880–1930), racing a sickness meter against the population
+   boom. Idle play ends in `EPIDEMIC`; winning costs the city every river it had.
 4. **The century** — scroll-bound fast-forward (1930–2024) over the real Lost Rivers
    map: aging combined sewers, Hazel, and how medicine fixed the sickness while the
    pipes became the flood.
@@ -93,15 +93,19 @@ droplet into the flooding Queen St E streetscape, then play through the history:
 
 Every game is skippable (autopilot), pausable (`Esc`), replayable, and
 keyboard-accessible with a touch d-pad on mobile; results persist in `sessionStorage`.
+A procedural Web-Audio score (synthesised, no asset files) crossfades a calm
+contemplative bed for reading into an urgent bed for the games, with contextual SFX
+(rain, thunder, engine, dozer, the burial dig); it stays muted behind a speaker toggle
+until you opt in. Fact cards expand into sourced tooltips on hover/tap.
 
 ```bash
 open web/index.html                        # works straight from the filesystem
 # or via the app:  python app/main.py  →  http://127.0.0.1:8050/story
 ```
 
-No build step; everything is vanilla JS (`web/js/` — core/input/island systems plus
-one file per game). To refresh the embedded river data after changing the source
-GeoJSON: `python web/tools/build_rivers_data.py`.
+No build step; everything is vanilla JS (`web/js/` — core/audio/input/island/tips
+systems plus one file per game). To refresh the embedded river data after changing the
+source GeoJSON: `python web/tools/build_rivers_data.py`.
 
 ### Hosting (GitHub Pages)
 

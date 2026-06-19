@@ -407,3 +407,77 @@ html.hr-locked body{overflow:hidden}
    (overflow:hidden on the root disables position:sticky) */
 .gfix{position:fixed!important;top:0;left:0;width:100%;height:100vh;height:100svh;
      z-index:50}
+
+/* ════════════════════════ v2.1 · audio · clarity · chaos ════════════════ */
+
+/* floating sound toggle */
+#sound-toggle{position:fixed;right:16px;top:14px;z-index:120;width:40px;height:40px;
+     display:flex;align-items:center;justify-content:center;border-radius:50%;
+     border:1px solid #24333f;background:rgba(9,14,20,.72);color:#8b98a8;cursor:pointer;
+     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+     transition:color .2s,border-color .2s,background .2s}
+#sound-toggle:hover{color:#cfe2ee;border-color:#2a4a66}
+#sound-toggle.on{color:var(--cy);border-color:rgba(79,195,247,.5);
+     background:rgba(13,30,44,.8)}
+@media (max-width:760px){#sound-toggle{width:36px;height:36px;right:12px;top:10px}}
+
+/* interactive fact tooltips */
+.hr-tip{cursor:help;position:relative;outline:none;
+     border-bottom:1px dashed rgba(79,195,247,.5)}
+.hr-tip:focus-visible{box-shadow:0 0 0 2px rgba(79,195,247,.6);border-radius:8px}
+.card.hr-tip,.case.hr-tip{border-bottom:1px solid #1c2634}
+.card.hr-tip::after,.case.hr-tip::after{content:"ⓘ";position:absolute;top:12px;right:14px;
+     font-size:.8rem;color:#4a6a82;transition:color .2s}
+.card.hr-tip:hover::after,.case.hr-tip:hover::after,
+.card.hr-tip:focus-visible::after,.case.hr-tip:focus-visible::after{color:var(--cy)}
+.hr-tip-pop{position:fixed;z-index:130;max-width:min(92vw,40ch);opacity:0;
+     pointer-events:none;background:rgba(9,14,21,.97);border:1px solid #2a4a66;
+     border-radius:12px;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.6);
+     transform:translateY(6px);transition:opacity .18s,transform .18s}
+.hr-tip-pop.on{opacity:1;pointer-events:auto;transform:none}
+.hr-tip-pop p{color:#d2dde7;font-size:.86rem;line-height:1.6;margin:0}
+.hr-tip-pop a{display:inline-block;margin-top:10px;font-family:var(--mono);
+     font-size:.72rem;letter-spacing:.04em}
+
+/* engage-card structured guidance */
+.engage .guide{list-style:none;text-align:left;margin:16px auto 2px;max-width:42ch;
+     display:flex;flex-direction:column;gap:9px}
+.engage .guide li{display:grid;grid-template-columns:88px 1fr;gap:10px;align-items:start;
+     font-size:clamp(.82rem,1.5vw,.94rem)}
+.engage .guide b{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;
+     text-transform:uppercase;color:var(--cy);padding-top:3px}
+.engage .guide span{color:#c4d2df}
+.engage .guide em{color:var(--grn);font-style:normal}
+
+/* drive: storm meter + persistent hint */
+#drive-storm{display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+     pointer-events:none}
+#drive-storm small{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
+     color:#9fb0c0}
+.stormbar{display:block;width:120px;height:8px;border-radius:6px;background:#141b23;
+     border:1px solid #243443;overflow:hidden}
+.stormbar b{display:block;height:100%;width:0;border-radius:6px;
+     background:linear-gradient(90deg,#4fc3f7,#ff7043);transition:width .4s}
+#drive-storm.hot small{color:var(--or)}
+#drive-storm.hot .stormbar{border-color:var(--or);animation:sickpulse .8s infinite}
+.ghint.drive-hint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+     z-index:10;font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;
+     color:#8b98a8;background:rgba(9,14,20,.6);padding:5px 14px;border-radius:999px;
+     pointer-events:none;text-align:center}
+.ghint.drive-hint em{color:var(--grn);font-style:normal}
+@media (max-width:760px){.stormbar{width:84px}}
+
+/* the vote chamber backdrop */
+.chamber-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+     opacity:.5;mask-image:radial-gradient(ellipse 90% 80% at 50% 36%,#000 40%,transparent 86%);
+     -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 36%,#000 40%,transparent 86%)}
+.chamber-bg svg{position:absolute;inset:0;width:100%;height:100%}
+#sc-vote .chamber{position:relative;z-index:2}
+
+/* rewind: time-machine flux + flash burst */
+#rw-flux{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+#rw-burst{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;
+     background:radial-gradient(circle at 50% 50%,rgba(190,225,255,.95),rgba(120,200,255,.5) 30%,transparent 70%)}
+@media (prefers-reduced-motion:reduce){
+  #drive-storm.hot .stormbar,.hr-tip-pop{animation:none}
+}

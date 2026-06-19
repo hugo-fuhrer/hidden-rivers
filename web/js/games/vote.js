@@ -5,6 +5,7 @@
 "use strict";
 (() => {
   const $ = id => document.getElementById(id);
+  const A = () => (window.HR && HR.audio) ? HR.audio : null;
   const sec = $("sc-vote");
   if (!sec) return;
   const cardA = $("vote-a"), cardB = $("vote-b");
@@ -20,6 +21,7 @@
     ticker.textContent = `FEVER DEATHS THIS SEASON: ${deaths}`;
     heat = Math.min(1, heat + .08);
     cardB.style.setProperty("--heat", heat.toFixed(2));
+    const a = A(); if (a) a.sfx.soft();                  // a quiet death-knell tick
   }
   const io = new IntersectionObserver(es => {
     for (const e of es) {
@@ -49,6 +51,7 @@
   btnA.addEventListener("click", () => {
     if (voted()) return;
     warnings++;
+    const a = A(); if (a) a.sfx.click();
     modal.classList.add("on");
     const rec = modal.querySelector(".v-reconsider");
     rec && rec.focus();
@@ -72,6 +75,7 @@
 
   function cast(ballot) {
     clearInterval(tickInt); tickInt = 0;
+    const a = A(); if (a) { a.sfx.gavel(); setTimeout(() => a.sfx.vote(), 180); }
     HR.state.set("vote", { ballot, hesitatedMs: Math.round(performance.now() - tStart),
                            warningsSeen: warnings });
     apply(ballot, true);
