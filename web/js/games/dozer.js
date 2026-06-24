@@ -32,6 +32,7 @@
   }
   const STORM = 120, CREW = 42, CORRIDOR = 95;
   const SAFE = { heat: 31, flood: 25, cso: 40, species: 40 };
+  const A = () => (window.HR && HR.audio) ? HR.audio : null;
 
   const cv = document.getElementById("dozer-cv");
   const radar = document.getElementById("dozer-radar");
@@ -82,17 +83,23 @@
     if (nearPath && progress < TOTAL)
       progress = Math.min(TOTAL, progress + CREW * dt * speed * (auto ? 3 : 1));
 
+    /* the dozer engine bogs down harder while it's actually cutting channel */
+    const aud = A();
+    if (aud) aud.dozerLoad(nearPath && Math.abs(ax.y) > .1 ? .95 : .35);
+
     const g = gauges();
     for (const k of ["heat", "flood", "cso", "species"]) {
       const safe = k === "species" ? g[k] > SAFE[k] : g[k] < SAFE[k];
-      if (safe && !announced[k]) { announced[k] = 1; HR.live(HR.COPY.dozer.safe(k)); }
+      if (safe && !announced[k]) { announced[k] = 1; if (aud) aud.sfx.success(); HR.live(HR.COPY.dozer.safe(k)); }
     }
     if (mode === "play") {
       if (allSafe(g) && progress > TOTAL * .5) {
-        mode = "won"; HR.live(HR.COPY.dozer.won);
+        mode = "won"; if (aud) { aud.dozerStop(); aud.sfx.win(); }
+        HR.live(HR.COPY.dozer.won);
         setTimeout(() => winEl.classList.add("on"), 900);
       } else if (elapsed >= STORM) {
-        mode = "storm"; flashA = 1; HR.live(HR.COPY.dozer.storm);
+        mode = "storm"; flashA = 1; if (aud) { aud.dozerStop(); aud.sfx.fail(); aud.sfx.thunder(); }
+        HR.live(HR.COPY.dozer.storm);
         setTimeout(() => failEl.classList.add("on"), 1600);
       }
     }
@@ -268,6 +275,7 @@
   function begin(asAuto) {
     init(); auto = asAuto; running = true; paused = false;
     lastT = performance.now() / 1000;
+    const a = A(); if (a) a.dozerStart();
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
@@ -277,9 +285,10 @@
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),
-    stop() { running = false; cancelAnimationFrame(raf); },
-    pause() { paused = true; },
-    resume() { paused = false; lastT = performance.now() / 1000; },
+    stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
+    pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
+    resume() { paused = false; lastT = performance.now() / 1000;
+               const a = A(); if (a && mode === "play") a.dozerStart(); },
   };
   HR.island.register(game);
   HR.input.dpad(document.getElementById("dozer-dpad"));

@@ -59,8 +59,14 @@ function beatAlpha(p, a, b) {
 
 /* ── lightning ─────────────────────────────────────────────────────────── */
 const flashEl = document.getElementById("flash");
-let flashT = -9;
-const flash = pow => { if (!REDUCED) { flashT = perf(); flashEl.dataset.p = pow; } };
+let flashT = -9, lastThunder = -9;
+const flash = pow => {
+  if (!REDUCED) { flashT = perf(); flashEl.dataset.p = pow; }
+  /* loud strikes rumble — throttled so a flurry of flashes doesn't stack */
+  if (pow >= .5 && perf() - lastThunder > 1.4 && window.HR && HR.audio) {
+    lastThunder = perf(); HR.audio.sfx.thunder();
+  }
+};
 function perf() { return performance.now() / 1000; }
 function drawFlash() {
   const x = perf() - flashT;
@@ -650,8 +656,15 @@ function wavePath(width, amp, lam) {
 {
   const yEl = document.getElementById("rw-year");
   const sticky = document.getElementById("rw-sticky");
+  const flux = document.getElementById("rw-flux");
+  const burst = document.getElementById("rw-burst");
   const STOPS = [[0, 2024], [.22, 1954], [.46, 1924], [.72, 1884], [.92, 1882], [1, 1882]];
-  let crossed = new Set();
+  let crossed = new Set(), warped = false;
+  /* light-streak field for the time-tunnel — seeded so it's stable */
+  const STREAKS = [];
+  { const rnd = mulberry(91);
+    for (let i = 0; i < 90; i++) STREAKS.push({ a: rnd() * TAU, r0: lerp(.05, 1, rnd()), len: lerp(.06, .2, rnd()), hue: rnd() }); }
+
   scene("sc-rewind", (p, t) => {
     let year = 1882;
     for (let i = 1; i < STOPS.length; i++) {
@@ -661,13 +674,45 @@ function wavePath(width, amp, lam) {
       }
     }
     yEl.textContent = year;
+    /* fire the time-machine sweep once on entry */
+    if (p > .04 && !warped) { warped = true; if (window.HR && HR.audio) HR.audio.sfx.warp(); }
     for (const [pp] of STOPS) {
-      if (pp > 0 && pp < 1 && p > pp && !crossed.has(pp)) { crossed.add(pp); flash(.35); }
+      if (pp > 0 && pp < 1 && p > pp && !crossed.has(pp)) { crossed.add(pp); flash(.4); }
     }
-    if (p < .02) crossed = new Set();
+    if (p < .02) { crossed = new Set(); warped = false; }
     const j = REDUCED ? 0 : Math.sin(t * 57) * 2.4 * map(p, .03, .12) * (1 - map(p, .85, .98));
     yEl.style.transform = `translate(-50%,-50%) translateX(${j.toFixed(1)}px)`;
     sticky.style.filter = `sepia(${(ease(p) * .75).toFixed(2)}) saturate(${(1 - ease(p) * .35).toFixed(2)})`;
+
+    /* Back-to-the-Future light tunnel: streaks tear outward from the centre,
+       brightest mid-flight, then a white burst as we land in 1882 */
+    const dpr = sizeCanvas(flux), ctx = flux.getContext("2d");
+    const W = flux.width, H = flux.height, cx = W / 2, cy = H / 2;
+    ctx.clearRect(0, 0, W, H);
+    const intensity = ease(map(p, .04, .55)) * (1 - ease(map(p, .82, .98)));
+    if (!REDUCED && intensity > .01) {
+      const maxR = Math.hypot(cx, cy);
+      ctx.lineCap = "round";
+      for (const s of STREAKS) {
+        const phase = (t * .9 + s.r0 + s.hue) % 1;          // travel outward, wrap
+        const r1 = phase * 1.05;
+        const r0 = Math.max(0, r1 - s.len * (.5 + intensity));
+        const x1 = cx + Math.cos(s.a) * r0 * maxR, y1 = cy + Math.sin(s.a) * r0 * maxR;
+        const x2 = cx + Math.cos(s.a) * r1 * maxR, y2 = cy + Math.sin(s.a) * r1 * maxR;
+        const warm = year > 1930 ? "120,200,255" : "255,210,150";
+        ctx.strokeStyle = `rgba(${warm},${(intensity * (.25 + .55 * phase)).toFixed(3)})`;
+        ctx.lineWidth = dpr * (1 + 2 * phase) * (.6 + intensity);
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      }
+      /* a small bright core that pulses with the flight */
+      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * .25);
+      core.addColorStop(0, `rgba(200,230,255,${(intensity * .4).toFixed(3)})`);
+      core.addColorStop(1, "rgba(200,230,255,0)");
+      ctx.fillStyle = core; ctx.fillRect(0, 0, W, H);
+    }
+    /* arrival burst */
+    if (burst) burst.style.opacity = (ease(map(p, .86, .93)) * (1 - ease(map(p, .93, .99)))).toFixed(2);
+
     rain.target = (1 - p) * .3; rain.host = p < .5 ? "sc-rewind" : rain.host;
   });
   rainCanvas("sc-rewind");
@@ -717,6 +762,49 @@ rainCanvas("sc-drive");
     { n: "Lake Ontario", lat: 43.636, lon: -79.387, from: 0, lake: true },
   ].map(L => ({ ...L, mx: (L.lon - M.lonMin) * M.kx, my: (M.latMax - L.lat) * M.ky }));
 
+  /* urban-expansion layer: condos and homes that rise through the timelapse
+     as the creeks go under — the development the burial paid for, growing in
+     the background. Inner blocks build first; towers spread outward and later. */
+  const BUILDINGS = [];
+  {
+    const rnd = mulberry(204);
+    const cxm = M.w * .42, cym = M.h * .62;               // old core, downtown-ish
+    for (let i = 0; i < 300; i++) {
+      const ang = rnd() * TAU, rad = Math.pow(rnd(), .72);
+      const mx = cxm + Math.cos(ang) * rad * M.w * .46;
+      const my = cym + Math.sin(ang) * rad * M.h * .5;
+      if (mx < M.w * .02 || mx > M.w * .98 || my < M.h * .02 || my > M.h * .98) { i--; continue; }
+      const condo = rnd() < .25 + rad * .35;             // taller towers further out / later
+      BUILDINGS.push({ mx, my, condo,
+        w: condo ? 90 + rnd() * 80 : 150 + rnd() * 150,
+        h: condo ? 360 + rnd() * 420 : 90 + rnd() * 120,
+        appear: clamp(1930 + rad * 86 + (rnd() - .5) * 20, 1930, 2024),
+        lit: rnd() });
+    }
+    BUILDINGS.sort((a, b) => a.my - b.my);               // painter's order, back to front
+  }
+  function drawCity(ctx, f, year) {
+    const s = f.sc;
+    for (const b of BUILDINGS) {
+      const g = c01((year - b.appear) / 5);               // rises in over ~5 years
+      if (g <= 0) continue;
+      const x = b.mx * s + f.ox, baseY = b.my * s + f.oy;
+      const w = b.w * s, h = b.h * s * (REDUCED ? 1 : (.6 + .4 * g));
+      const top = baseY - h;
+      ctx.fillStyle = b.condo ? "rgba(40,52,68,.85)" : "rgba(46,42,52,.8)";
+      ctx.fillRect(x - w / 2, top, w, h);
+      ctx.fillStyle = "rgba(64,80,98,.7)";                // roof cap
+      ctx.fillRect(x - w / 2, top, w, Math.max(1, h * .08));
+      if (b.lit < .55 && g > .5) {                        // a few warm windows
+        ctx.fillStyle = `rgba(255,206,122,${(.5 * g).toFixed(2)})`;
+        const rows = b.condo ? 4 : 2, cols = 2;
+        for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)
+          ctx.fillRect(x - w / 2 + w * (.25 + c * .4), top + h * (.2 + r * .22),
+                       Math.max(.8, w * .12), Math.max(.8, h * .06));
+      }
+    }
+  }
+
   let fit = null;
   function refit() {
     const dpr = sizeCanvas(cnv);
@@ -743,6 +831,9 @@ rainCanvas("sc-drive");
     for (const fy of FLASH_YEARS)
       if (year >= fy && !flashed.has(fy)) { flashed.add(fy); flash(fy === 1954 ? .8 : .5); }
     if (p < .01) flashed = new Set();
+
+    /* the city rises in the background as the creeks go under */
+    drawCity(ctx, f, year);
 
     /* buried */
     ctx.lineWidth = 1.1 * dprS;
@@ -1036,12 +1127,18 @@ rainCanvas("sc-drive");
 const barEl = document.getElementById("bar");
 const chapterEl = document.getElementById("chapter");
 const flowSections = [...document.querySelectorAll("section[data-name]")];
-let lastT = perf();
+/* which music bed each scene wants while it owns the viewport */
+const MOOD = {
+  "sc-cloud": "calm", "sc-fall": "calm", "sc-flood": "tense", "sc-drive": "tense",
+  "sc-walkhome": "calm", "sc-rewind": "tense", "sc-vote": "tense", "sc-bury": "tense",
+  "sc-century": "calm", "sc-daylight": "calm", "sc-dozer": "tense", "sc-future": "calm",
+};
+let lastT = perf(), curMood = "", audioWasOn = false;
 function loop() {
   const t = perf(), dt = Math.min(.05, t - lastT); lastT = t;
   const y = scrollY, vh = innerHeight;
   rain.target = 0;
-  let chapter = "";
+  let chapter = "", activeId = "";
   for (const s of SCENES) {
     const p = (y - s.top) / (s.hgt - vh);
     if (p > -.12 && p < 1.12) {
@@ -1056,7 +1153,7 @@ function loop() {
   }
   for (const sec of flowSections) {
     const r = sec.getBoundingClientRect();
-    if (r.top < vh * .5 && r.bottom > vh * .5) chapter = sec.dataset.name;
+    if (r.top < vh * .5 && r.bottom > vh * .5) { chapter = sec.dataset.name; activeId = sec.id; }
   }
   chapterEl.textContent = chapter;
   chapterEl.classList.toggle("on", !!chapter && y > vh * .25);
@@ -1064,6 +1161,14 @@ function loop() {
   barEl.style.transform = `scaleX(${(docH ? y / docH : 0).toFixed(4)})`;
   drawRain(dt, t);
   drawFlash();
+  /* audio: crossfade the music bed to the active scene, track the rain bed */
+  if (window.HR && HR.audio) {
+    if (HR.audio.on && !audioWasOn) { curMood = ""; audioWasOn = true; }   // just enabled → re-sync
+    else if (!HR.audio.on) audioWasOn = false;
+    const m = MOOD[activeId] || "calm";
+    if (m !== curMood) { curMood = m; HR.audio.mood(m); }
+    HR.audio.rain(rain.val);
+  }
   requestAnimationFrame(loop);
 }
 measure();

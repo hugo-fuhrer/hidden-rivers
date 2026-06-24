@@ -92,15 +92,23 @@
     <canvas id="drive-cv" class="gamecv" tabindex="-1"></canvas>
     <div class="ghud">
       <span id="drive-clock">6:12 p.m.</span>
-      <span class="ghint">WASD / arrows · Esc pauses</span>
+      <div id="drive-storm" title="Storm intensity — when it fills, the flood spreads">
+        <small>⛈ STORM</small>
+        <i class="stormbar"><b id="drive-stormfill"></b></i>
+      </div>
     </div>
+    <span class="ghint drive-hint">WASD / arrows to drive · Esc pauses · reach <em>HOME</em></span>
     <div class="dpad" id="drive-dpad"></div>
 
     <div class="engage" id="drive-engage">
       <p class="ekick">6:12 p.m. · Queen St E</p>
       <h3>Get home.</h3>
-      <p>WASD or arrow keys to drive. Avoid flooded streets.
-         That’s it. That’s the whole game.</p>
+      <p>Avoid flooded streets. That’s it. That’s the whole game.</p>
+      <ul class="guide">
+        <li><b>Goal</b><span>Reach the glowing green <em>HOME</em> pin, top-left, before the rising water seals off every street.</span></li>
+        <li><b>Controls</b><span>WASD or arrow keys (or the on-screen pad) — you drive one block at a time between intersections.</span></li>
+        <li><b>You win if</b><span>your car parks on the HOME pin. Watch the storm meter, top-right: when it fills, the flood moves.</span></li>
+      </ul>
       <div class="ebtns">
         <button class="g-start" type="button">Start driving</button>
         <button class="g-skip" type="button">Skip — let it happen</button>
@@ -163,6 +171,8 @@
 <!-- ════════════ REWIND ════════════ -->
 <section class="scene" id="sc-rewind" style="--len:2.2" data-name="⏮ Rewind">
   <div class="sticky pitch" id="rw-sticky">
+    <canvas id="rw-flux" aria-hidden="true"></canvas>
+    <div id="rw-burst" aria-hidden="true"></div>
     <div id="rw-year">2024</div>
     <p class="beat b-c rw-cap" data-a="0.10" data-b="0.26">1954 — Hazel kills 81.
       The lesson learned is <em>more concrete</em>.</p>
@@ -177,6 +187,43 @@
 
 <!-- ════════════ IV · THE VOTE (1882) ════════════ -->
 <section id="sc-vote" data-name="IV · The vote">
+  <div class="chamber-bg" aria-hidden="true">
+    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="ch-wall" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2a1f10"/><stop offset="1" stop-color="#0d0904"/>
+        </linearGradient>
+        <radialGradient id="ch-lamp" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ffdf9e" stop-opacity=".9"/>
+          <stop offset="1" stop-color="#ffdf9e" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="1600" height="900" fill="url(#ch-wall)"/>
+      <!-- coffered back wall + tall windows -->
+      <g opacity=".6" fill="#1a1208" stroke="#3a2a14" stroke-width="3">
+        <rect x="120" y="120" width="160" height="360" rx="80"/>
+        <rect x="360" y="120" width="160" height="360" rx="80"/>
+        <rect x="1080" y="120" width="160" height="360" rx="80"/>
+        <rect x="1320" y="120" width="160" height="360" rx="80"/>
+      </g>
+      <!-- the Speaker's dais and great seal -->
+      <g>
+        <polygon points="700,150 900,150 940,330 660,330" fill="#241a0c" stroke="#4a3719" stroke-width="4"/>
+        <circle cx="800" cy="245" r="62" fill="#1c1408" stroke="#6e4f1c" stroke-width="4"/>
+        <path d="M800 200 C812 230 836 234 836 256 a36 36 0 0 1-72 0 C764 234 788 230 800 200Z" fill="#3a6b4f" opacity=".5"/>
+        <rect x="690" y="330" width="220" height="120" fill="#2a1d0d" stroke="#4a3719" stroke-width="3"/>
+      </g>
+      <!-- curved galleries of empty benches -->
+      <g stroke="#3a2a14" stroke-width="4" fill="#1d1409">
+        <path d="M120 560 Q800 470 1480 560 L1480 600 Q800 510 120 600 Z"/>
+        <path d="M80 680 Q800 580 1520 680 L1520 724 Q800 624 80 724 Z"/>
+        <path d="M40 812 Q800 700 1560 812 L1560 860 Q800 752 40 860 Z"/>
+      </g>
+      <!-- gas lamps -->
+      <g><circle cx="320" cy="430" r="120" fill="url(#ch-lamp)"/><circle cx="1280" cy="430" r="120" fill="url(#ch-lamp)"/>
+         <circle cx="320" cy="430" r="9" fill="#ffe6ad"/><circle cx="1280" cy="430" r="9" fill="#ffe6ad"/></g>
+    </svg>
+  </div>
   <div class="chamber">
     <p class="vkick">CITY COUNCIL CHAMBER · TORONTO · 1882 · SPECIAL SESSION</p>
     <h2>The ravines are killing people. Choose.</h2>
@@ -244,9 +291,12 @@
     <div class="engage" id="bury-engage">
       <p class="ekick">1880 → 1930 · ONE SECOND = ONE YEAR</p>
       <h3>Bury them. All of them. Faster.</h3>
-      <p>Council voted. You’re the City Engineer now. Click or drag along the creeks
-         to lay culverts and fill the ravines — before the sickness outruns the
-         city’s growth.</p>
+      <p>Council voted. You’re the City Engineer now — at the controls of the dozer.</p>
+      <ul class="guide">
+        <li><b>Goal</b><span>Push dirt and gravel over all <em>28</em> creek sections before the sickness meter (right) hits&nbsp;EPIDEMIC.</span></li>
+        <li><b>Controls</b><span>Click — or press and drag the bulldozer blade along a creek — to fill it. The fill rate is capped, so plan your route.</span></li>
+        <li><b>You win if</b><span>every section is buried before 1930. Sprawl reaching an open creek makes it sicken twice as fast — bury the built-up ones first.</span></li>
+      </ul>
       <div class="ebtns">
         <button class="g-start" type="button">Break ground</button>
         <button class="g-skip" type="button">Let the engineers handle it — skip</button>
@@ -351,25 +401,33 @@
     room to flood, room to be seen.</p>
 
     <div class="cards">
-      <div class="card reveal">
+      <div class="card reveal"
+           data-tip="A buried pipe holds only what its diameter allows; an open channel with floodable banks can hold many times more, and a park graded to flood (like London’s Sutcliffe Park) stores a cloudburst that would otherwise back up into basements. The 2024 storm dropped a month of rain in hours — exactly the surge an open valley is built to absorb."
+           data-link="https://en.wikipedia.org/wiki/Daylighting_(streams)">
         <svg viewBox="0 0 48 48"><path d="M6 34c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue"/><path d="M6 24c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue f"/><path d="M24 4v10m0 0 4-4m-4 4-4-4" class="i-blue"/></svg>
         <h4>Room for cloudbursts</h4>
         <p>An open channel with floodable banks holds many times what a buried pipe can.
         Parks designed to flood mean basements that don’t.</p>
       </div>
-      <div class="card reveal">
+      <div class="card reveal"
+           data-tip="The urban heat-island effect can make paved districts several degrees hotter than nearby green corridors. After Seoul reopened the Cheonggyecheon, summer temperatures along the corridor measured roughly 3–6 °C cooler than parallel streets a few blocks away. Open water plus a tree canopy both shade the ground and cool the air by evaporation."
+           data-link="https://en.wikipedia.org/wiki/Cheonggyecheon">
         <svg viewBox="0 0 48 48"><circle cx="24" cy="22" r="9" class="i-blue"/><path d="M24 6v4M24 34v4M8 22h4M36 22h4M12.7 10.7l2.8 2.8M32.5 30.5l2.8 2.8M35.3 10.7l-2.8 2.8M15.5 30.5l-2.8 2.8" class="i-blue"/></svg>
         <h4>Cooler streets</h4>
         <p>Open water and the trees that line it knock degrees off summer heat
         that pavement only stores up.</p>
       </div>
-      <div class="card reveal">
+      <div class="card reveal"
+           data-tip="Fish, herons, kingfishers and dragonflies recolonise daylighted reaches within a few seasons — the kingfishers returned to London’s River Quaggy on their own after Sutcliffe Park opened in 2003. Habitat follows the water, and people follow the habitat: opened reaches quickly become the most-used parkland around them."
+           data-link="https://en.wikipedia.org/wiki/Quaggy_River">
         <svg viewBox="0 0 48 48"><path d="M8 40c10 0 8-26 26-30-2 8 2 10 6 10-6 4-4 22-22 22-6 0-10-2-10-2Z" class="i-blue"/><path d="M8 40c8-8 14-12 22-16" class="i-blue f"/></svg>
         <h4>Living corridors</h4>
         <p>Daylighted reaches see fish, herons and dragonflies return within seasons —
         and people follow them.</p>
       </div>
-      <div class="card reveal">
+      <div class="card reveal"
+           data-tip="Toronto’s combined sewers are well over a century old; many are at or past the end of their service life. When a culvert must be dug up and rebuilt anyway, opening it as a channel can cost less than installing a larger buried pipe — and the money buys a park, flood storage and cooling instead of a buried liability that will age again."
+           data-link="https://www.toronto.ca/services-payments/water-environment/managing-rain-melted-snow/basement-flooding/">
         <svg viewBox="0 0 48 48"><path d="M10 38V22m9 16V14m9 24V26m9 12V10" class="i-blue"/><path d="M6 42h36" class="i-blue"/></svg>
         <h4>Cheaper than bigger pipes</h4>
         <p>Aging culverts fail expensively. When one must be rebuilt anyway, opening it
@@ -377,13 +435,17 @@
       </div>
     </div>
 
-    <div class="case reveal">
+    <div class="case reveal"
+         data-tip="Zurich’s Bachkonzept (“stream concept”), adopted in 1988, treats daylighting as sewer policy: every litre of clean brook water kept out of the combined sewer is a litre the treatment plant never has to process. Over 20 km of brooks have been reopened, threaded between tram lines and buildings — and on hot days residents swim in the river-fed lidos right in town."
+         data-link="https://en.wikipedia.org/wiki/Daylighting_(streams)#Switzerland">
       <div class="case-tag">Zurich · the <i>Bachkonzept</i></div>
       <p>Since 1988, Zurich has daylighted <b>more than 20&nbsp;km</b> of buried brooks —
       partly to keep clean stream water out of its overloaded sewers. Today brooks run
       in the open beside tram lines, and on hot days the whole city swims in its rivers.</p>
     </div>
-    <div class="case reveal">
+    <div class="case reveal"
+         data-tip="The Quaggy spent decades in concrete culverts under Lewisham. In 2003 the Environment Agency and the Quaggy Waterways Action Group set it loose into Sutcliffe Park, regraded as a wetland that is allowed to flood. The park stores storm water that used to fill living rooms downstream — protecting hundreds of homes — and the kingfishers returned on their own."
+         data-link="https://en.wikipedia.org/wiki/Sutcliffe_Park">
       <div class="case-tag">London · the River Quaggy</div>
       <p>For decades the Quaggy ran in concrete culverts beneath Lewisham and Greenwich.
       In 2003 it was set loose into <b>Sutcliffe Park</b>, regraded as a wetland that is
@@ -418,9 +480,12 @@
     <div class="engage" id="dozer-engage">
       <p class="ekick">GARRISON CREEK ALIGNMENT · PRESENT DAY</p>
       <h3>Dig it back up.</h3>
-      <p>Drive the dozer along the glowing creek path — W/↑ forward, A/D steer.
-         The crew behind you does the rest: channel, banks, parkland.
-         A storm cell is forming over the lake. <b>Beat it.</b></p>
+      <p>A storm cell is forming over the lake. <b>Beat it.</b></p>
+      <ul class="guide">
+        <li><b>Goal</b><span>Drive the dozer along the glowing creek path. The crew behind you turns the trail into channel, banks and parkland.</span></li>
+        <li><b>Controls</b><span>W/↑ forward, S/↓ reverse, A/D steer (or the on-screen pad). Staying on the path is faster — and a blue arrow points you back to it.</span></li>
+        <li><b>You win if</b><span>all four gauges (bottom) cross their <em>SAFE</em> ticks before the storm ETA (top-right) hits zero.</span></li>
+      </ul>
       <div class="ebtns">
         <button class="g-start" type="button">Start the dozer</button>
         <button class="g-skip" type="button">Skip — watch the crews work</button>
@@ -507,7 +572,9 @@
 
 <script src="rivers-data.js"></script>
 <script src="js/core.js"></script>
+<script src="js/audio.js"></script>
 <script src="js/copy.js"></script>
+<script src="js/tips.js"></script>
 <script src="js/input.js"></script>
 <script src="js/island.js"></script>
 <script src="js/games/drive.js"></script>

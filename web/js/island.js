@@ -55,6 +55,7 @@ HR.island = (() => {
 
   function lock(g, asSkip) {
     if (active) return;
+    if (window.HR && HR.audio) HR.audio.sfx.click();
     active = g;
     /* overflow:hidden kills position:sticky, so pin the stage explicitly */
     g.stickyEl = g.stickyEl || document.querySelector("#" + g.sceneId + " .sticky");
@@ -79,6 +80,7 @@ HR.island = (() => {
 
   /* a game calls finish from its end-screen continue button */
   function finish(g, result, data) {
+    if (window.HR && HR.audio) HR.audio.sfx.soft();
     HR.state.set(g.id, Object.assign({ result }, data || {}));
     g.stop();
     hidePause();
