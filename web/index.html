@@ -392,6 +392,60 @@
   </div>
 </section>
 
+<!-- ════════════ V½ · THE FORECAST (predictive map) ════════════ -->
+<section class="scene" id="sc-forecast" style="--len:5" data-name="V½ · The forecast">
+  <div class="sticky pitch">
+    <canvas id="riskmap"></canvas>
+    <div id="rk-hud">
+      <div id="rk-metric">modelled flood susceptibility</div>
+      <div class="rk-legend"><span>lower</span><i class="rk-ramp"></i><span>higher</span></div>
+      <div id="rk-top" class="rk-row"><span>worst ward</span><b id="rk-topward">—</b></div>
+    </div>
+    <div id="rk-drivers" aria-hidden="true">
+      <p class="rk-dk">what the model leans on</p>
+      <ol id="rk-dlist"></ol>
+      <p class="rk-dfoot">SHAP importance · gradient-boosting model</p>
+    </div>
+
+    <div class="step" data-a="0.02" data-b="0.17">
+      <h3>Now run it forward</h3>
+      <p>The same 142 years of plumbing is a <b>dataset</b>: every ward’s buried-creek
+      length, its sewer age, its pipe diameters, its rainfall. Feed that to a model and
+      ask the obvious question — <em>where does it flood next, and why?</em></p>
+    </div>
+    <div class="step" data-a="0.20" data-b="0.36">
+      <h3>This is the answer</h3>
+      <p>Each ward shaded by <b>modelled flood susceptibility</b> — basement-flood load the
+      model expects from a ward’s infrastructure alone, at recent-typical rainfall. Deep
+      red is the chronic trouble: York South-Weston, Eglinton-Lawrence, Beaches–East York.</p>
+    </div>
+    <div class="step" data-a="0.40" data-b="0.56">
+      <h3>Now lay the creeks back on top</h3>
+      <p>The buried network, drawn over the same map. The hot wards aren’t random — they
+      ride the old valleys. The water still knows where the rivers were; so, now, does the
+      model.</p>
+    </div>
+    <div class="step" data-a="0.60" data-b="0.76">
+      <h3>Hidden river × weak sewer</h3>
+      <p>Switch the shading to the <b>coincidence index</b> — high <i>only</i> where a buried
+      creek and aging, pre-1960 sewers overlap. <b>Toronto Centre</b> tops it: Garrison and
+      Taddle creeks under Canada’s oldest brick sewers. That overlap is the fingerprint of
+      a flood-prone ward.</p>
+    </div>
+    <div class="step" data-a="0.80" data-b="0.96">
+      <h3>And it tells you why</h3>
+      <p>The drivers, ranked: how long the rain falls, undersized pipes, and — climbing the
+      list on their own — <b>buried creek running beside a trunk sewer</b>. The model rebuilt
+      the story’s thesis from the data. <em>So where would you dig first?</em></p>
+    </div>
+
+    <div id="rk-src">Modelled flood susceptibility + hidden-river × weak-sewer coincidence,
+      per City of Toronto ward. Gradient-boosting model with SHAP drivers, built in
+      <code>modelling/</code> from City of Toronto Open Data + Lost Rivers
+      (doi:10.5683/SP2/TSJSQZ). Draft — indicative, not operational.</div>
+  </div>
+</section>
+
 <!-- ════════════ VI · DAYLIGHTING (free-flow) ════════════ -->
 <section id="sc-daylight" data-name="VI · Daylighting">
   <div class="wrap">
@@ -571,6 +625,7 @@
 </footer>
 
 <script src="rivers-data.js"></script>
+<script src="risk-data.js"></script>
 <script src="js/core.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/copy.js"></script>

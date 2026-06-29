@@ -168,8 +168,11 @@ footer code{font-family:var(--mono);color:#7d8ea0}
   .step{left:4%;right:4%;width:auto;top:auto;bottom:7%;
         transform:translateY(calc(var(--dy,12)*1px));
         max-height:46%;overflow:auto}
-  #cy-src{display:none}
-  #cy-hud{top:5%;right:5%}
+  #cy-src,#rk-src{display:none}
+  #cy-hud,#rk-hud{top:5%;right:5%}
+  /* the step card sits at the bottom on mobile — float the drivers panel up top-left */
+  #rk-drivers{right:auto;left:4%;top:18%;bottom:auto;width:auto;max-width:62%}
+  .rk-legend{justify-content:flex-end}
   .cards{grid-template-columns:1fr}
   #altimeter{display:none}
 }
@@ -389,6 +392,36 @@ html.hr-locked body{overflow:hidden}
 .cy-row b{color:var(--or);font-weight:600;margin-left:10px}
 #cy-src{position:absolute;left:4.5%;bottom:4%;z-index:10;max-width:60ch;
      font-size:11px;color:#5d6b7c;line-height:1.5}
+
+/* V½ · the forecast (predictive ward map) ------------------------------------ */
+#riskmap{position:absolute;inset:0;width:100%;height:100%}
+#rk-hud{position:absolute;top:7%;right:5%;z-index:10;text-align:right;pointer-events:none}
+#rk-metric{font-family:var(--mono);font-size:clamp(.78rem,1.5vw,1rem);color:var(--cy);
+     letter-spacing:.04em;text-transform:uppercase;max-width:18ch;margin-left:auto;
+     text-shadow:0 0 22px rgba(79,195,247,.3)}
+.rk-legend{display:flex;align-items:center;justify-content:flex-end;gap:7px;margin-top:10px;
+     font-family:var(--mono);font-size:10px;color:var(--mut)}
+.rk-ramp{display:inline-block;width:96px;height:9px;border-radius:5px;
+     background:linear-gradient(90deg,#ffffb2,#fecc5c,#fd8d3c,#f03b20,#bd0026)}
+.rk-row{font-family:var(--mono);font-size:clamp(.7rem,1.3vw,.86rem);color:var(--mut);
+     margin-top:9px}
+.rk-row b{color:var(--or);font-weight:600;margin-left:10px}
+#rk-drivers{position:absolute;right:5%;bottom:7%;z-index:10;width:min(30ch,40%);
+     background:rgba(9,13,20,.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+     border-radius:12px;padding:14px 16px 12px;opacity:0;transition:opacity .25s;
+     pointer-events:none}
+.rk-dk{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+     color:var(--cy);margin-bottom:9px}
+#rk-dlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+#rk-dlist li{display:grid;grid-template-columns:13ch 1fr;align-items:center;gap:8px;
+     font-size:11.5px;color:#cdd9e5}
+.rk-dlabel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-dbar{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
+.rk-dbar b{display:block;height:100%;background:linear-gradient(90deg,#fd8d3c,#bd0026)}
+.rk-dfoot{margin-top:10px;font-size:10px;color:#5d6b7c;font-family:var(--mono)}
+#rk-src{position:absolute;left:4.5%;bottom:4%;z-index:10;max-width:60ch;
+     font-size:11px;color:#5d6b7c;line-height:1.5}
+#rk-src code{font-family:var(--mono);color:#7d8b9c}
 
 /* finale echo */
 .echo{font-family:var(--serif);font-style:italic;font-size:clamp(.98rem,1.9vw,1.25rem);
