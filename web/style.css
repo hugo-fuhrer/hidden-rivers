@@ -498,7 +498,25 @@ html.hr-locked body{overflow:hidden}
      color:#8b98a8;background:rgba(9,14,20,.6);padding:5px 14px;border-radius:999px;
      pointer-events:none;text-align:center}
 .ghint.drive-hint em{color:var(--grn);font-style:normal}
+.ghint.drive-hint b{color:var(--cy);font-weight:600}
 @media (max-width:760px){.stormbar{width:84px}}
+
+/* floating "skip to the end" chip — shown while a game is running ------------ */
+/* lives inside the locked game stage (.gfix) — z below the end (.govl z25) and
+   pause (.pausesheet z30) overlays so they cover it without extra bookkeeping */
+.hr-ff{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-12px);
+     z-index:24;display:none;align-items:center;gap:7px;
+     font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;color:#cdd9e5;
+     background:rgba(9,14,20,.82);border:1px solid #2a3645;border-radius:999px;
+     padding:7px 16px;cursor:pointer;opacity:0;transition:opacity .25s,transform .25s,
+     background .15s,border-color .15s;backdrop-filter:blur(6px);
+     -webkit-backdrop-filter:blur(6px)}
+.hr-ff.on{display:inline-flex;opacity:1;transform:translateX(-50%) translateY(0)}
+.hr-ff:hover{background:#1a304a;border-color:var(--cy);color:#fff}
+.hr-ff:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.hr-ff span{font-size:.9em}
+.pausesheet .g-ff{background:linear-gradient(160deg,#1d4f6e,#153049)}
+@media (prefers-reduced-motion:reduce){.hr-ff{transition:opacity .25s}}
 
 /* the vote chamber backdrop */
 .chamber-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;

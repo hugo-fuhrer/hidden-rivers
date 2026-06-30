@@ -53,7 +53,7 @@
   const failEl = document.getElementById("bury-fail");
 
   let segState, year, sick, budget, mode, auto, doneYear;
-  let running = false, paused = false, raf = 0, lastT = 0, pointer = null;
+  let running = false, paused = false, raf = 0, lastT = 0, pointer = null, tscale = 1;
   const blade = { x: .5, y: .5, vis: false, push: 0 };     // the dozer's blade
 
   function init() {
@@ -245,13 +245,13 @@
 
   function frame(now) {
     if (!running) return;
-    const t = now / 1000, dt = Math.min(.05, t - lastT); lastT = t;
+    const t = now / 1000, dt = Math.min(.05, t - lastT) * tscale; lastT = t;
     if (!paused && mode !== "lost" && mode !== "shown") update(dt);
     render(t);
     raf = requestAnimationFrame(frame);
   }
   function begin(asAuto) {
-    init(); auto = asAuto; running = true; paused = false;
+    init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
@@ -277,6 +277,12 @@
     start: () => { begin(false); begin2(); },
     skip: () => { begin(true); begin2(); },
     restart: () => { begin(auto); begin2(); },
+    ff() {                                               // let the engineers finish, fast
+      if (mode === "lost" || mode === "shown") return;
+      auto = true; tscale = 6; paused = false;
+      lastT = performance.now() / 1000;
+      const a = A(); if (a && (mode === "play" || mode === "won")) a.dozerStart();
+    },
     stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
     pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
     resume() { paused = false; lastT = performance.now() / 1000;

@@ -100,6 +100,9 @@ droplet into the flooding Queen St E streetscape, then play through the history:
 
 Every game is skippable (autopilot), pausable (`Esc`), replayable, and
 keyboard-accessible with a touch d-pad on mobile; results persist in `sessionStorage`.
+While a game is running you can fast-forward straight to its ending at any point — the
+floating **⏩ Skip to end** chip, the `F` key, or *Skip to the end* in the `Esc` menu hand
+the game to autopilot and accelerate it to its natural finish from wherever you are.
 A procedural Web-Audio score (synthesised, no asset files) crossfades a calm
 contemplative bed for reading into an urgent bed for the games, with contextual SFX
 (rain, thunder, engine, dozer, the burial dig); it stays muted behind a speaker toggle
