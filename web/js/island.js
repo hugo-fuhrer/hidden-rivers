@@ -4,9 +4,13 @@
    DOM conventions per game id:
      #<id>-engage  (.g-start / .g-skip buttons)
      #<id>-replay  (.g-start)
-     #<id>-pause   (.g-resume / .g-restart / .g-skip2)
+     #<id>-pause   (.g-resume / .g-restart / .g-skip2 / optional .g-ff)
    Game interface: { id, sceneId, start(), stop(), restart(), skip(),
-                     pause(), resume() } */
+                     pause(), resume(), ff()? }
+   ff() (optional) fast-forwards the running game from its current state to its
+   natural ending (autopilot + accelerated time). A floating "skip to end" chip,
+   the F key, and a pause-sheet button all route here; games without ff() fall
+   back to skip() (restart on autopilot). */
 "use strict";
 window.HR = window.HR || {};
 
@@ -14,13 +18,35 @@ HR.island = (() => {
   const games = new Map();
   let active = null;
 
+  /* floating "fast-forward to the end" control, shown while a game is running */
+  const ffBtn = document.createElement("button");
+  ffBtn.id = "hr-ff";
+  ffBtn.type = "button";
+  ffBtn.className = "hr-ff";
+  ffBtn.innerHTML = "<span aria-hidden=\"true\">⏩</span> Skip to end";
+  ffBtn.setAttribute("aria-label", "Fast-forward to the end of this part (F)");
+  ffBtn.addEventListener("click", fastForward);
+  document.body.appendChild(ffBtn);
+  const showFF = on => ffBtn.classList.toggle("on", on);
+
   const prevent = e => e.preventDefault();
   const SCROLLKEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
                       " ", "PageUp", "PageDown", "Home", "End"];
   function keyTrap(e) {
     if (!active) return;
     if (e.key === "Escape") { e.preventDefault(); togglePause(); return; }
+    if (e.key === "f" || e.key === "F") { e.preventDefault(); fastForward(); return; }
     if (SCROLLKEYS.includes(e.key)) e.preventDefault();  // HR.input still sees it
+  }
+
+  /* fast-forward / end: jump the running game to its conclusion */
+  function fastForward() {
+    if (!active) return;
+    if (window.HR && HR.audio) HR.audio.sfx.click();
+    hidePause();
+    showFF(false);
+    if (typeof active.ff === "function") active.ff();
+    else active.skip();                                  // games w/o ff: restart on autopilot
   }
 
   function register(g) {
@@ -40,6 +66,7 @@ HR.island = (() => {
       q(".g-resume") && q(".g-resume").addEventListener("click", togglePause);
       q(".g-restart") && q(".g-restart").addEventListener("click", () => { hidePause(); g.restart(); });
       q(".g-skip2") && q(".g-skip2").addEventListener("click", () => { hidePause(); g.skip(); });
+      q(".g-ff") && q(".g-ff").addEventListener("click", fastForward);
     }
   }
 
@@ -59,7 +86,7 @@ HR.island = (() => {
     active = g;
     /* overflow:hidden kills position:sticky, so pin the stage explicitly */
     g.stickyEl = g.stickyEl || document.querySelector("#" + g.sceneId + " .sticky");
-    if (g.stickyEl) g.stickyEl.classList.add("gfix");
+    if (g.stickyEl) { g.stickyEl.classList.add("gfix"); g.stickyEl.appendChild(ffBtn); }
     document.documentElement.classList.add("hr-locked");
     addEventListener("wheel", prevent, { passive: false });
     addEventListener("touchmove", prevent, { passive: false });
@@ -67,6 +94,7 @@ HR.island = (() => {
     if (g.engageEl) g.engageEl.classList.remove("on");
     if (g.replayEl) g.replayEl.classList.remove("on");
     asSkip ? g.skip() : g.start();
+    showFF(true);                                        // fast-forward available throughout
   }
 
   function unlock() {
@@ -75,6 +103,7 @@ HR.island = (() => {
     removeEventListener("wheel", prevent, { passive: false });
     removeEventListener("touchmove", prevent, { passive: false });
     removeEventListener("keydown", keyTrap, true);
+    showFF(false);
     active = null;
   }
 
@@ -84,6 +113,7 @@ HR.island = (() => {
     HR.state.set(g.id, Object.assign({ result }, data || {}));
     g.stop();
     hidePause();
+    showFF(false);
     unlock();
     const sec = document.getElementById(g.sceneId);
     if (sec) scrollTo({
@@ -95,6 +125,7 @@ HR.island = (() => {
   function togglePause() {
     if (!active || !active.pauseEl) return;
     const on = active.pauseEl.classList.toggle("on");
+    showFF(!on);                                          // hide the chip behind the pause sheet
     on ? active.pause() : active.resume();
   }
   function hidePause() { active && active.pauseEl && active.pauseEl.classList.remove("on"); }

@@ -16,7 +16,8 @@ hidden-rivers/
 │   ├── index.html       #   "Hidden Rivers" interactive scroll story
 │   ├── main.js · style.css
 │   ├── rivers-data.js   #   generated from the Lost Rivers GeoJSON
-│   └── tools/build_rivers_data.py
+│   ├── risk-data.js     #   generated from the modelling artifacts (predictive ward map)
+│   └── tools/build_rivers_data.py · build_risk_data.py
 ├── modelling/           # research notebooks (the model + hotspot analysis)
 │   ├── notebooks/
 │   │   ├── 01_build_features.ipynb      # ward × year panel + static infra features
@@ -86,13 +87,22 @@ droplet into the flooding Queen St E streetscape, then play through the history:
 4. **The century** — scroll-bound fast-forward (1930–2024) over the real Lost Rivers
    map: aging combined sewers, Hazel, and how medicine fixed the sickness while the
    pipes became the flood.
-5. **The daylighting run** — drive a dozer along the Garrison alignment; the crew
+5. **The forecast** — the same history, run forward as a model. A ward choropleth of the
+   **modelled flood susceptibility**, the buried-creek network laid over it (the hot wards
+   ride the old valleys), a switch to the **hidden-river × weak-sewer coincidence index**
+   (Toronto Centre tops it), and the ranked SHAP drivers — built live from the modelling
+   artifacts in `data/processed/` (see *Modelling* below). The story site's bridge between
+   the history and the case for daylighting.
+6. **The daylighting run** — drive a dozer along the Garrison alignment; the crew
    behind you spawns creek and parkland while four live gauges (heat, flood risk, CSO
    cost, species) race a 120-second storm ETA.
-6. The same street, daylit and swimmable, closing the loop.
+7. The same street, daylit and swimmable, closing the loop.
 
 Every game is skippable (autopilot), pausable (`Esc`), replayable, and
 keyboard-accessible with a touch d-pad on mobile; results persist in `sessionStorage`.
+While a game is running you can fast-forward straight to its ending at any point — the
+floating **⏩ Skip to end** chip, the `F` key, or *Skip to the end* in the `Esc` menu hand
+the game to autopilot and accelerate it to its natural finish from wherever you are.
 A procedural Web-Audio score (synthesised, no asset files) crossfades a calm
 contemplative bed for reading into an urgent bed for the games, with contextual SFX
 (rain, thunder, engine, dozer, the burial dig); it stays muted behind a speaker toggle
@@ -104,8 +114,10 @@ open web/index.html                        # works straight from the filesystem
 ```
 
 No build step; everything is vanilla JS (`web/js/` — core/audio/input/island/tips
-systems plus one file per game). To refresh the embedded river data after changing the
-source GeoJSON: `python web/tools/build_rivers_data.py`.
+systems plus one file per game). To refresh the embedded data: river network —
+`python web/tools/build_rivers_data.py` (after changing the source GeoJSON); the predictive
+ward map — `python web/tools/build_risk_data.py` (after re-running the modelling notebooks;
+it reuses `rivers-data.js`'s projection so the two layers stay aligned).
 
 ### Hosting (GitHub Pages)
 

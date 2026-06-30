@@ -930,6 +930,151 @@ rainCanvas("sc-drive");
 }
 
 /* ════════════════════════════════════════════════════════════════════════
+   V½ · THE FORECAST — predictive ward map (modelling artifacts → choropleth)
+   The same projection as the century map, so the buried-creek network overlays
+   the model's risk surface pixel-for-pixel. Degrades silently if the modelling
+   data file is absent (the section just stays dark).
+   ═══════════════════════════════════════════════════════════════════════ */
+if (window.RISK_DATA && document.getElementById("riskmap")) {
+  const RK = window.RISK_DATA, RM = RK.meta;
+  const RD = window.RIVERS_DATA;
+  const cnv = document.getElementById("riskmap");
+  const metricEl = document.getElementById("rk-metric");
+  const topEl = document.getElementById("rk-topward");
+  const driversEl = document.getElementById("rk-drivers");
+  /* YlOrRd — matches the Dash "Risk Hotspots" tab */
+  const RAMP = [[0, "#ffffb2"], [.25, "#fecc5c"], [.5, "#fd8d3c"],
+                [.75, "#f03b20"], [1, "#bd0026"]];
+
+  /* normalised metric values per ward (0–1) */
+  const span = Math.max(1e-6, RM.suscMax - RM.suscMin);
+  for (const w of RK.wards) {
+    w.nSusc = c01((w.susc - RM.suscMin) / span);
+    w.nCoin = c01(w.coin);                                // already 0–1
+    let area = 0, cx = 0, cy = 0;                          // centroid of largest ring
+    for (const r of w.rings) {
+      let a = 0, x = 0, y = 0;
+      for (let i = 0; i < r.length - 2; i += 2) {
+        const cross = r[i] * r[i + 3] - r[i + 2] * r[i + 1];
+        a += cross; x += (r[i] + r[i + 2]) * cross; y += (r[i + 1] + r[i + 3]) * cross;
+      }
+      a *= .5;
+      if (Math.abs(a) > Math.abs(area)) { area = a; cx = x / (6 * a); cy = y / (6 * a); }
+    }
+    w.cx = cx; w.cy = cy;
+  }
+
+  /* drivers panel (built once) */
+  const dlist = document.getElementById("rk-dlist");
+  if (dlist && RK.drivers) {
+    const max = Math.max(...RK.drivers.map(d => d.imp));
+    dlist.innerHTML = RK.drivers.map(d =>
+      `<li><span class="rk-dlabel">${d.label}</span>
+       <i class="rk-dbar"><b style="width:${(100 * d.imp / max).toFixed(0)}%"></b></i></li>`
+    ).join("");
+  }
+
+  let fit = null;
+  function refit() {
+    const dpr = sizeCanvas(cnv);
+    const W = cnv.width, H = cnv.height, wide = innerWidth > 760;
+    const sc = Math.min(W * (wide ? .58 : .96) / RM.w, H * .82 / RM.h);
+    const ox = wide ? W * .58 - RM.w * sc / 2 : (W - RM.w * sc) / 2;
+    const oy = (H - RM.h * sc) / 2 + H * .015;
+    fit = { sc, ox, oy, dpr, W, H };
+  }
+  /* Path2D cache (per ward per fit) */
+  let wPaths = new WeakMap(), wKey = null;
+  function wardPath(w, f) {
+    if (wKey !== f) { wPaths = new WeakMap(); wKey = f; }
+    let pp = wPaths.get(w);
+    if (!pp) {
+      pp = new Path2D();
+      for (const r of w.rings) {
+        pp.moveTo(r[0] * f.sc + f.ox, r[1] * f.sc + f.oy);
+        for (let i = 2; i < r.length; i += 2) pp.lineTo(r[i] * f.sc + f.ox, r[i + 1] * f.sc + f.oy);
+        pp.closePath();
+      }
+      wPaths.set(w, pp);
+    }
+    return pp;
+  }
+  /* river segs share the projection but live in rivers-origin space → shift by RM.ox/oy */
+  let rPaths = new WeakMap(), rKey = null;
+  function riverPath(s, f) {
+    if (rKey !== f) { rPaths = new WeakMap(); rKey = f; }
+    let pp = rPaths.get(s);
+    if (!pp) {
+      pp = new Path2D();
+      const P = s.p;
+      pp.moveTo((P[0] - RM.ox) * f.sc + f.ox, (P[1] - RM.oy) * f.sc + f.oy);
+      for (let i = 2; i < P.length; i += 2)
+        pp.lineTo((P[i] - RM.ox) * f.sc + f.ox, (P[i + 1] - RM.oy) * f.sc + f.oy);
+      rPaths.set(s, pp);
+    }
+    return pp;
+  }
+
+  scene("sc-forecast", (p, t) => {
+    if (!fit) refit();
+    const f = fit, ctx = cnv.getContext("2d"), dprS = f.dpr;
+    ctx.clearRect(0, 0, f.W, f.H);
+
+    const appear = ease(map(p, .02, .16));                 // choropleth fades in
+    const blend = ease(map(p, .56, .70));                  // susceptibility → coincidence
+    const riversOn = ease(map(p, .36, .52));               // buried network overlay
+    const driveOn = ease(map(p, .78, .9));                 // drivers panel
+
+    /* choropleth */
+    ctx.lineJoin = "round";
+    let topW = null, topV = -1;
+    for (const w of RK.wards) {
+      const v = lerp(w.nSusc, w.nCoin, blend);
+      if (v > topV) { topV = v; topW = w; }
+      const path = wardPath(w, f);
+      ctx.fillStyle = ramp(RAMP, v);
+      ctx.globalAlpha = (.22 + .6 * v) * appear;            // hotter = more opaque
+      ctx.fill(path);
+      ctx.globalAlpha = .5 * appear;
+      ctx.lineWidth = .8 * dprS;
+      ctx.strokeStyle = "rgba(12,16,22,.9)";
+      ctx.stroke(path);
+    }
+    ctx.globalAlpha = 1;
+
+    /* buried-creek network on top */
+    if (riversOn > 0 && RD) {
+      ctx.lineCap = "round";
+      ctx.lineWidth = 1 * dprS;
+      ctx.strokeStyle = `rgba(120,110,150,${(.7 * riversOn).toFixed(3)})`;
+      for (const s of RD.segs) { if (s.y < 9999) ctx.stroke(riverPath(s, f)); }
+      ctx.lineWidth = 1.4 * dprS;
+      ctx.strokeStyle = `rgba(127,212,255,${(.95 * riversOn).toFixed(3)})`;
+      for (const s of RD.segs) { if (s.y >= 9999) ctx.stroke(riverPath(s, f)); }
+    }
+
+    /* highlight + label the worst ward for the active metric */
+    if (topW && appear > .4) {
+      const path = wardPath(topW, f);
+      ctx.lineWidth = 2.2 * dprS;
+      ctx.strokeStyle = `rgba(255,255,255,${(.85 * appear).toFixed(2)})`;
+      ctx.stroke(path);
+      const lx = topW.cx * f.sc + f.ox, ly = topW.cy * f.sc + f.oy;
+      ctx.beginPath(); ctx.arc(lx, ly, 3 * dprS, 0, TAU);
+      ctx.fillStyle = `rgba(255,255,255,${appear.toFixed(2)})`; ctx.fill();
+      topEl.textContent = topW.name;
+    }
+
+    metricEl.textContent = blend < .5
+      ? "modelled flood susceptibility" : "hidden-river × weak-sewer coincidence";
+    if (driversEl) driversEl.style.opacity = driveOn.toFixed(2);
+
+    rain.target = 0; rain.host = "sc-forecast";
+  });
+  addEventListener("resize", () => { fit = null; });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
    VI · DAYLIGHTING — reveal-on-scroll
    ═══════════════════════════════════════════════════════════════════════ */
 {
@@ -1131,7 +1276,8 @@ const flowSections = [...document.querySelectorAll("section[data-name]")];
 const MOOD = {
   "sc-cloud": "calm", "sc-fall": "calm", "sc-flood": "tense", "sc-drive": "tense",
   "sc-walkhome": "calm", "sc-rewind": "tense", "sc-vote": "tense", "sc-bury": "tense",
-  "sc-century": "calm", "sc-daylight": "calm", "sc-dozer": "tense", "sc-future": "calm",
+  "sc-century": "calm", "sc-forecast": "calm", "sc-daylight": "calm",
+  "sc-dozer": "tense", "sc-future": "calm",
 };
 let lastT = perf(), curMood = "", audioWasOn = false;
 function loop() {

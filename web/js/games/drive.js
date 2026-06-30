@@ -69,6 +69,7 @@
   let st, tT, fT;                                        // edge state / telegraph deadline / flood time
   let player, elapsed, mode, dyingT, revealOn, auto, autoPath;
   let endgame, endT, Unode, lastSim, lastDir, raf = 0, running = false, paused = false, lastT = 0;
+  let tscale = 1;                                        // >1 while fast-forwarding to the end
   const cv = document.getElementById("drive-cv");
   const clockEl = document.getElementById("drive-clock");
   const lossEl = document.getElementById("drive-loss");
@@ -459,13 +460,13 @@
   function frame(now) {
     if (!running) return;
     const t = now / 1000;
-    const dt = Math.min(.05, t - lastT); lastT = t;
+    const dt = Math.min(.05, t - lastT) * tscale; lastT = t;
     if (!paused && mode !== "lost") update(dt);
     render(t);
     raf = requestAnimationFrame(frame);
   }
   function begin(asAuto) {
-    init(); auto = asAuto; running = true; paused = false;
+    init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     const a = A(); if (a) a.engineStart();
     cancelAnimationFrame(raf);
@@ -477,6 +478,12 @@
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),
+    ff() {                                               // hand to autopilot and race to the end
+      if (mode === "lost") return;
+      auto = true; tscale = 7; paused = false;
+      lastT = performance.now() / 1000;
+      const a = A(); if (a && mode === "play") a.engineStart();
+    },
     stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.engineStop(); },
     pause() { paused = true; const a = A(); if (a) a.engineStop(); },
     resume() { paused = false; lastT = performance.now() / 1000;

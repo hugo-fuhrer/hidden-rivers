@@ -45,7 +45,7 @@
   const failEl = document.getElementById("dozer-fail");
 
   let dz, progress, elapsed, mode, auto, cam, announced;
-  let running = false, paused = false, raf = 0, lastT = 0, flashA = 0;
+  let running = false, paused = false, raf = 0, lastT = 0, flashA = 0, tscale = 1;
 
   function init() {
     dz = { x: PATH[0][0] - 60, y: PATH[0][1] - 40, a: .6 };
@@ -267,13 +267,13 @@
 
   function frame(now) {
     if (!running) return;
-    const t = now / 1000, dt = Math.min(.05, t - lastT); lastT = t;
+    const t = now / 1000, dt = Math.min(.05, t - lastT) * tscale; lastT = t;
     if (!paused && (mode === "play")) update(dt);
     render(t);
     raf = requestAnimationFrame(frame);
   }
   function begin(asAuto) {
-    init(); auto = asAuto; running = true; paused = false;
+    init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     const a = A(); if (a) a.dozerStart();
     cancelAnimationFrame(raf);
@@ -285,6 +285,12 @@
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),
+    ff() {                                               // crew finishes the run, fast
+      if (mode !== "play") return;
+      auto = true; tscale = 6; paused = false;
+      lastT = performance.now() / 1000;
+      const a = A(); if (a) a.dozerStart();
+    },
     stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
     pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
     resume() { paused = false; lastT = performance.now() / 1000;
