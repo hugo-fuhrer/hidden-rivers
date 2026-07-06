@@ -18,6 +18,20 @@ HR.island = (() => {
   const games = new Map();
   let active = null;
 
+  /* transition veil: a brief dip to black that hides the scroll-jump when a
+     game takes or returns the viewport, so handoffs read as scene cuts */
+  const veil = document.createElement("div");
+  veil.id = "hr-veil";
+  document.body.appendChild(veil);
+  function dip(fn, hold = 380) {
+    if (HR.REDUCED) { fn && fn(); return; }
+    veil.classList.add("on");
+    setTimeout(() => {
+      fn && fn();
+      setTimeout(() => veil.classList.remove("on"), 80);
+    }, hold);
+  }
+
   /* floating "fast-forward to the end" control, shown while a game is running */
   const ffBtn = document.createElement("button");
   ffBtn.id = "hr-ff";
@@ -67,6 +81,8 @@ HR.island = (() => {
       q(".g-restart") && q(".g-restart").addEventListener("click", () => { hidePause(); g.restart(); });
       q(".g-skip2") && q(".g-skip2").addEventListener("click", () => { hidePause(); g.skip(); });
       q(".g-ff") && q(".g-ff").addEventListener("click", fastForward);
+      /* leave the game entirely: straight to the next story section */
+      q(".g-next") && q(".g-next").addEventListener("click", () => finish(g, "skipped"));
     }
   }
 
@@ -93,8 +109,10 @@ HR.island = (() => {
     addEventListener("keydown", keyTrap, true);
     if (g.engageEl) g.engageEl.classList.remove("on");
     if (g.replayEl) g.replayEl.classList.remove("on");
-    asSkip ? g.skip() : g.start();
-    showFF(true);                                        // fast-forward available throughout
+    dip(() => {                                          // cut, don't pop, into the game
+      asSkip ? g.skip() : g.start();
+      showFF(true);                                      // fast-forward available throughout
+    }, 300);
   }
 
   function unlock() {
@@ -107,18 +125,22 @@ HR.island = (() => {
     active = null;
   }
 
-  /* a game calls finish from its end-screen continue button */
+  /* a game calls finish from its end-screen continue button; the pause
+     sheet's "next section" button routes here too. The scroll-jump happens
+     under the veil so the return to the story reads as a scene cut. */
   function finish(g, result, data) {
     if (window.HR && HR.audio) HR.audio.sfx.soft();
     HR.state.set(g.id, Object.assign({ result }, data || {}));
-    g.stop();
-    hidePause();
-    showFF(false);
-    unlock();
-    const sec = document.getElementById(g.sceneId);
-    if (sec) scrollTo({
-      top: sec.offsetTop + sec.offsetHeight - innerHeight + 6,
-      behavior: HR.REDUCED ? "auto" : "smooth",
+    dip(() => {
+      g.stop();
+      hidePause();
+      showFF(false);
+      unlock();
+      const sec = document.getElementById(g.sceneId);
+      if (sec) scrollTo({
+        top: sec.offsetTop + sec.offsetHeight - innerHeight + 6,
+        behavior: "auto",
+      });
     });
   }
 

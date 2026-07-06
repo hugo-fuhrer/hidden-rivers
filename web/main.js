@@ -630,27 +630,6 @@ function wavePath(width, amp, lam) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   III¾ · WALKING HOME — dark bridge to the rewind
-   ═══════════════════════════════════════════════════════════════════════ */
-{
-  const fig = document.getElementById("wh-fig");
-  const legs = document.getElementById("wh-legs");
-  const cone = document.getElementById("wh-cone");
-  const plaque = document.getElementById("wh-plaque");
-  scene("sc-walkhome", (p, t) => {
-    const x = lerp(6, 58, ease(p));
-    const bob = REDUCED ? 0 : Math.sin(t * 6) * 2;
-    fig.style.transform = `translateX(${x.toFixed(2)}vw) translateY(${bob.toFixed(1)}px)`;
-    cone.style.transform = `translateX(${x.toFixed(2)}vw)`;
-    if (!REDUCED) legs.setAttribute("d", Math.sin(t * 7) > 0
-      ? "M26 70 L18 104 M34 70 L42 104" : "M26 70 L24 104 M34 70 L36 104");
-    plaque.classList.toggle("lit", p > .64);
-    rain.target = .35; rain.host = "sc-walkhome";
-  });
-  rainCanvas("sc-walkhome");
-}
-
-/* ════════════════════════════════════════════════════════════════════════
    ⏮ REWIND — 2024 → 1882
    ═══════════════════════════════════════════════════════════════════════ */
 {
@@ -762,49 +741,6 @@ rainCanvas("sc-drive");
     { n: "Lake Ontario", lat: 43.636, lon: -79.387, from: 0, lake: true },
   ].map(L => ({ ...L, mx: (L.lon - M.lonMin) * M.kx, my: (M.latMax - L.lat) * M.ky }));
 
-  /* urban-expansion layer: condos and homes that rise through the timelapse
-     as the creeks go under — the development the burial paid for, growing in
-     the background. Inner blocks build first; towers spread outward and later. */
-  const BUILDINGS = [];
-  {
-    const rnd = mulberry(204);
-    const cxm = M.w * .42, cym = M.h * .62;               // old core, downtown-ish
-    for (let i = 0; i < 300; i++) {
-      const ang = rnd() * TAU, rad = Math.pow(rnd(), .72);
-      const mx = cxm + Math.cos(ang) * rad * M.w * .46;
-      const my = cym + Math.sin(ang) * rad * M.h * .5;
-      if (mx < M.w * .02 || mx > M.w * .98 || my < M.h * .02 || my > M.h * .98) { i--; continue; }
-      const condo = rnd() < .25 + rad * .35;             // taller towers further out / later
-      BUILDINGS.push({ mx, my, condo,
-        w: condo ? 90 + rnd() * 80 : 150 + rnd() * 150,
-        h: condo ? 360 + rnd() * 420 : 90 + rnd() * 120,
-        appear: clamp(1930 + rad * 86 + (rnd() - .5) * 20, 1930, 2024),
-        lit: rnd() });
-    }
-    BUILDINGS.sort((a, b) => a.my - b.my);               // painter's order, back to front
-  }
-  function drawCity(ctx, f, year) {
-    const s = f.sc;
-    for (const b of BUILDINGS) {
-      const g = c01((year - b.appear) / 5);               // rises in over ~5 years
-      if (g <= 0) continue;
-      const x = b.mx * s + f.ox, baseY = b.my * s + f.oy;
-      const w = b.w * s, h = b.h * s * (REDUCED ? 1 : (.6 + .4 * g));
-      const top = baseY - h;
-      ctx.fillStyle = b.condo ? "rgba(40,52,68,.85)" : "rgba(46,42,52,.8)";
-      ctx.fillRect(x - w / 2, top, w, h);
-      ctx.fillStyle = "rgba(64,80,98,.7)";                // roof cap
-      ctx.fillRect(x - w / 2, top, w, Math.max(1, h * .08));
-      if (b.lit < .55 && g > .5) {                        // a few warm windows
-        ctx.fillStyle = `rgba(255,206,122,${(.5 * g).toFixed(2)})`;
-        const rows = b.condo ? 4 : 2, cols = 2;
-        for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)
-          ctx.fillRect(x - w / 2 + w * (.25 + c * .4), top + h * (.2 + r * .22),
-                       Math.max(.8, w * .12), Math.max(.8, h * .06));
-      }
-    }
-  }
-
   let fit = null;
   function refit() {
     const dpr = sizeCanvas(cnv);
@@ -831,9 +767,6 @@ rainCanvas("sc-drive");
     for (const fy of FLASH_YEARS)
       if (year >= fy && !flashed.has(fy)) { flashed.add(fy); flash(fy === 1954 ? .8 : .5); }
     if (p < .01) flashed = new Set();
-
-    /* the city rises in the background as the creeks go under */
-    drawCity(ctx, f, year);
 
     /* buried */
     ctx.lineWidth = 1.1 * dprS;
@@ -1275,7 +1208,7 @@ const flowSections = [...document.querySelectorAll("section[data-name]")];
 /* which music bed each scene wants while it owns the viewport */
 const MOOD = {
   "sc-cloud": "calm", "sc-fall": "calm", "sc-flood": "tense", "sc-drive": "tense",
-  "sc-walkhome": "calm", "sc-rewind": "tense", "sc-vote": "tense", "sc-bury": "tense",
+  "sc-rewind": "tense", "sc-vote": "tense", "sc-bury": "tense",
   "sc-century": "calm", "sc-forecast": "calm", "sc-daylight": "calm",
   "sc-dozer": "tense", "sc-future": "calm",
 };
