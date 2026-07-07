@@ -135,6 +135,10 @@ HR.island = (() => {
       g.stop();
       hidePause();
       showFF(false);
+      /* clear any end-screen overlay: left "on", it would sit over the scene
+         and swallow the replay chip's clicks when the user scrolls back */
+      document.querySelectorAll("#" + g.sceneId + " .govl.on")
+        .forEach(el => el.classList.remove("on"));
       unlock();
       const sec = document.getElementById(g.sceneId);
       if (sec) scrollTo({

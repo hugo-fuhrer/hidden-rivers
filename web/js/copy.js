@@ -27,6 +27,5 @@ HR.COPY = {
   dozer: {
     safe: g => `${g} is in the safe zone`,
     won: "All four gauges green. The creek runs in daylight.",
-    storm: "The storm beat you to it.",
   },
 };

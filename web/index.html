@@ -172,19 +172,53 @@
   </div>
 </section>
 
+<!-- ════════════ III¾ · THE STINK (Ashbridge's Bay, 1882) ════════════ -->
+<section class="scene" id="sc-stink" style="--len:4" data-name="III¾ · The stink">
+  <div class="sticky">
+    <div class="sky" id="stink-sky"></div>
+    <svg id="stink-bay" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
+         aria-label="Ashbridge's Bay in 1882: a fouled marsh under a sickly sky — outfall pipes discharging waste, dead fish, swarming flies and miasma rising off the water"></svg>
+
+    <div class="beat b-c" data-a="0.02" data-b="0.15">
+      <p class="kicker">Toronto · 1882 · Ashbridge&rsquo;s Bay</p>
+      <h1>Before you vote, smell the evidence.</h1>
+    </div>
+    <p class="beat b-tl" data-a="0.22" data-b="0.36">Garrison Creek runs grey with the
+      waste of ten thousand privies. Every creek in the city drains to this marsh —
+      and the marsh has stopped forgiving.<button class="dig" type="button" data-dig="ashbridges" aria-label="Dig deeper: Ashbridge's Bay, the plague-spot">i</button></p>
+    <p class="beat b-tr" data-a="0.43" data-b="0.57">The physicians say the next cholera
+      season will not knock before it enters.</p>
+    <p class="beat b-tl" data-a="0.64" data-b="0.78">The ledger is bled white — the old
+      debts have come due, and the treasury cannot pay for both beauty and survival.</p>
+    <p class="beat b-c" data-a="0.84" data-b="0.98">The gallery is packed; a jury of your
+      neighbours watches from the box. Tonight the creeks stand trial —
+      <strong>and yours is the deciding ballot.</strong></p>
+  </div>
+</section>
+
 <!-- ════════════ IV · THE VOTE (1882) ════════════ -->
 <section id="sc-vote" data-name="IV · The vote">
   <div class="chamber-bg" aria-hidden="true">
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id="ch-wall" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#2a1f10"/><stop offset="1" stop-color="#0d0904"/>
+          <stop offset="0" stop-color="#31240f"/><stop offset=".7" stop-color="#1a1206"/>
+          <stop offset="1" stop-color="#0d0904"/>
+        </linearGradient>
+        <linearGradient id="ch-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1c1308"/><stop offset="1" stop-color="#0a0703"/>
+        </linearGradient>
+        <linearGradient id="ch-drape" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#5e2118"/><stop offset="1" stop-color="#33110b"/>
         </linearGradient>
         <radialGradient id="ch-lamp" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stop-color="#ffdf9e" stop-opacity=".9"/>
+          <stop offset="0" stop-color="#ffdf9e" stop-opacity=".85"/>
           <stop offset="1" stop-color="#ffdf9e" stop-opacity="0"/>
         </radialGradient>
-        <!-- a seated Victorian figure, silhouette: head, shoulders, coat -->
+        <linearGradient id="ch-moon" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#3e5068"/><stop offset="1" stop-color="#232f40"/>
+        </linearGradient>
+        <!-- Victorian silhouettes: seated, hatted, bonneted, bewigged, standing -->
         <g id="ch-fig">
           <circle cx="0" cy="-34" r="13" fill="#0e0a05"/>
           <path d="M-22 6 Q-20 -22 0 -22 Q20 -22 22 6 Z" fill="#0e0a05"/>
@@ -200,37 +234,126 @@
           <path d="M-15 -34 a15 15 0 0 1 30 0 L13 -26 L-13 -26 Z" fill="#171008"/>
           <path d="M-22 6 Q-20 -22 0 -22 Q20 -22 22 6 Z" fill="#0e0a05"/>
         </g>
+        <g id="ch-fig-wig">
+          <circle cx="0" cy="-34" r="13" fill="#0e0a05"/>
+          <path d="M-13 -40 q-5 8 -3 18 l6 0 q-2 -10 -3 -18 M13 -40 q5 8 3 18 l-6 0 q2 -10 3 -18" fill="#b8ab92"/>
+          <path d="M-12 -44 a13 9 0 0 1 24 0 Z" fill="#b8ab92"/>
+          <path d="M-22 6 Q-20 -22 0 -22 Q20 -22 22 6 Z" fill="#0e0a05"/>
+        </g>
+        <g id="ch-fig-stand">
+          <circle cx="0" cy="-58" r="11" fill="#0e0a05"/>
+          <path d="M-14 0 L-11 -48 Q0 -54 11 -48 L14 0 Z" fill="#0e0a05"/>
+          <path d="M8 -44 Q26 -40 34 -28" stroke="#0e0a05" stroke-width="7" fill="none" stroke-linecap="round"/>
+        </g>
       </defs>
+
       <rect x="0" y="0" width="1600" height="900" fill="url(#ch-wall)"/>
-      <!-- wood panelling + tall arched windows -->
-      <g opacity=".55" fill="none" stroke="#3a2a14" stroke-width="3">
-        <line x1="0" y1="480" x2="1600" y2="480"/>
-        <line x1="0" y1="96" x2="1600" y2="96"/>
+
+      <!-- wainscot panelling: crown rail, chair rail, recessed panels -->
+      <line x1="0" y1="88" x2="1600" y2="88" stroke="#4a3719" stroke-width="5" opacity=".7"/>
+      <line x1="0" y1="96" x2="1600" y2="96" stroke="#241a0c" stroke-width="2" opacity=".8"/>
+      <g fill="#1c1409" stroke="#3a2a14" stroke-width="2.5" opacity=".85">
+        <rect x="20" y="480" width="1560" height="120"/>
+        <rect x="40" y="496" width="130" height="88" rx="3"/><rect x="190" y="496" width="130" height="88" rx="3"/>
+        <rect x="340" y="496" width="130" height="88" rx="3"/><rect x="490" y="496" width="130" height="88" rx="3"/>
+        <rect x="980" y="496" width="130" height="88" rx="3"/><rect x="1130" y="496" width="130" height="88" rx="3"/>
+        <rect x="1280" y="496" width="130" height="88" rx="3"/><rect x="1430" y="496" width="130" height="88" rx="3"/>
       </g>
-      <g opacity=".6" fill="#1a1208" stroke="#3a2a14" stroke-width="3">
-        <rect x="130" y="130" width="140" height="330" rx="70"/>
-        <rect x="1330" y="130" width="140" height="330" rx="70"/>
+      <!-- pilasters framing the bench wall -->
+      <g fill="#241a0c" stroke="#4a3719" stroke-width="3" opacity=".9">
+        <rect x="560" y="96" width="26" height="392"/><rect x="1014" y="96" width="26" height="392"/>
+        <rect x="552" y="96" width="42" height="14"/><rect x="1006" y="96" width="42" height="14"/>
+        <rect x="552" y="474" width="42" height="14"/><rect x="1006" y="474" width="42" height="14"/>
       </g>
-      <!-- THE BENCH: raised judge's dais, centre, with the great seal -->
+      <!-- tall arched windows, moonlit, with drapes and glazing bars -->
       <g>
+        <rect x="118" y="118" width="164" height="354" rx="82" fill="url(#ch-moon)" opacity=".5"/>
+        <rect x="1318" y="118" width="164" height="354" rx="82" fill="url(#ch-moon)" opacity=".5"/>
+        <g stroke="#171008" stroke-width="6" opacity=".9">
+          <line x1="200" y1="122" x2="200" y2="472"/><line x1="1400" y1="122" x2="1400" y2="472"/>
+          <line x1="122" y1="240" x2="278" y2="240"/><line x1="1322" y1="240" x2="1478" y2="240"/>
+          <line x1="122" y1="356" x2="278" y2="356"/><line x1="1322" y1="356" x2="1478" y2="356"/>
+        </g>
+        <g fill="none" stroke="#4a3719" stroke-width="5">
+          <rect x="118" y="118" width="164" height="354" rx="82"/>
+          <rect x="1318" y="118" width="164" height="354" rx="82"/>
+        </g>
+        <path d="M96 110 q30 190 8 380 l-34 0 q16 -190 -8 -368 Z" fill="url(#ch-drape)"/>
+        <path d="M304 110 q-30 190 -8 380 l34 0 q-16 -190 8 -368 Z" fill="url(#ch-drape)"/>
+        <path d="M1296 110 q30 190 8 380 l-34 0 q16 -190 -8 -368 Z" fill="url(#ch-drape)"/>
+        <path d="M1504 110 q-30 190 -8 380 l34 0 q-16 -190 8 -368 Z" fill="url(#ch-drape)"/>
+      </g>
+      <!-- portraits of sterner councillors past -->
+      <g>
+        <rect x="380" y="170" width="110" height="150" fill="#100b05" stroke="#6e4f1c" stroke-width="5"/>
+        <g transform="translate(435,290) scale(1.1)"><use href="#ch-fig"/></g>
+        <rect x="1110" y="170" width="110" height="150" fill="#100b05" stroke="#6e4f1c" stroke-width="5"/>
+        <g transform="translate(1165,290) scale(1.1)"><use href="#ch-fig-bonnet"/></g>
+      </g>
+
+      <!-- gas chandeliers on chains -->
+      <g stroke="#171008" stroke-width="3" fill="none">
+        <line x1="320" y1="0" x2="320" y2="240"/><line x1="1280" y1="0" x2="1280" y2="240"/>
+      </g>
+      <g>
+        <path d="M264 262 q56 34 112 0" stroke="#171008" stroke-width="6" fill="none"/>
+        <path d="M1224 262 q56 34 112 0" stroke="#171008" stroke-width="6" fill="none"/>
+        <circle cx="320" cy="284" r="10" fill="#171008"/><circle cx="1280" cy="284" r="10" fill="#171008"/>
+        <circle cx="320" cy="278" r="120" fill="url(#ch-lamp)"/><circle cx="1280" cy="278" r="120" fill="url(#ch-lamp)"/>
+        <ellipse cx="264" cy="256" rx="7" ry="10" fill="#ffe6ad"/><ellipse cx="376" cy="256" rx="7" ry="10" fill="#ffe6ad"/>
+        <ellipse cx="320" cy="270" rx="7" ry="11" fill="#ffedc2"/>
+        <ellipse cx="1224" cy="256" rx="7" ry="10" fill="#ffe6ad"/><ellipse cx="1336" cy="256" rx="7" ry="10" fill="#ffe6ad"/>
+        <ellipse cx="1280" cy="270" rx="7" ry="11" fill="#ffedc2"/>
+      </g>
+
+      <!-- THE BENCH: canopied dais with drapery, royal arms, presiding judge -->
+      <g>
+        <path d="M660 96 L940 96 L940 210 Q800 240 660 210 Z" fill="url(#ch-drape)" stroke="#33110b" stroke-width="3"/>
+        <circle cx="800" cy="160" r="40" fill="#171008" stroke="#6e4f1c" stroke-width="4"/>
+        <path d="M800 136 l8 16 16 2 -12 12 4 17 -16 -9 -16 9 4 -17 -12 -12 16 -2 Z" fill="#c9a24a" opacity=".8"/>
+        <path d="M776 128 q24 -14 48 0 l-5 10 q-19 -10 -38 0 Z" fill="#c9a24a" opacity=".8"/>
         <polygon points="640,300 960,300 1000,470 600,470" fill="#241a0c" stroke="#4a3719" stroke-width="4"/>
-        <rect x="670" y="120" width="260" height="185" fill="#1c1408" stroke="#4a3719" stroke-width="4"/>
-        <circle cx="800" cy="182" r="46" fill="#171008" stroke="#6e4f1c" stroke-width="4"/>
-        <path d="M800 150 C809 172 827 175 827 191 a27 27 0 0 1-54 0 C773 175 791 172 800 150Z" fill="#3a6b4f" opacity=".5"/>
-        <!-- the presiding judge -->
-        <g transform="translate(800,318) scale(1.5)"><use href="#ch-fig"/></g>
-        <!-- gavel on the bench -->
+        <g stroke="#3a2a14" stroke-width="2.5" opacity=".9">
+          <line x1="660" y1="330" x2="940" y2="330"/>
+          <line x1="648" y1="388" x2="952" y2="388"/>
+          <line x1="700" y1="302" x2="688" y2="468"/><line x1="800" y1="302" x2="800" y2="468"/>
+          <line x1="900" y1="302" x2="912" y2="468"/>
+        </g>
+        <rect x="670" y="212" width="260" height="92" fill="#1c1408" stroke="#4a3719" stroke-width="4"/>
+        <!-- the judge's high-backed chair + bewigged judge -->
+        <rect x="762" y="212" width="76" height="70" rx="10" fill="#0e0a05"/>
+        <g transform="translate(800,318) scale(1.5)"><use href="#ch-fig-wig"/></g>
+        <!-- gavel + papers on the bench -->
         <g transform="translate(884,306)" fill="#0e0a05">
           <rect x="0" y="-4" width="30" height="5" rx="2" transform="rotate(-24)"/>
           <rect x="20" y="-16" width="12" height="18" rx="3" transform="rotate(-24)"/>
         </g>
+        <rect x="700" y="296" width="44" height="8" rx="2" fill="#b8ab92" opacity=".55" transform="rotate(-3 722 300)"/>
       </g>
+
+      <!-- clerk's table below the bench: ledger, inkwell, shaded lamp, clerk -->
+      <g>
+        <rect x="700" y="470" width="200" height="14" fill="#2c2010" stroke="#4a3719" stroke-width="3"/>
+        <rect x="710" y="484" width="180" height="56" fill="#1c1409" stroke="#3a2a14" stroke-width="3"/>
+        <g transform="translate(800,470) scale(1.02)"><use href="#ch-fig"/></g>
+        <rect x="724" y="458" width="40" height="9" rx="2" fill="#b8ab92" opacity=".6" transform="rotate(-4 744 462)"/>
+        <circle cx="856" cy="462" r="5" fill="#0e0a05"/>
+        <path d="M868 448 h26 l-4 10 h-18 Z" fill="#2e5238"/>
+        <circle cx="881" cy="452" r="26" fill="url(#ch-lamp)" opacity=".8"/>
+      </g>
+
+      <!-- counsel for the creeks: on his feet, mid-plea -->
+      <g transform="translate(985,540) scale(1.25)"><use href="#ch-fig-stand"/></g>
+      <rect x="1006" y="512" width="34" height="7" rx="2" fill="#b8ab92" opacity=".6" transform="rotate(-14 1023 516)"/>
+
       <!-- witness box, right of the bench -->
       <g>
-        <rect x="1060" y="400" width="150" height="130" fill="#241a0c" stroke="#4a3719" stroke-width="3"/>
-        <g transform="translate(1135,412) scale(1.15)"><use href="#ch-fig-hat"/></g>
+        <rect x="1080" y="400" width="150" height="130" fill="#241a0c" stroke="#4a3719" stroke-width="3"/>
+        <rect x="1092" y="412" width="126" height="30" fill="#1c1409" stroke="#3a2a14" stroke-width="2"/>
+        <g transform="translate(1155,412) scale(1.15)"><use href="#ch-fig-hat"/></g>
       </g>
-      <!-- THE JURY BOX: raised, left, two ranks of twelve -->
+
+      <!-- THE JURY BOX: raised, left, two panelled ranks -->
       <g>
         <rect x="120" y="368" width="420" height="66" fill="#1d1409" stroke="#3a2a14" stroke-width="3"/>
         <rect x="90" y="430" width="480" height="110" fill="#241a0c" stroke="#4a3719" stroke-width="4"/>
@@ -239,6 +362,11 @@
           <line x1="128" y1="452" x2="128" y2="540"/><line x1="204" y1="452" x2="204" y2="540"/>
           <line x1="280" y1="452" x2="280" y2="540"/><line x1="356" y1="452" x2="356" y2="540"/>
           <line x1="432" y1="452" x2="432" y2="540"/><line x1="508" y1="452" x2="508" y2="540"/>
+        </g>
+        <g fill="#1c1409" stroke="#3a2a14" stroke-width="2">
+          <rect x="102" y="462" width="60" height="66" rx="3"/><rect x="178" y="462" width="60" height="66" rx="3"/>
+          <rect x="254" y="462" width="60" height="66" rx="3"/><rect x="330" y="462" width="60" height="66" rx="3"/>
+          <rect x="406" y="462" width="60" height="66" rx="3"/><rect x="482" y="462" width="60" height="66" rx="3"/>
         </g>
         <!-- back rank -->
         <g transform="translate(160,392) scale(.92)"><use href="#ch-fig-hat"/></g>
@@ -255,14 +383,28 @@
         <g transform="translate(438,452) scale(1.04)"><use href="#ch-fig-hat"/></g>
         <g transform="translate(510,454)"><use href="#ch-fig"/></g>
       </g>
-      <!-- the bar: railing between the court and the public -->
+
+      <!-- floorboards with a hint of perspective -->
+      <rect x="0" y="540" width="1600" height="70" fill="url(#ch-floor)"/>
+      <g stroke="#171008" stroke-width="2" opacity=".7">
+        <line x1="0" y1="556" x2="1600" y2="556"/><line x1="0" y1="574" x2="1600" y2="574"/>
+        <line x1="240" y1="540" x2="200" y2="610"/><line x1="640" y1="540" x2="620" y2="610"/>
+        <line x1="960" y1="540" x2="980" y2="610"/><line x1="1360" y1="540" x2="1400" y2="610"/>
+      </g>
+
+      <!-- the bar: turned balusters between the court and the public -->
       <g stroke="#3a2a14" stroke-width="4">
         <line x1="0" y1="596" x2="1600" y2="596"/>
-        <line x1="120" y1="596" x2="120" y2="632"/><line x1="360" y1="596" x2="360" y2="632"/>
-        <line x1="600" y1="596" x2="600" y2="632"/><line x1="1000" y1="596" x2="1000" y2="632"/>
-        <line x1="1240" y1="596" x2="1240" y2="632"/><line x1="1480" y1="596" x2="1480" y2="632"/>
         <line x1="0" y1="632" x2="1600" y2="632"/>
       </g>
+      <g fill="#2c2010">
+        <ellipse cx="120" cy="614" rx="7" ry="16"/><ellipse cx="280" cy="614" rx="7" ry="16"/>
+        <ellipse cx="440" cy="614" rx="7" ry="16"/><ellipse cx="600" cy="614" rx="7" ry="16"/>
+        <ellipse cx="760" cy="614" rx="7" ry="16"/><ellipse cx="920" cy="614" rx="7" ry="16"/>
+        <ellipse cx="1080" cy="614" rx="7" ry="16"/><ellipse cx="1240" cy="614" rx="7" ry="16"/>
+        <ellipse cx="1400" cy="614" rx="7" ry="16"/><ellipse cx="1540" cy="614" rx="7" ry="16"/>
+      </g>
+
       <!-- packed public gallery, three curved rows -->
       <g stroke="#3a2a14" stroke-width="4" fill="#1d1409">
         <path d="M120 700 Q800 640 1480 700 L1480 736 Q800 676 120 736 Z"/>
@@ -292,46 +434,33 @@
         <g transform="translate(1220,790) scale(.92)"><use href="#ch-fig-hat"/></g>
         <g transform="translate(1350,800) scale(.9)"><use href="#ch-fig-bonnet"/></g>
       </g>
-      <!-- gas lamps -->
-      <g><circle cx="320" cy="300" r="120" fill="url(#ch-lamp)"/><circle cx="1280" cy="300" r="120" fill="url(#ch-lamp)"/>
-         <circle cx="320" cy="300" r="9" fill="#ffe6ad"/><circle cx="1280" cy="300" r="9" fill="#ffe6ad"/></g>
     </svg>
   </div>
   <div class="chamber">
     <p class="vkick">TORONTO · 1882 · THE CREEKS STAND TRIAL · SPECIAL SESSION</p>
     <h2>The ravines are killing people. Choose.</h2>
-    <p class="vsetup">Garrison Creek runs grey with the waste of ten thousand privies,
-      and the physicians say the next cholera season will not knock before it enters.
-      The ledger is bled white — the old debts have come due, and the treasury cannot
-      pay for both beauty and survival. The gallery is packed; a jury of your
-      neighbours watches from the box. Tonight the creeks stand trial —
-      and yours is the deciding ballot.</p>
+    <p class="vsetup">One remedy. One treasury. Yours is the deciding ballot.</p>
 
     <div id="vote-ticker" aria-live="off">FEVER DEATHS THIS SEASON: 211</div>
 
     <div class="vcards">
       <div class="vcard va" id="vote-a">
-        <h3>A System of Parks &amp; Boulevards</h3>
+        <h3>Parks &amp; Boulevards</h3>
         <p class="vtag">the beautiful gamble</p>
-        <p>Save the ravines as a chain of public gardens — promenades, footbridges,
-           the creeks cleansed and kept in daylight for every generation after us.
-           Twenty years of work, a fortune in land the city must buy back, and
-           nothing — <em>nothing</em> — for the families burying their children this
-           summer. A magnificent city, someday. If the city lives that long.</p>
+        <p>Keep the creeks in daylight as a chain of public gardens.
+           Twenty years, a fortune in land — and nothing for the families
+           burying children this summer.</p>
         <button class="vbtn" type="button">Vote for the Parks Plan — costly · slow · unproven</button>
         <div id="vote-toast">The City Engineer interjects: “With respect, Councillor —
           the parks plan costs $1.1&nbsp;million we do not have, and cholera does not
           wait for gardens.”</div>
       </div>
       <div class="vcard vb" id="vote-b">
-        <h3>Sanitary Improvement &amp; Industrial Expansion</h3>
+        <h3>Sanitary Improvement</h3>
         <p class="vtag">the responsible choice</p>
-        <p>Entomb the creeks in brick sewers, fill the ravines, and sell the level
-           land for factories, rail yards and homes. The Engineer’s crews break
-           ground within the month; the land sales refill the treasury by spring;
-           the stench — and the sickness it carries — goes underground for good.
-           London has proven it. Toronto can afford it. Your constituents will live
-           to thank you.</p>
+        <p>Entomb the creeks in brick sewers, fill the ravines, sell the level land.
+           Ground breaks within the month; the stench — and the sickness — goes
+           underground for good.</p>
         <button class="vbtn" type="button">Vote to Bury the Creeks — immediate · funded · safe</button>
       </div>
     </div>
@@ -537,8 +666,16 @@
 
 <!-- ════════════ VI · DAYLIGHTING (free-flow) ════════════ -->
 <section id="sc-daylight" data-name="VI · Daylighting">
+  <div class="dl-hero">
+    <svg id="dl-harbour" viewBox="0 0 1600 640" preserveAspectRatio="xMidYMax slice"
+         role="img" aria-label="Toronto's inner harbour today: the downtown skyline and CN Tower across the water, and in the foreground the Port Lands — the Don River's new naturalized mouth winding through wetlands under twin arched bridges"></svg>
+    <div class="dl-hero-ink">
+      <h2 class="reveal">There is another way.</h2>
+      <p class="dl-hero-cap reveal">Toronto's inner harbour, today — at right, the Port Lands,
+      where the Don just got its mouth and floodplain back</p>
+    </div>
+  </div>
   <div class="wrap">
-    <h2 class="reveal">There is another way.</h2>
     <p class="lede reveal"><b>Daylighting</b> is the opposite of burial — and it is less
     about landscaping than about <b>restoring a river's hydrology</b>: digging a stream
     out of its culvert and giving it back what the pipe amputated. A floodplain to
@@ -566,7 +703,7 @@
       </div>
       <div class="card reveal"
            data-tip="Fish, herons, kingfishers and dragonflies recolonise daylighted reaches within a few seasons — the kingfishers returned to London’s River Quaggy on their own after Sutcliffe Park opened in 2003. Habitat follows the water, and people follow the habitat: opened reaches quickly become the most-used parkland around them."
-           data-link="https://en.wikipedia.org/wiki/Quaggy_River">
+           data-link="https://en.wikipedia.org/wiki/River_Quaggy">
         <svg viewBox="0 0 48 48"><path d="M8 40c10 0 8-26 26-30-2 8 2 10 6 10-6 4-4 22-22 22-6 0-10-2-10-2Z" class="i-blue"/><path d="M8 40c8-8 14-12 22-16" class="i-blue f"/></svg>
         <h4>Living corridors</h4>
         <p>Daylighted reaches see fish, herons and dragonflies return within seasons —
@@ -587,6 +724,16 @@
       <p>Since 1988, Zurich has daylighted <b>more than 20&nbsp;km</b> of buried brooks —
       partly to keep clean stream water out of its overloaded sewers. Today brooks run
       in the open beside tram lines, and on hot days the whole city swims in its rivers.</p>
+      <details class="case-photo">
+        <summary>See it — open water in central Zurich</summary>
+        <figure>
+          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Z%C3%BCrich%20-%20Schanzengraben%20-%20M%C3%A4nnerbadi%20IMG%200660%20ShiftN.jpg?width=1200"
+               data-page="https://commons.wikimedia.org/wiki/File:Z%C3%BCrich_-_Schanzengraben_-_M%C3%A4nnerbadi_IMG_0660_ShiftN.jpg"
+               alt="The Schanzengraben channel in central Zurich: clear open water between stone banks, with the river baths">
+          <figcaption>Open water threaded through central Zurich — the Schanzengraben and its
+          river baths. Photo: Wikimedia Commons.</figcaption>
+        </figure>
+      </details>
       <button class="digline" type="button" data-dig="zurich">Dig deeper — daylighting as sewer policy →</button>
     </div>
     <div class="case reveal">
@@ -595,6 +742,16 @@
       In 2003 it was set loose into <b>Sutcliffe Park</b>, regraded as a wetland that is
       <i>allowed</i> to flood. The park now stores the storm water that once filled
       living rooms — protecting hundreds of homes — and the kingfishers are back.</p>
+      <details class="case-photo">
+        <summary>See it — the Quaggy loose in Sutcliffe Park</summary>
+        <figure>
+          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/River%20Quaggy%20in%20Sutcliffe%20Park.JPG?width=1200"
+               data-page="https://commons.wikimedia.org/wiki/File:River_Quaggy_in_Sutcliffe_Park.JPG"
+               alt="The River Quaggy meandering through the grassy floodable basin of Sutcliffe Park">
+          <figcaption>The Quaggy winding through Sutcliffe Park — playing fields on a dry day,
+          a storage lake in a storm. Photo: Wikimedia Commons.</figcaption>
+        </figure>
+      </details>
       <button class="digline" type="button" data-dig="quaggy">Dig deeper — the park that is allowed to flood →</button>
     </div>
     <div class="case reveal">
@@ -603,6 +760,16 @@
       free: 5.8&nbsp;km of open river through the densest district in Korea. Summers along
       the corridor now run <b>3–6&nbsp;°C cooler</b> than the streets a block away, and the
       wildlife counts tripled within three years.</p>
+      <details class="case-photo">
+        <summary>See it — the river where the expressway stood</summary>
+        <figure>
+          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Cheonggyecheon%20stream%20with%20flowers%20and%20bridge%20at%20sunrise%20near%20Cheonggye%20Plaza%20in%20Seoul.jpg?width=1200"
+               data-page="https://commons.wikimedia.org/wiki/File:Cheonggyecheon_stream_with_flowers_and_bridge_at_sunrise_near_Cheonggye_Plaza_in_Seoul.jpg"
+               alt="The Cheonggyecheon stream at sunrise, flowing between planted stone banks below street level in central Seoul">
+          <figcaption>The Cheonggyecheon at dawn — 5.8&nbsp;km of public riverbank through
+          the densest district in Korea. Photo: Wikimedia Commons.</figcaption>
+        </figure>
+      </details>
       <button class="digline" type="button" data-dig="cheong">Dig deeper — the expressway that became a river →</button>
     </div>
     <div class="case reveal">
@@ -612,6 +779,16 @@
       wetland-lined mouth for the Don River and lifted 240 hectares of downtown out of
       the floodplain. The largest river restoration in Canadian urban history,
       and it opened to the public in 2025.</p>
+      <details class="case-photo">
+        <summary>See it — the Don's new mouth, 2024</summary>
+        <figure>
+          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/New%20Mouth%20of%20the%20Don%20River%202024.jpg?width=1200"
+               data-page="https://commons.wikimedia.org/wiki/File:New_Mouth_of_the_Don_River_2024.jpg"
+               alt="The new naturalized mouth of the Don River curving through the Port Lands, with fresh wetland banks">
+          <figcaption>The Don's new, naturalized mouth flowing through the Port Lands —
+          the largest urban river restoration in Canadian history. Photo: Wikimedia Commons.</figcaption>
+        </figure>
+      </details>
       <button class="digline" type="button" data-dig="portlands">Dig deeper — Toronto’s own proof, at river scale →</button>
     </div>
 
@@ -640,10 +817,6 @@
 <section class="scene game" id="sc-dozer" style="--len:2.2" data-name="VI½ · The daylighting run">
   <div class="sticky pitch">
     <canvas id="dozer-cv" class="gamecv" tabindex="-1"></canvas>
-    <div class="ghud dz-top">
-      <span id="dozer-eta">STORM ETA 2:00</span>
-      <canvas id="dozer-radar" width="110" height="110"></canvas>
-    </div>
     <div id="dz-blurb" aria-live="polite"></div>
     <div id="dz-gauges">
       <div class="gauge" id="dz-heat"><small>🌡 heat island</small><i class="gbar"><b class="gfill"></b><u class="gtick" style="left:50%"></u></i><span class="gnum">34°C</span></div>
@@ -656,12 +829,12 @@
     <div class="engage" id="dozer-engage">
       <p class="ekick">GARRISON CREEK ALIGNMENT · PRESENT DAY</p>
       <h3>Dig it back up.</h3>
-      <p>A storm cell is forming over the lake. <b>Beat it.</b></p>
+      <p>The creek is still under there. <b>Bring it back to daylight.</b></p>
       <ul class="guide">
         <li><b>Goal</b><span>Drive the dozer along the glowing dashed creek line. The crew behind you cuts the channel — then, in layers, the water clears, the banks green up, trees rise, and wildlife moves back in.</span></li>
         <li><b>Controls</b><span>W/↑ forward, S/↓ reverse, A/D steer (or the on-screen pad). Stay near the line to keep the crew digging — a blue arrow points you back if you stray.</span></li>
-        <li><b>Read the screen</b><span>Four gauges (bottom) must cross their white <em>SAFE</em> ticks before the storm ETA (top-right) hits zero. Restoration milestones pop up as the valley heals — each carries a real-world stat.</span></li>
-        <li><b>You win if</b><span>all four gauges are green when the storm lands.</span></li>
+        <li><b>Read the screen</b><span>Four gauges (bottom) track heat, flood risk, sewer overflows and wildlife — each turns green as it crosses its white <em>SAFE</em> tick. Real daylighting facts appear top-right as the valley heals.</span></li>
+        <li><b>Take your time</b><span>There is no clock. Glance back now and then — the river coming to life behind you is the whole point.</span></li>
       </ul>
       <p class="enote"><b>Esc</b> pauses at any time — resume, restart, skip to the end, or jump straight to the next section.</p>
       <div class="ebtns">
@@ -686,25 +859,11 @@
       <div class="gcard">
         <p class="ekick">ALL GAUGES GREEN</p>
         <h3>THE CREEK RUNS IN DAYLIGHT</h3>
-        <p>Four gauges green. The storm still came — storms always come now.
-           But it landed on a city with somewhere to put it.</p>
+        <p>Four gauges green. The storms will keep coming — they always do now.
+           But the next one lands on a city with somewhere to put it.</p>
         <p class="gstats">Heat: −3&nbsp;°C · Flood risk: 11% ·
            Treatment overload: −$83M/yr · Species: 61 and counting</p>
         <button class="g-done" type="button">See it rain on this street →</button>
-      </div>
-    </div>
-    <div class="govl" id="dozer-fail">
-      <div class="gcard">
-        <p class="ekick">FLASH FLOOD WARNING — TORONTO &amp; EAST YORK</p>
-        <h3>COMMUNITY UNPREPARED</h3>
-        <p>The storm beat you to it.</p>
-        <p class="gstats">Heat-stroke admissions: 312 · Wetland species count:
-           collapsing · Basement flooding reports: 4,100 and rising</p>
-        <p>Half a creek helps nobody downstream of the other half.</p>
-        <div class="ebtns">
-          <button class="g-retry" type="button">Run it back</button>
-          <button class="g-concede" type="button">Watch the crews finish — skip</button>
-        </div>
       </div>
     </div>
   </div>
@@ -733,7 +892,7 @@
           <span>Lost Rivers (Toronto Green Community) runs free guided walks along
           Garrison, Taddle and the rest. Knowing your local ghost river is step one —
           these are the volunteers who drew the maps in this story.</span></a>
-        <a class="act" href="https://www.waterfrontoronto.ca/our-projects/port-lands-flood-protection" target="_blank" rel="noopener">
+        <a class="act" href="https://www.waterfrontoronto.ca/our-projects/don-mouth-naturalization-and-port-lands-flood-protection" target="_blank" rel="noopener">
           <b>Visit the proof 🌊</b>
           <span>Biidaasige Park and the new Don River mouth in the Port Lands are what
           "giving a river room" looks like at full scale. Go stand on it — then tell
@@ -768,6 +927,7 @@
 </main>
 
 <footer>
+  <button id="replay-story" type="button">↺ Replay the story</button>
   <p><b>Hidden Rivers</b> — an interactive story built on the research repo
   <a href="https://github.com/hugo-fuhrer/hidden-rivers">hugo-fuhrer/hidden-rivers</a>.
   The river maps use the same Lost Rivers dataset as the project’s Dash explorer.</p>
@@ -790,6 +950,7 @@
 <script src="js/tips.js"></script>
 <script src="js/panels.js"></script>
 <script src="js/input.js"></script>
+<script src="js/nav.js"></script>
 <script src="js/island.js"></script>
 <script src="js/games/drive.js"></script>
 <script src="js/games/vote.js"></script>

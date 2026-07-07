@@ -3,8 +3,9 @@
    behind you converts the trail — in layers, over time: first a raw earth cut,
    then water that clears from mud-brown to (exaggerated) blue, banks that
    green up, trees that grow in, and finally wildlife moving back to the river.
-   Each layer's first appearance posts a real-world daylighting stat. Four
-   gauges must cross their safe thresholds before the storm's 120-second ETA. */
+   Each layer's first appearance posts a real-world daylighting stat. There is
+   no clock: the four gauges cross their safe thresholds as the dig advances,
+   and the camera trails the dozer so the healing river stays in frame. */
 "use strict";
 (() => {
   const U = HR.u;
@@ -79,33 +80,30 @@
       "Half a creek helps nobody downstream of the other half. Connected, the corridor moves water, wildlife and people end to end — and the storm finally has somewhere to land." },
   ];
 
-  const STORM = 120, CREW = 42, CORRIDOR = 95;
+  const CREW = 42, CORRIDOR = 95;
   const SAFE = { heat: 31, flood: 25, cso: 40, species: 40 };
   const A = () => (window.HR && HR.audio) ? HR.audio : null;
 
   const cv = document.getElementById("dozer-cv");
-  const radar = document.getElementById("dozer-radar");
-  const etaEl = document.getElementById("dozer-eta");
   const gEls = {
     heat: document.getElementById("dz-heat"), flood: document.getElementById("dz-flood"),
     cso: document.getElementById("dz-cso"), species: document.getElementById("dz-species"),
   };
   const winEl = document.getElementById("dozer-win");
-  const failEl = document.getElementById("dozer-fail");
   const blurbEl = document.getElementById("dz-blurb");
 
   let dz, progress, elapsed, mode, auto, cam, announced;
   let convT, blurbSeen, blurbQ, blurbUntil, bonusAge;
-  let running = false, paused = false, raf = 0, lastT = 0, flashA = 0, tscale = 1;
+  let running = false, paused = false, raf = 0, lastT = 0, tscale = 1;
 
   function init() {
     dz = { x: PATH[0][0] - 60, y: PATH[0][1] - 40, a: .6 };
     progress = 0; elapsed = 0; mode = "play"; cam = { x: 0, y: 0 };
-    announced = {}; flashA = 0; bonusAge = 0;
+    announced = {}; bonusAge = 0;
     convT = new Float32Array(NB).fill(-1);
     blurbSeen = {}; blurbQ = []; blurbUntil = 0;
     if (blurbEl) { blurbEl.classList.remove("on"); blurbEl.innerHTML = ""; }
-    winEl.classList.remove("on"); failEl.classList.remove("on");
+    winEl.classList.remove("on");
   }
 
   /* ── milestone blurbs: queued, one at a time ─────────────────────────── */
@@ -123,7 +121,7 @@
       const b = blurbQ.shift();
       blurbEl.innerHTML = `<p class="bk">🌿 ${b.kick}</p><p>${b.txt}</p>`;
       blurbEl.classList.add("on");
-      blurbUntil = now + 7;
+      blurbUntil = now + 11;                              // no storm clock: let it breathe
     } else if (!blurbQ.length && now >= blurbUntil && blurbEl.classList.contains("on")) {
       blurbEl.classList.remove("on");
     }
@@ -135,12 +133,12 @@
   const ageAt = s => { const i = Math.min(NB - 1, s / DS | 0); return convT[i] >= 0 ? eAge() - convT[i] : -1; };
 
   function gauges() {
-    const d = progress / TOTAL, t = elapsed / STORM;
+    const d = progress / TOTAL;                           // restoration alone moves the needles
     return {
-      heat: 34 - 6 * d + .4 * t,
-      flood: 78 - 70 * d + 6 * t,
-      cso: 120 - 110 * d + 8 * t,
-      species: 3 + 58 * d - 4 * t,
+      heat: 34 - 6 * d,
+      flood: 78 - 70 * d,
+      cso: 120 - 110 * d,
+      species: 3 + 58 * d,
     };
   }
   const allSafe = g => g.heat < SAFE.heat && g.flood < SAFE.flood &&
@@ -188,16 +186,10 @@
       const safe = k === "species" ? g[k] > SAFE[k] : g[k] < SAFE[k];
       if (safe && !announced[k]) { announced[k] = 1; if (aud) aud.sfx.success(); HR.live(HR.COPY.dozer.safe(k)); }
     }
-    if (mode === "play") {
-      if (allSafe(g) && progress > TOTAL * .5) {
-        mode = "won"; if (aud) { aud.dozerStop(); aud.sfx.win(); }
-        HR.live(HR.COPY.dozer.won);
-        setTimeout(() => winEl.classList.add("on"), 900);
-      } else if (elapsed >= STORM) {
-        mode = "storm"; flashA = 1; if (aud) { aud.dozerStop(); aud.sfx.fail(); aud.sfx.thunder(); }
-        HR.live(HR.COPY.dozer.storm);
-        setTimeout(() => failEl.classList.add("on"), 1600);
-      }
+    if (mode === "play" && allSafe(g) && progress > TOTAL * .5) {
+      mode = "won"; if (aud) { aud.dozerStop(); aud.sfx.win(); }
+      HR.live(HR.COPY.dozer.won);
+      setTimeout(() => winEl.classList.add("on"), 900);
     }
   }
   function autoAxes() {
@@ -213,12 +205,15 @@
     const dpr = U.sizeCanvas(cv);
     const ctx = cv.getContext("2d");
     const W = cv.width, H = cv.height;
-    const Z = Math.max(W / 1500, H / 1000);              // zoom so the world feels big
+    const Z = Math.max(W / 1750, H / 1170);              // wide view: the valley, not the machine
 
-    /* camera with deadzone */
-    const dzx = dz.x * Z, dzy = dz.y * Z;
-    const cxT = U.clamp(dzx - W / 2, 0, WORLD.w * Z - W);
-    const cyT = U.clamp(dzy - H / 2, 0, WORLD.h * Z - H);
+    /* the camera trails the dozer: centre on a point behind the blade so the
+       river healing in your wake stays in frame instead of dead-centring you */
+    const back = 170;
+    const lx = (dz.x - Math.cos(dz.a) * back) * Z;
+    const ly = (dz.y - Math.sin(dz.a) * back) * Z;
+    const cxT = U.clamp(lx - W / 2, 0, Math.max(0, WORLD.w * Z - W));
+    const cyT = U.clamp(ly - H / 2, 0, Math.max(0, WORLD.h * Z - H));
     cam.x += (cxT - cam.x) * .08; cam.y += (cyT - cam.y) * .08;
     const PX = (x, y) => [x * Z - cam.x, y * Z - cam.y];
 
@@ -344,27 +339,12 @@
       }
     }
 
-    /* storm hit */
-    if (mode === "storm") {
-      flashA = Math.max(0, flashA - .015);
-      ctx.fillStyle = `rgba(8,12,18,${(.55 * (1 - flashA)).toFixed(2)})`;
-      ctx.fillRect(0, 0, W, H);
-      if (flashA > .7) { ctx.fillStyle = `rgba(234,242,255,${flashA - .7})`; ctx.fillRect(0, 0, W, H); }
-    }
-
     /* HUD */
     const g = gauges();
     setGauge("heat", g.heat, 28, 35, true, "°C");
     setGauge("flood", g.flood, 0, 85, true, "%");
     setGauge("cso", g.cso, 0, 130, true, "M$/yr");
     setGauge("species", g.species, 0, 65, false, " species");
-    if (etaEl) {
-      const left = Math.max(0, STORM - elapsed);
-      etaEl.textContent = mode === "storm" ? "STORM OVERHEAD"
-        : `STORM ETA ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")}`;
-      etaEl.classList.toggle("hot", left < 25 && mode === "play");
-    }
-    drawRadar(t);
   }
 
   /* wildlife returns to the oldest reaches: ducks ride the clear water, fish
@@ -464,25 +444,6 @@
     const safe = lowerIsSafe ? val < SAFE[key] : val > SAFE[key];
     el.classList.toggle("safe", safe);
   }
-  function drawRadar(t) {
-    if (!radar) return;
-    const dpr = U.sizeCanvas(radar, 2);
-    const ctx = radar.getContext("2d");
-    const W = radar.width, H = radar.height, cx = W / 2, cy = H / 2;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = "rgba(9,14,20,.85)"; ctx.fillRect(0, 0, W, H);
-    ctx.strokeStyle = "rgba(79,195,247,.3)";
-    for (let r = 1; r <= 3; r++) {
-      ctx.beginPath(); ctx.arc(cx, cy, r * W / 7, 0, 6.3); ctx.stroke();
-    }
-    const d = Math.max(0, 1 - elapsed / STORM);
-    const bx = cx + Math.cos(2.4) * d * W * .52, by = cy + Math.sin(2.4) * d * W * .52;
-    ctx.fillStyle = `rgba(255,112,67,${(.5 + .3 * Math.sin(t * 3)).toFixed(2)})`;
-    ctx.beginPath(); ctx.arc(bx, by, W * .12 + (1 - d) * W * .1, 0, 6.3); ctx.fill();
-    ctx.fillStyle = "#7cc46f";
-    ctx.beginPath(); ctx.arc(cx, cy, 3 * dpr, 0, 6.3); ctx.fill();
-  }
-
   function frame(now) {
     if (!running) return;
     const t = now / 1000, dt = Math.min(.05, t - lastT) * tscale; lastT = t;
@@ -520,9 +481,5 @@
   HR.input.dpad(document.getElementById("dozer-dpad"));
   const winDone = winEl.querySelector(".g-done");
   if (winDone) winDone.addEventListener("click", () =>
-    HR.island.finish(game, "win", { marginSec: Math.round(STORM - elapsed) }));
-  const retry = failEl.querySelector(".g-retry");
-  if (retry) retry.addEventListener("click", () => { failEl.classList.remove("on"); begin(false); });
-  const concede = failEl.querySelector(".g-concede");
-  if (concede) concede.addEventListener("click", () => { failEl.classList.remove("on"); begin(true); });
+    HR.island.finish(game, "win", { runSec: Math.round(elapsed) }));
 })();

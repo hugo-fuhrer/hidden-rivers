@@ -91,6 +91,25 @@
     return 631;
   }
 
+  /* named places: parks stay green and unbuilt, landmarks rise on (roughly)
+     their real years, and office towers sprout downtown as the century turns */
+  const PARKS = [
+    { n: "HIGH PARK",         x: .215, y: .845, r: .045, yr: 1876 },
+    { n: "TRINITY BELLWOODS", x: .408, y: .852, r: .026, yr: 1888 },
+    { n: "CHRISTIE PITS",     x: .432, y: .742, r: .021, yr: 1909 },
+    { n: "QUEEN'S PARK",      x: .578, y: .752, r: .023, yr: 1880 },
+    { n: "ALLAN GARDENS",     x: .662, y: .845, r: .018, yr: 1880 },
+    { n: "RIVERDALE PARK",    x: .705, y: .815, r: .028, yr: 1880 },
+  ];
+  const LANDMARKS = [
+    { n: "FORT YORK",     x: .455, y: .906, yr: 1880, k: "fort" },
+    { n: "ST. LAWRENCE",  x: .655, y: .873, yr: 1880, k: "market" },
+    { n: "LEGISLATURE",   x: .578, y: .768, yr: 1893, k: "dome" },
+    { n: "OLD CITY HALL", x: .588, y: .822, yr: 1899, k: "clock" },
+    { n: "CASA LOMA",     x: .520, y: .652, yr: 1914, k: "castle" },
+    { n: "UNION STATION", x: .601, y: .900, yr: 1927, k: "station" },
+  ];
+
   /* the city: grid-aligned blocks radiating from the old town — Toronto
      grows along the shore first, north more slowly, like it actually did */
   const BLOCKS = [];
@@ -104,13 +123,19 @@
         const cx = x + CW / 2, cy = y + CH / 2;
         const r = Math.hypot(cx - OLDTOWN[0], (cy - OLDTOWN[1]) * 1.55);
         if (r > .8) continue;                            // never reached by 1930
+        if (PARKS.some(pk => Math.hypot(cx - pk.x, cy - pk.y) < pk.r + .004)) continue;
         const bs = [];
         const n = 2 + (rnd() * 3 | 0);
         for (let i = 0; i < n; i++)                      // axis-aligned houses in the cell
           bs.push([x + CW * (GAP / 2 + rnd() * (1 - GAP) * .55),
                    y + CH * (GAP / 2 + rnd() * (1 - GAP) * .5),
                    CW * (.16 + rnd() * .22), CH * (.2 + rnd() * .3), rnd() < .3]);
-        BLOCKS.push({ x, y, cx, cy, r: r + (rnd() - .5) * .05, bs });
+        /* downtown cells redevelop into office blocks around the turn of the
+           century — each on its own year, so the core visibly densifies */
+        const hi = r < .12 && rnd() < .45
+          ? { yr: 1897 + rnd() * 28 | 0, w: CW * (.4 + rnd() * .22), h: CH * (.48 + rnd() * .26) }
+          : null;
+        BLOCKS.push({ x, y, cx, cy, r: r + (rnd() - .5) * .05, bs, hi });
       }
     }
     BLOCKS.sort((a, b) => a.r - b.r);
@@ -267,6 +292,62 @@
     return d < .012 ? { x: 0, y: 0 } : { x: dx / d, y: dy / d };
   }
 
+  /* tiny plan-view silhouettes for the named landmarks; origin is the site,
+     shapes rise upward. u is the unit scale, g the build-in fade. */
+  function drawLandmark(ctx, kind, x, y, u, g, dpr) {
+    const stone = a => `rgba(125,105,71,${(a * g).toFixed(2)})`;
+    const roof = a => `rgba(62,50,32,${(a * g).toFixed(2)})`;
+    ctx.save(); ctx.translate(x, y);
+    switch (kind) {
+      case "fort":                                        // low ramparts + flag
+        ctx.fillStyle = stone(.9); ctx.fillRect(-9 * u, -3.5 * u, 18 * u, 4 * u);
+        ctx.fillRect(-11 * u, -5 * u, 4 * u, 5.5 * u); ctx.fillRect(7 * u, -5 * u, 4 * u, 5.5 * u);
+        ctx.strokeStyle = stone(.9); ctx.lineWidth = u;
+        ctx.beginPath(); ctx.moveTo(0, -3.5 * u); ctx.lineTo(0, -11 * u); ctx.stroke();
+        ctx.fillStyle = `rgba(200,80,60,${(.9 * g).toFixed(2)})`;
+        ctx.beginPath(); ctx.moveTo(0, -11 * u); ctx.lineTo(5 * u, -9.6 * u); ctx.lineTo(0, -8.2 * u);
+        ctx.closePath(); ctx.fill();
+        break;
+      case "market":                                      // long gabled hall
+        ctx.fillStyle = stone(.95); ctx.fillRect(-8 * u, -5 * u, 16 * u, 5.5 * u);
+        ctx.fillStyle = roof(.95);
+        ctx.beginPath(); ctx.moveTo(-9 * u, -5 * u); ctx.lineTo(0, -9.5 * u); ctx.lineTo(9 * u, -5 * u);
+        ctx.closePath(); ctx.fill();
+        break;
+      case "dome":                                        // legislature: wings + dome
+        ctx.fillStyle = stone(.95); ctx.fillRect(-11 * u, -4.5 * u, 22 * u, 5 * u);
+        ctx.fillRect(-4 * u, -7 * u, 8 * u, 3 * u);
+        ctx.fillStyle = roof(.95);
+        ctx.beginPath(); ctx.arc(0, -7 * u, 3.4 * u, Math.PI, 0); ctx.fill();
+        break;
+      case "clock":                                       // old city hall tower
+        ctx.fillStyle = stone(.95); ctx.fillRect(-7 * u, -4.5 * u, 14 * u, 5 * u);
+        ctx.fillRect(-2.2 * u, -14 * u, 4.4 * u, 10 * u);
+        ctx.fillStyle = roof(.95);
+        ctx.beginPath(); ctx.moveTo(-2.8 * u, -14 * u); ctx.lineTo(0, -18 * u); ctx.lineTo(2.8 * u, -14 * u);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = `rgba(240,227,198,${(.9 * g).toFixed(2)})`;
+        ctx.beginPath(); ctx.arc(0, -11.5 * u, 1.2 * u, 0, 6.3); ctx.fill();
+        break;
+      case "castle":                                      // casa loma: twin turrets
+        ctx.fillStyle = stone(.95); ctx.fillRect(-7 * u, -6 * u, 14 * u, 6.5 * u);
+        ctx.fillRect(-9 * u, -11 * u, 4 * u, 11.5 * u); ctx.fillRect(5 * u, -11 * u, 4 * u, 11.5 * u);
+        ctx.fillStyle = roof(.95);
+        ctx.beginPath(); ctx.moveTo(-9.6 * u, -11 * u); ctx.lineTo(-7 * u, -15.5 * u); ctx.lineTo(-4.4 * u, -11 * u);
+        ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(4.4 * u, -11 * u); ctx.lineTo(7 * u, -15.5 * u); ctx.lineTo(9.6 * u, -11 * u);
+        ctx.closePath(); ctx.fill();
+        break;
+      case "station":                                     // union: colonnade
+        ctx.fillStyle = stone(.95); ctx.fillRect(-11 * u, -5.5 * u, 22 * u, 6 * u);
+        ctx.fillStyle = roof(.9); ctx.fillRect(-12 * u, -6.5 * u, 24 * u, 1.6 * u);
+        ctx.fillStyle = roof(.75);
+        for (let c = -4; c <= 4; c++) ctx.fillRect(c * 2.4 * u - .5 * u, -5 * u, u, 5 * u);
+        break;
+    }
+    ctx.restore();
+  }
+
   /* ── render ─────────────────────────────────────────────────────────── */
   function render(t) {
     const dpr = U.sizeCanvas(cv);
@@ -310,6 +391,30 @@
     ctx.font = `italic ${11 * dpr}px Georgia,serif`;
     ctx.fillText("Lake Ontario", ox + AW * sc * .42, ly + 30 * dpr);
 
+    /* parks: green space that appears on its year and never builds over */
+    for (const pk of PARKS) {
+      const g = U.c01((year - pk.yr) / 4);
+      if (g <= 0) continue;
+      const [x, y] = PX(pk.x, pk.y), R = pk.r * sc;
+      ctx.fillStyle = `rgba(50,82,42,${(.75 * g).toFixed(2)})`;
+      ctx.beginPath(); ctx.ellipse(x, y, R, R * .72, 0, 0, 6.3); ctx.fill();
+      ctx.fillStyle = `rgba(72,110,56,${(.45 * g).toFixed(2)})`;
+      ctx.beginPath(); ctx.ellipse(x - R * .28, y - R * .18, R * .55, R * .4, .5, 0, 6.3); ctx.fill();
+      ctx.fillStyle = `rgba(36,62,32,${(.9 * g).toFixed(2)})`;
+      for (let k = 0; k < 8; k++) {                       // deterministic tree dots
+        const tx = x + Math.cos(k * 2.4) * R * .62 * ((k * 37 % 10) / 10);
+        const ty = y + Math.sin(k * 2.4) * R * .48 * ((k * 53 % 10) / 10);
+        ctx.beginPath(); ctx.arc(tx, ty, Math.max(1.5 * dpr, R * .07), 0, 6.3); ctx.fill();
+      }
+      if (g > .8 && R > 16 * dpr) {
+        ctx.fillStyle = "rgba(150,192,136,.7)";
+        ctx.font = `italic ${7.5 * dpr}px Georgia,serif`;
+        ctx.textAlign = "center";
+        ctx.fillText(pk.n, x, y + R * .72 + 9 * dpr);
+        ctx.textAlign = "start";
+      }
+    }
+
     /* the city: grid blocks light up as the sprawl reaches them */
     const sr = sprawlRadius();
     for (const b of BLOCKS) {
@@ -326,6 +431,42 @@
           ctx.fillStyle = "rgba(255,200,110,.55)";
           ctx.fillRect(px + hw * sc * .3, py + hh * sc * .3, 1.4 * dpr, 1.4 * dpr);
         }
+      }
+      /* downtown redevelopment: an office block rises over the houses */
+      const hiG = b.hi ? U.c01((year - b.hi.yr) / 3) * g : 0;
+      if (hiG > 0) {
+        const [px, py] = PX(b.x + .004, b.y + .003);
+        const w = b.hi.w * sc, h = b.hi.h * sc;
+        ctx.fillStyle = `rgba(76,62,40,${(.95 * hiG).toFixed(2)})`;
+        ctx.fillRect(px, py, w, h);
+        ctx.fillStyle = `rgba(96,80,52,${(.9 * hiG).toFixed(2)})`;
+        ctx.fillRect(px, py, w, 1.6 * dpr);               // cornice highlight
+        ctx.fillStyle = `rgba(255,214,140,${(.5 * hiG).toFixed(2)})`;
+        for (let wy = 0; wy < 3; wy++)
+          for (let wx = 0; wx < 4; wx++)
+            if ((wx * 7 + wy * 13 + (b.hi.yr | 0)) % 3 !== 0)
+              ctx.fillRect(px + w * (.14 + wx * .22), py + h * (.2 + wy * .26),
+                           1.3 * dpr, 1.3 * dpr);
+        if (year - b.hi.yr < 2.5) {                       // under construction
+          ctx.strokeStyle = `rgba(255,158,27,${(.6 * (1 - (year - b.hi.yr) / 2.5)).toFixed(2)})`;
+          ctx.lineWidth = dpr;
+          ctx.strokeRect(px - dpr, py - dpr, w + 2 * dpr, h + 2 * dpr);
+        }
+      }
+    }
+
+    /* landmarks: the buildings everyone knows, on (roughly) their real years */
+    for (const lm of LANDMARKS) {
+      const g = U.c01((year - lm.yr) / 3);
+      if (g <= 0) continue;
+      const [x, y] = PX(lm.x, lm.y);
+      drawLandmark(ctx, lm.k, x, y, Math.max(dpr, sc * .0011), g, dpr);
+      if (g > .85) {
+        ctx.fillStyle = "rgba(240,227,198,.72)";
+        ctx.font = `${7 * dpr}px ui-monospace,Menlo,monospace`;
+        ctx.textAlign = "center";
+        ctx.fillText(lm.n, x, y + 10 * dpr);
+        ctx.textAlign = "start";
       }
     }
 
