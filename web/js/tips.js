@@ -28,6 +28,9 @@ HR.tips = (() => {
     p.innerHTML = `<p>${tip}</p>` +
       (link ? `<a href="${link}" target="_blank" rel="noopener">${label}</a>` : "");
     p.classList.add("on");
+    /* hover previews must never intercept the pointer (they'd cover the next
+       card and eat its hover); only a pinned popover is interactive */
+    p.classList.toggle("pinned", pinned === el);
     /* position: prefer below, flip above if it would overflow */
     const r = el.getBoundingClientRect();
     p.style.left = "0px"; p.style.top = "0px";       // reset to measure
@@ -41,7 +44,7 @@ HR.tips = (() => {
     host = el;
   }
   function hide() {
-    if (pop) pop.classList.remove("on");
+    if (pop) pop.classList.remove("on", "pinned");
     host = null;
   }
 

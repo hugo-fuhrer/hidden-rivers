@@ -697,6 +697,196 @@ function wavePath(width, amp, lam) {
   rainCanvas("sc-rewind");
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+   IV · THE STINK — Ashbridge's Bay, 1882 ("Great Stink" tableau)
+   ═══════════════════════════════════════════════════════════════════════ */
+{
+  const svg = document.getElementById("stink-bay");
+  svg.innerHTML = `
+  <defs>
+    <linearGradient id="st-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5c5a26"/><stop offset=".45" stop-color="#45441e"/>
+      <stop offset="1" stop-color="#2a2a12"/>
+    </linearGradient>
+    <radialGradient id="st-sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#d8c86a" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#d8c86a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- a sickly sun through the haze -->
+  <circle cx="1180" cy="170" r="180" fill="url(#st-sun)"/>
+  <circle cx="1180" cy="170" r="44" fill="#e6d47c" opacity=".85"/>
+  <!-- 1882 skyline across the bay: chimneys, spires, the Gooderham windmill -->
+  <g fill="#3b3720">
+    <rect x="0" y="470" width="1600" height="60"/>
+    <rect x="60" y="404" width="120" height="70"/><rect x="95" y="330" width="16" height="80"/>
+    <rect x="230" y="420" width="150" height="54"/><rect x="262" y="348" width="14" height="76"/>
+    <rect x="308" y="360" width="14" height="64"/>
+    <polygon points="450,474 450,392 470,392 470,352 480,326 490,352 490,392 510,392 510,474"/>
+    <rect x="560" y="430" width="180" height="44"/><rect x="600" y="352" width="15" height="82"/>
+    <rect x="680" y="368" width="15" height="66"/>
+    <polygon points="820,474 820,380 860,342 900,380 900,474"/>
+    <rect x="852" y="300" width="16" height="52"/><polygon points="845,304 875,304 860,272"/>
+    <g id="st-mill">
+      <rect x="1046" y="380" width="26" height="94"/>
+      <polygon points="1042,384 1076,384 1064,330 1054,330"/>
+      <g id="st-sails" stroke="#3b3720" stroke-width="9" stroke-linecap="round">
+        <line x1="1059" y1="332" x2="1059" y2="266"/><line x1="1059" y1="332" x2="1059" y2="398"/>
+        <line x1="1026" y1="332" x2="1092" y2="332"/>
+      </g>
+    </g>
+    <rect x="1180" y="416" width="200" height="58"/>
+    <rect x="1224" y="336" width="16" height="84"/><rect x="1300" y="352" width="16" height="68"/>
+    <rect x="1460" y="430" width="140" height="44"/><rect x="1500" y="360" width="15" height="74"/>
+  </g>
+  <!-- chimney smoke, drifting -->
+  <g id="st-smoke" fill="#565137" opacity=".55">
+    <ellipse cx="102" cy="312" rx="26" ry="10"/><ellipse cx="130" cy="292" rx="34" ry="12"/>
+    <ellipse cx="607" cy="336" rx="24" ry="9"/><ellipse cx="636" cy="318" rx="30" ry="11"/>
+    <ellipse cx="1232" cy="318" rx="26" ry="10"/><ellipse cx="1262" cy="298" rx="34" ry="12"/>
+  </g>
+  <!-- the bay -->
+  <rect x="0" y="524" width="1600" height="376" fill="url(#st-water)"/>
+  <path id="st-wave" d="${wavePath(3400, 6, 140)}" fill="#6a6630" opacity=".5" transform="translate(0,524)"/>
+  <!-- oily sheen + scum mats -->
+  <g fill="#7a7434" opacity=".45">
+    <ellipse cx="300" cy="600" rx="180" ry="12"/><ellipse cx="760" cy="650" rx="240" ry="14"/>
+    <ellipse cx="1240" cy="610" rx="200" ry="12"/><ellipse cx="500" cy="730" rx="300" ry="18"/>
+    <ellipse cx="1100" cy="780" rx="340" ry="20"/>
+  </g>
+  <g stroke="#8d8449" stroke-width="2.5" opacity=".5" fill="none">
+    <path d="M180 640 q60 -10 120 0 q40 8 90 0"/>
+    <path d="M900 700 q80 -12 160 0"/>
+    <path d="M1240 660 q60 -8 120 0"/>
+  </g>
+  <!-- outfall sewers discharging at the shore -->
+  <g>
+    <rect x="0" y="560" width="150" height="80" fill="#4a3520"/>
+    <path d="M150 560 v80 h-40 a52 40 0 0 1 40 -80 Z" fill="#241a0c"/>
+    <path d="M118 600 a34 26 0 0 1 64 0 Z" fill="#120d06" transform="rotate(90 150 600)"/>
+    <path id="st-sludge1" d="M148 596 q60 10 120 26 q60 16 100 30 l0 14 q-60 -18 -110 -30 q-60 -16 -110 -26 Z" fill="#33301a" opacity=".9"/>
+    <rect x="0" y="700" width="90" height="70" fill="#4a3520"/>
+    <path d="M90 700 v70 h-34 a44 35 0 0 1 34 -70 Z" fill="#241a0c"/>
+    <path id="st-sludge2" d="M88 736 q70 12 130 30 l0 14 q-70 -20 -130 -30 Z" fill="#33301a" opacity=".9"/>
+  </g>
+  <!-- cattle byres + privy on stilts over the water -->
+  <g>
+    <g fill="#4c3a22">
+      <rect x="1290" y="536" width="150" height="64"/>
+      <polygon points="1282,536 1448,536 1365,498"/>
+      <rect x="1300" y="600" width="10" height="42"/><rect x="1350" y="600" width="10" height="46"/>
+      <rect x="1420" y="600" width="10" height="42"/>
+    </g>
+    <rect x="1306" y="556" width="26" height="30" fill="#241a0c"/>
+    <g fill="#4c3a22">
+      <rect x="1490" y="560" width="54" height="58"/>
+      <polygon points="1484,560 1550,560 1517,534"/>
+      <rect x="1500" y="618" width="8" height="34"/><rect x="1530" y="618" width="8" height="34"/>
+    </g>
+    <rect x="1506" y="576" width="20" height="42" fill="#241a0c"/>
+    <path d="M1440 604 q40 14 60 30 l0 12 q-30 -18 -60 -30 Z" fill="#3a3218" opacity=".85"/>
+  </g>
+  <!-- flotsam: barrel, plank, bottle, and the fish that didn't make it -->
+  <g id="st-flotsam">
+    <g class="st-bob"><ellipse cx="0" cy="0" rx="26" ry="10" fill="#4a3520"/>
+      <line x1="-22" y1="-4" x2="22" y2="-4" stroke="#2c2010" stroke-width="3"/></g>
+    <g class="st-bob"><rect x="-38" y="-5" width="76" height="8" rx="2" fill="#4a3a24"/></g>
+    <g class="st-bob"><ellipse cx="0" cy="0" rx="7" ry="11" fill="#3a4a34" transform="rotate(70)"/></g>
+    <g class="st-fish"><ellipse cx="0" cy="0" rx="17" ry="6" fill="#c9c4a0"/>
+      <polygon points="15,0 24,-5 24,5" fill="#c9c4a0"/><circle cx="-8" cy="-1" r="1.6" fill="#55502e"/></g>
+    <g class="st-fish"><ellipse cx="0" cy="0" rx="13" ry="5" fill="#c9c4a0"/>
+      <polygon points="11,0 19,-4 19,4" fill="#c9c4a0"/></g>
+    <g class="st-fish"><ellipse cx="0" cy="0" rx="15" ry="5.5" fill="#c9c4a0"/>
+      <polygon points="13,0 21,-4 21,4" fill="#c9c4a0"/></g>
+  </g>
+  <!-- a rowboat: the health inspector, handkerchief pressed to his face -->
+  <g id="st-boat">
+    <path d="M-70 0 Q0 26 70 0 L54 -14 L-54 -14 Z" fill="#3a2c18"/>
+    <line x1="24" y1="-12" x2="58" y2="6" stroke="#2c2010" stroke-width="4"/>
+    <circle cx="-8" cy="-34" r="9" fill="#0e0a05"/>
+    <path d="M-24 -14 Q-8 -30 8 -14 Z" fill="#0e0a05"/>
+    <rect x="-4" y="-32" width="12" height="9" rx="2" fill="#c9c4a0"/>
+  </g>
+  <!-- bubbles of marsh gas -->
+  <g fill="#8d8449">
+    <circle class="st-bub" cx="380" cy="700" r="4"/><circle class="st-bub" cx="620" cy="760" r="5"/>
+    <circle class="st-bub" cx="840" cy="690" r="3.5"/><circle class="st-bub" cx="1060" cy="740" r="4.5"/>
+    <circle class="st-bub" cx="1320" cy="700" r="4"/><circle class="st-bub" cx="240" cy="770" r="5"/>
+  </g>
+  <!-- fly swarms -->
+  <g class="st-flies" fill="#1c1a0c">
+    <circle cx="0" cy="0" r="3"/><circle cx="14" cy="-8" r="2.4"/><circle cx="-12" cy="-14" r="2.6"/>
+    <circle cx="6" cy="-22" r="2.2"/><circle cx="-6" cy="8" r="2.4"/>
+  </g>
+  <g class="st-flies" fill="#1c1a0c">
+    <circle cx="0" cy="0" r="2.6"/><circle cx="-14" cy="-6" r="2.2"/><circle cx="10" cy="-16" r="2.8"/>
+    <circle cx="18" cy="4" r="2"/><circle cx="-8" cy="-24" r="2.2"/>
+  </g>
+  <g class="st-flies" fill="#1c1a0c">
+    <circle cx="0" cy="0" r="2.8"/><circle cx="12" cy="-10" r="2.2"/><circle cx="-10" cy="-6" r="2.4"/>
+    <circle cx="4" cy="-20" r="2"/>
+  </g>
+  <!-- gulls that know better than to land -->
+  <g id="st-gulls" fill="none" stroke="#2e2b16" stroke-width="3.5" stroke-linecap="round">
+    <path d="M0 0 q10 -10 20 0 q10 -10 20 0"/>
+    <path d="M56 -26 q8 -8 16 0 q8 -8 16 0"/>
+  </g>
+  <!-- miasma rising off the water -->
+  <g fill="#a3a06a">
+    <path class="st-fog" d="M120 640 q90 -34 220 -16 q140 18 260 -8 q90 -18 170 0 l0 44 q-160 -22 -320 0 q-180 24 -330 -20 Z" opacity=".14"/>
+    <path class="st-fog" d="M700 720 q120 -40 280 -18 q160 22 300 -10 l0 48 q-180 -20 -340 4 q-140 20 -240 -24 Z" opacity=".12"/>
+    <path class="st-fog" d="M300 800 q160 -36 340 -12 q200 26 420 -12 l0 56 q-260 -24 -480 0 q-180 18 -280 -32 Z" opacity=".1"/>
+  </g>`;
+
+  const q = s => svg.querySelector(s);
+  const qa = s => [...svg.querySelectorAll(s)];
+  const stinkSky = document.getElementById("stink-sky");
+  const sails = q("#st-sails"), smoke = q("#st-smoke"), wave = q("#st-wave");
+  const boat = q("#st-boat"), gulls = q("#st-gulls");
+  const bobs = qa("#st-flotsam .st-bob"), fish = qa("#st-flotsam .st-fish");
+  const bubs = qa(".st-bub"), swarms = qa(".st-flies"), fogs = qa(".st-fog");
+  const sludge1 = q("#st-sludge1"), sludge2 = q("#st-sludge2");
+  const bobX = [420, 940, 1180], fishX = [560, 720, 1420];
+  const swarmBase = [[190, 560], [1360, 520], [820, 660]];
+
+  scene("sc-stink", (p, t) => {
+    /* the light goes from jaundiced noon to a bruised evening as the vote nears */
+    stinkSky.style.setProperty("--c1", mix("#8f8348", "#5b5330", ease(p)));
+    stinkSky.style.setProperty("--c2", mix("#c2b374", "#7d744a", ease(p)));
+    const ph = REDUCED ? 0 : t * 12;
+    wave.setAttribute("transform", `translate(${(-(ph % 140)).toFixed(1)},524)`);
+    if (!REDUCED) {
+      sails.setAttribute("transform", `rotate(${(t * 9 % 360).toFixed(1)} 1059 332)`);
+      smoke.setAttribute("transform",
+        `translate(${(Math.sin(t * .4) * 14 - 10).toFixed(1)},${(-(t * 5 % 26)).toFixed(1)})`);
+      smoke.setAttribute("opacity", (.4 + .18 * Math.sin(t * .9)).toFixed(2));
+      boat.setAttribute("transform",
+        `translate(${(1030 + Math.sin(t * .22) * 40).toFixed(1)},${(636 + Math.sin(t * 1.3) * 3.5).toFixed(1)}) rotate(${(Math.sin(t * 1.1) * 2).toFixed(1)})`);
+      gulls.setAttribute("transform",
+        `translate(${(500 + Math.sin(t * .3) * 180).toFixed(1)},${(210 + Math.sin(t * .8) * 24).toFixed(1)})`);
+      bobs.forEach((b, i) => b.setAttribute("transform",
+        `translate(${(bobX[i] + Math.sin(t * .4 + i * 2.2) * 10).toFixed(1)},${(628 + i * 52 + Math.sin(t * 1.3 + i * 1.7) * 4).toFixed(1)}) rotate(${(Math.sin(t * .9 + i) * 5).toFixed(1)})`));
+      fish.forEach((f, i) => f.setAttribute("transform",
+        `translate(${(fishX[i] + Math.sin(t * .3 + i * 2.8) * 8).toFixed(1)},${(672 + (i * 61 % 110) + Math.sin(t * 1.1 + i * 2.1) * 3).toFixed(1)}) rotate(${(180 + Math.sin(t * .8 + i) * 4).toFixed(1)})`));
+      bubs.forEach((b, i) => {
+        const c = ((t * .22 + i * .37) % 1);
+        b.setAttribute("transform", `translate(0,${(-c * 30).toFixed(1)})`);
+        b.setAttribute("opacity", (c < .82 ? .5 : .5 * (1 - (c - .82) / .18)).toFixed(2));
+      });
+      swarms.forEach((s, i) => s.setAttribute("transform",
+        `translate(${(swarmBase[i][0] + Math.sin(t * (1.7 + i * .3)) * 26).toFixed(1)},${(swarmBase[i][1] + Math.sin(t * (2.3 + i * .4) + 1) * 18).toFixed(1)}) rotate(${(Math.sin(t * 3 + i) * 14).toFixed(1)})`));
+      fogs.forEach((f, i) => {
+        f.setAttribute("transform", `translate(${(Math.sin(t * .16 + i * 2.1) * 60).toFixed(1)},${(Math.sin(t * .3 + i) * 6).toFixed(1)})`);
+        f.setAttribute("opacity", (.09 + .06 * (0.5 + 0.5 * Math.sin(t * .5 + i * 1.9)) + .08 * ease(p)).toFixed(3));
+      });
+      const gush = .85 + .15 * Math.sin(t * 2.6);
+      sludge1.setAttribute("opacity", (gush * .9).toFixed(2));
+      sludge2.setAttribute("opacity", (gush * .85).toFixed(2));
+    }
+    rain.target = 0; rain.host = "sc-stink";
+  });
+}
+
 /* ── game islands: engage cards + atmosphere; the games own their input ── */
 for (const gid of ["drive", "bury", "dozer"]) {
   const sid = "sc-" + gid;
@@ -1008,13 +1198,176 @@ if (window.RISK_DATA && document.getElementById("riskmap")) {
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   VI · DAYLIGHTING — reveal-on-scroll
+   VI · DAYLIGHTING — reveal-on-scroll + the inner-harbour hero
    ═══════════════════════════════════════════════════════════════════════ */
 {
   const io = new IntersectionObserver(es => {
     for (const e of es) if (e.isIntersecting) { e.target.classList.add("vis"); io.unobserve(e.target); }
   }, { threshold: .25 });
   document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+}
+
+/* the hero: Toronto's inner harbour, drawn in the same hand as the street
+   scenes — skyline across the water, and the Port Lands restoration
+   (new Don mouth, wetlands, the twin arched bridges) in the foreground */
+{
+  const svg = document.getElementById("dl-harbour");
+  if (svg) {
+    const rnd = mulberry(23);
+    /* hazy downtown silhouette across the water */
+    let sky = "";
+    for (const [x, w, h] of [[30, 80, 150], [125, 60, 200], [200, 90, 260], [305, 70, 175],
+        [390, 95, 235], [500, 65, 185], [700, 80, 210], [795, 90, 150], [900, 60, 120]]) {
+      sky += `<rect x="${x}" y="${400 - h}" width="${w}" height="${h}" fill="#8fadc2"/>
+              <rect x="${x}" y="${400 - h}" width="${w}" height="6" fill="#a3bdd0"/>`;
+      for (let i = 0; i < 4; i++)
+        if (rnd() < .5) sky += `<rect x="${x + 8 + i * (w / 4)}" y="${404 - h + rnd() * (h - 40)}" width="${w / 9}" height="16" fill="#7d9cb4" opacity=".6"/>`;
+    }
+    svg.innerHTML = `
+    <defs>
+      <linearGradient id="dl-sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#6fb1d8"/><stop offset=".7" stop-color="#cfe4d9"/>
+        <stop offset="1" stop-color="#ffe9c2"/>
+      </linearGradient>
+      <linearGradient id="dl-water" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4f93ae"/><stop offset="1" stop-color="#2a5f7e"/>
+      </linearGradient>
+      <linearGradient id="dl-river" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7fd4c9"/><stop offset="1" stop-color="#1f7f93"/>
+      </linearGradient>
+      <radialGradient id="dl-sun" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#fff4cf" stop-opacity=".95"/>
+        <stop offset="1" stop-color="#ffe9ad" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect x="0" y="0" width="1600" height="640" fill="url(#dl-sky)"/>
+    <circle cx="300" cy="110" r="120" fill="url(#dl-sun)"/>
+    <circle cx="300" cy="110" r="36" fill="#fff2c4"/>
+    <g opacity=".85" fill="#ffffff">
+      <ellipse cx="620" cy="90" rx="90" ry="24"/><ellipse cx="695" cy="74" rx="60" ry="18"/>
+      <ellipse cx="1120" cy="120" rx="80" ry="20"/><ellipse cx="1450" cy="70" rx="70" ry="18"/>
+    </g>
+    <!-- downtown across the water -->
+    <g opacity=".92">${sky}
+      <!-- Rogers Centre + CN Tower make it Toronto -->
+      <path d="M540 400 a80 62 0 0 1 160 0 Z" fill="#8fadc2"/>
+      <g fill="#7d9cb4">
+        <polygon points="614,400 625,148 641,148 652,400"/>
+        <polygon points="602,400 617,290 622,290 616,400"/>
+        <polygon points="664,400 649,290 644,290 650,400"/>
+        <rect x="601" y="128" width="64" height="38" rx="14"/>
+        <polygon points="628,128 631,54 635,54 638,128"/>
+      </g>
+      <rect x="607" y="142" width="52" height="9" fill="#ffedb0" opacity=".55"/>
+      <!-- island ferry mid-harbour -->
+      <g transform="translate(470,452)">
+        <path d="M-44 0 Q0 14 44 0 L36 -12 L-36 -12 Z" fill="#3d6b52"/>
+        <rect x="-30" y="-26" width="60" height="15" rx="4" fill="#f0ede2"/>
+        <rect x="-22" y="-23" width="10" height="7" fill="#2a5f7e"/><rect x="-4" y="-23" width="10" height="7" fill="#2a5f7e"/>
+        <rect x="12" y="-23" width="10" height="7" fill="#2a5f7e"/>
+      </g>
+    </g>
+    <!-- the harbour -->
+    <rect x="0" y="398" width="1600" height="242" fill="url(#dl-water)"/>
+    <g class="dl-sparkle" stroke="#dbf2f7" stroke-width="2.4" stroke-linecap="round" opacity=".5">
+      ${Array.from({ length: 16 }, (_, i) =>
+        `<line x1="${60 + i * 100}" y1="${430 + (i % 5) * 34}" x2="${86 + i * 100}" y2="${430 + (i % 5) * 34}"/>`).join("")}
+    </g>
+    <text x="380" y="440" font-family="Georgia,serif" font-style="italic" font-size="22"
+          fill="#d6ecf4" opacity=".85">Inner Harbour</text>
+    <!-- THE PORT LANDS: the restored foreground -->
+    <g>
+      <!-- the green headland -->
+      <path d="M640 640 Q740 520 900 496 Q1100 468 1300 470 Q1470 472 1600 460 L1600 640 Z" fill="#5d9b4f"/>
+      <path d="M640 640 Q740 520 900 496 Q1100 468 1300 470 Q1470 472 1600 460" fill="none" stroke="#79b864" stroke-width="6"/>
+      <!-- sandy river-mouth spits -->
+      <ellipse cx="836" cy="540" rx="60" ry="12" fill="#d8c89a"/>
+      <ellipse cx="920" cy="590" rx="70" ry="13" fill="#d8c89a"/>
+      <!-- the new Don, winding out of the land into the harbour -->
+      <path d="M1600 520 Q1420 508 1300 528 Q1170 550 1060 542 Q950 534 880 556 Q830 572 828 640 L1030 640 Q1080 600 1160 596 Q1300 590 1440 600 L1600 588 Z"
+            fill="url(#dl-river)"/>
+      <path d="M1600 524 Q1420 512 1300 532 Q1170 554 1060 546 Q950 538 884 560" fill="none" stroke="#a9e6dd" stroke-width="5" opacity=".6"/>
+      <!-- wetland shallows fringing the channel -->
+      <g fill="#3f8a5f" opacity=".8">
+        <ellipse cx="1002" cy="555" rx="46" ry="9"/><ellipse cx="1210" cy="540" rx="56" ry="10"/>
+        <ellipse cx="1420" cy="546" rx="50" ry="9"/><ellipse cx="940" cy="600" rx="52" ry="10"/>
+      </g>
+      <!-- marsh grasses -->
+      <g stroke="#3f7a38" stroke-width="3" fill="none" stroke-linecap="round">
+        ${[880, 892, 904, 1090, 1102, 1114, 1330, 1342, 1354, 1500, 1512].map((x, i) =>
+          `<path d="M${x} ${i < 3 ? 586 : i < 6 ? 560 : i < 9 ? 548 : 570} q${(i % 3 - 1) * 5} -18 ${(i % 3 - 1) * 8} -30"/>`).join("")}
+      </g>
+      <!-- young riverbank trees -->
+      ${[[760, 520, 26], [700, 560, 32], [1160, 512, 22], [1260, 500, 26], [1520, 500, 24], [1560, 540, 30]].map(([x, y, r]) =>
+        `<ellipse cx="${x + 4}" cy="${y + r * .9}" rx="4" ry="${r * .55}" fill="#6d4f2f"/>
+         <circle cx="${x}" cy="${y}" r="${r}" fill="#549148"/>
+         <circle cx="${x - r * .4}" cy="${y - r * .3}" r="${r * .5}" fill="#67a85b"/>`).join("")}
+      <!-- the twin arched bridges over the new river -->
+      <g>
+        <rect x="1020" y="528" width="150" height="8" rx="3" fill="#e8e4da"/>
+        <path d="M1026 530 Q1095 470 1164 530" fill="none" stroke="#f0ede2" stroke-width="9"/>
+        <path d="M1026 530 Q1095 470 1164 530" fill="none" stroke="#d8552f" stroke-width="3" opacity=".8"/>
+        ${[1040, 1062, 1084, 1106, 1128, 1150].map(x =>
+          `<line x1="${x}" y1="${532 - Math.sin((x - 1026) / 138 * Math.PI) * 52}" x2="${x}" y2="530" stroke="#e8e4da" stroke-width="2.5"/>`).join("")}
+        <rect x="1300" y="516" width="130" height="8" rx="3" fill="#e8e4da"/>
+        <path d="M1306 518 Q1365 466 1424 518" fill="none" stroke="#f0ede2" stroke-width="8"/>
+        ${[1320, 1340, 1360, 1380, 1400].map(x =>
+          `<line x1="${x}" y1="${520 - Math.sin((x - 1306) / 118 * Math.PI) * 44}" x2="${x}" y2="518" stroke="#e8e4da" stroke-width="2.5"/>`).join("")}
+      </g>
+      <!-- kayaker on the new river -->
+      <g transform="translate(1225,566)">
+        <ellipse cx="0" cy="0" rx="26" ry="6" fill="#e07b39"/>
+        <circle cx="0" cy="-13" r="6" fill="#e8c39e"/>
+        <path d="M-3 -8 Q0 -4 3 -8 L2 0 L-2 0 Z" fill="#1f618d"/>
+        <line x1="-18" y1="-16" x2="18" y2="-4" stroke="#4a3a24" stroke-width="3"/>
+      </g>
+      <!-- heron in the shallows -->
+      <g transform="translate(955,588)">
+        <line x1="-2" y1="0" x2="-2" y2="-14" stroke="#9fb6c8" stroke-width="2.5"/>
+        <line x1="3" y1="0" x2="2" y2="-14" stroke="#9fb6c8" stroke-width="2.5"/>
+        <ellipse cx="0" cy="-19" rx="10" ry="6" fill="#9fb6c8"/>
+        <path d="M7 -22 Q13 -30 9 -36" fill="none" stroke="#9fb6c8" stroke-width="3"/>
+        <polygon points="9,-37 20,-35 9,-33" fill="#e8b93d"/>
+      </g>
+      <!-- boardwalk + walkers -->
+      <g>
+        <rect x="680" y="606" width="240" height="10" rx="3" fill="#a07b4f"/>
+        ${[700, 750, 800, 850, 900].map(x => `<line x1="${x}" y1="606" x2="${x}" y2="616" stroke="#7d5d39" stroke-width="3"/>`).join("")}
+        <g transform="translate(760,606) scale(.7)">
+          <circle cx="0" cy="-53" r="8" fill="#e8c39e"/>
+          <path d="M-9 -44 Q0 -50 9 -44 L7 -15 L-7 -15 Z" fill="#c0392b"/>
+          <line x1="-4" y1="-16" x2="-6" y2="0" stroke="#23272e" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="4" y1="-16" x2="7" y2="0" stroke="#23272e" stroke-width="5.5" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(796,606) scale(.62)">
+          <circle cx="0" cy="-53" r="8" fill="#caa37e"/>
+          <path d="M-9 -44 Q0 -50 9 -44 L7 -15 L-7 -15 Z" fill="#1f618d"/>
+          <line x1="-4" y1="-16" x2="-6" y2="0" stroke="#23272e" stroke-width="5.5" stroke-linecap="round"/>
+          <line x1="4" y1="-16" x2="7" y2="0" stroke="#23272e" stroke-width="5.5" stroke-linecap="round"/>
+        </g>
+      </g>
+    </g>
+    <!-- plaque-style labels: what changed here -->
+    <g font-family="ui-monospace,Menlo,monospace" font-size="13" letter-spacing="2">
+      <g>
+        <rect x="906" y="490" width="196" height="24" rx="5" fill="#0d3a46" opacity=".88"/>
+        <text x="1004" y="507" text-anchor="middle" fill="#bff0e8">NEW DON RIVER MOUTH</text>
+        <line x1="960" y1="514" x2="905" y2="546" stroke="#bff0e8" stroke-width="1.5" opacity=".7"/>
+      </g>
+      <g>
+        <rect x="1206" y="438" width="160" height="24" rx="5" fill="#1c5e3c" opacity=".88"/>
+        <text x="1286" y="455" text-anchor="middle" fill="#e4f6e0">BIIDAASIGE PARK</text>
+      </g>
+      <g>
+        <rect x="716" y="446" width="150" height="24" rx="5" fill="#1c5e3c" opacity=".88"/>
+        <text x="791" y="463" text-anchor="middle" fill="#e4f6e0">VILLIERS ISLAND</text>
+      </g>
+      <g>
+        <rect x="1284" y="608" width="302" height="24" rx="5" fill="#0d1a24" opacity=".82"/>
+        <text x="1435" y="625" text-anchor="middle" fill="#9fd4e8">PORT LANDS FLOOD PROTECTION · 2025</text>
+      </g>
+    </g>`;
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -1208,7 +1561,7 @@ const flowSections = [...document.querySelectorAll("section[data-name]")];
 /* which music bed each scene wants while it owns the viewport */
 const MOOD = {
   "sc-cloud": "calm", "sc-fall": "calm", "sc-flood": "tense", "sc-drive": "tense",
-  "sc-rewind": "tense", "sc-vote": "tense", "sc-bury": "tense",
+  "sc-rewind": "tense", "sc-stink": "tense", "sc-vote": "tense", "sc-bury": "tense",
   "sc-century": "calm", "sc-forecast": "calm", "sc-daylight": "calm",
   "sc-dozer": "tense", "sc-future": "calm",
 };

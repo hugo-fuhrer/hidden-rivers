@@ -95,7 +95,14 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
      border-right:2px solid rgba(207,226,238,.5);padding-right:12px}
 
 /* III · flood ---------------------------------------------------------------- */
-#street-flood,#street-future{position:absolute;inset:0;width:100%;height:100%}
+#street-flood,#street-future,#stink-bay{position:absolute;inset:0;width:100%;height:100%}
+
+/* IV · the stink (Ashbridge's Bay, 1882) -------------------------------------- */
+#sc-stink .beat{background:rgba(22,18,7,.62);border-left:3px solid #b8a24a;
+     padding:14px 18px;border-radius:0 10px 10px 0;backdrop-filter:blur(5px);
+     -webkit-backdrop-filter:blur(5px);font-size:clamp(1.02rem,1.9vw,1.4rem)}
+#sc-stink .beat .kicker{color:#d8c86a}
+#sc-stink .beat strong{color:#ffce7a}
 
 /* V · century steps ------------------------------------------------------------ */
 .step{position:absolute;z-index:10;left:4.5%;top:50%;pointer-events:none;
@@ -111,10 +118,28 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
 
 /* VI · daylighting (free flow) ------------------------------------------------ */
 #sc-daylight{background:linear-gradient(#06080c,#0b1016 14%,#0b1016 86%,#0a1219);
-     padding:16vh 0 10vh}
+     padding:0 0 10vh}
 #sc-daylight .wrap{max-width:900px;margin:0 auto;padding:0 26px}
 #sc-daylight h2{font-family:var(--serif);font-size:clamp(2rem,5vw,3.4rem);
      margin-bottom:22px}
+/* the inner-harbour hero behind "There is another way" */
+.dl-hero{position:relative;width:100%;height:clamp(360px,62vh,620px);overflow:hidden;
+     margin-bottom:7vh}
+.dl-hero svg{position:absolute;inset:0;width:100%;height:100%}
+.dl-hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:32%;
+     background:linear-gradient(rgba(11,16,22,0),rgba(11,16,22,.78) 80%,#0b1016);
+     pointer-events:none}
+.dl-hero-ink{position:absolute;left:0;right:0;bottom:4%;z-index:2;
+     max-width:900px;margin:0 auto;padding:0 26px}
+.dl-hero-ink .dl-hero-cap{max-width:52ch}
+#sc-daylight .dl-hero-ink h2{color:#fff;margin-bottom:8px;
+     text-shadow:0 2px 18px rgba(6,14,20,.85),0 0 46px rgba(6,14,20,.6)}
+.dl-hero-cap{font-family:var(--mono);font-size:clamp(.64rem,1.2vw,.78rem);
+     letter-spacing:.2em;text-transform:uppercase;color:#dcebf5;
+     text-shadow:0 1px 10px rgba(6,14,20,.9)}
+.dl-sparkle{animation:dlshimmer 3.4s ease-in-out infinite}
+@keyframes dlshimmer{0%,100%{opacity:.5}50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.dl-sparkle{animation:none}}
 #sc-daylight .lede{font-size:clamp(1.05rem,2vw,1.3rem);color:#d7e1ea;
      max-width:60ch;margin-bottom:7vh}
 #sc-daylight .lede b{color:var(--cy)}
@@ -135,6 +160,25 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
 .case.caution .case-tag{color:var(--warm)}
 .case.caution .digline{color:var(--warm);border-bottom-color:rgba(255,210,125,.5)}
 .case p{color:#d2dde7;font-size:clamp(.95rem,1.7vw,1.08rem)}
+/* case-study photo dropdowns */
+.case-photo{margin-top:14px}
+.case-photo summary{cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+     font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+     color:#9fd4a8;list-style:none;border-bottom:1px dashed rgba(124,196,111,.5);
+     padding-bottom:3px;user-select:none}
+.case-photo summary::-webkit-details-marker{display:none}
+.case-photo summary::before{content:"📷"}
+.case-photo summary::after{content:"▾";font-size:.9em;transition:transform .2s}
+.case-photo[open] summary::after{transform:rotate(180deg)}
+.case-photo summary:hover{border-bottom-style:solid}
+.case-photo summary:focus-visible{outline:2px solid var(--grn);outline-offset:3px}
+.case-photo figure{margin:14px 0 4px}
+.case-photo img{width:100%;max-height:420px;object-fit:cover;border-radius:10px;
+     border:1px solid #1c2634;background:#0a0f16;min-height:80px;display:block}
+.case-photo figcaption{font-size:.74rem;color:#7d8ea0;line-height:1.55;margin-top:8px}
+.case-photo .cp-fail{font-size:.84rem;color:#9fb0c0;font-style:italic;margin:10px 0 2px}
+.case.caution .case-photo summary{color:var(--warm);border-bottom-color:rgba(255,210,125,.5)}
+
 .kicker2{margin:6vh auto 0;max-width:56ch;text-align:center;color:var(--mut);
      font-size:clamp(.9rem,1.6vw,1.05rem)}
 .bridge{margin:9vh auto 6vh;text-align:center;font-family:var(--serif);
@@ -143,6 +187,9 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
 .reveal{opacity:0;transform:translateY(26px);
      transition:opacity .8s ease,transform .8s ease}
 .reveal.vis{opacity:1;transform:none}
+/* the tip cards fade in place (no slide): their popovers are positioned from
+   the live bounding rect, and a rect mid-slide put the tip in the wrong spot */
+.cards .card.reveal{transform:none}
 .cards .card:nth-child(2){transition-delay:.1s}
 .cards .card:nth-child(3){transition-delay:.2s}
 .cards .card:nth-child(4){transition-delay:.3s}
@@ -369,11 +416,6 @@ html.hr-locked body{overflow:hidden}
 @keyframes sickpulse{50%{filter:brightness(1.5)}}
 
 /* dozer HUD */
-.dz-top{justify-content:flex-end;gap:14px;align-items:center}
-#dozer-eta{background:rgba(9,14,20,.8);border:1px solid #1c2634;border-radius:8px;
-     padding:6px 14px;color:#cfe2ee}
-#dozer-eta.hot{color:#ff7043;border-color:#ff7043;animation:sickpulse .8s infinite}
-#dozer-radar{width:84px;height:84px;border-radius:12px;border:1px solid #1c2634}
 #dz-gauges{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:10;
      display:flex;gap:14px;background:rgba(8,12,18,.82);border:1px solid #1c2634;
      border-radius:14px;padding:12px 18px;pointer-events:none;max-width:94vw;flex-wrap:wrap;
@@ -389,18 +431,20 @@ html.hr-locked body{overflow:hidden}
 .gauge .gnum{font-family:var(--mono);font-size:.78rem;color:#e9eef4}
 .gauge.safe .gnum{color:#7cc46f}
 
-/* dozer restoration-milestone blurbs */
-#dz-blurb{position:absolute;left:18px;top:64px;z-index:12;width:min(40ch,74vw);
+/* dozer restoration-milestone facts: big, top-right, unhurried */
+#dz-blurb{position:absolute;right:18px;top:16px;z-index:12;width:min(46ch,82vw);
      pointer-events:none;opacity:0;transform:translateY(-8px);
-     transition:opacity .45s,transform .45s;background:rgba(7,13,10,.88);
-     border-left:3px solid var(--grn);border-radius:0 12px 12px 0;padding:12px 16px;
-     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+     transition:opacity .45s,transform .45s;background:rgba(7,13,10,.9);
+     border-right:4px solid var(--grn);border-radius:12px 0 0 12px;padding:18px 20px;
+     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+     box-shadow:0 12px 40px rgba(0,0,0,.45)}
 #dz-blurb.on{opacity:1;transform:none}
-#dz-blurb .bk{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;
-     color:var(--grn);text-transform:uppercase;margin-bottom:6px}
-#dz-blurb p{font-size:.8rem;color:#d2dde7;line-height:1.55;margin:0}
-@media (max-width:760px){#dz-blurb{top:56px;width:min(34ch,80vw)}
-     #dz-blurb p{font-size:.72rem}}
+#dz-blurb .bk{font-family:var(--mono);font-size:.78rem;letter-spacing:.22em;
+     color:var(--grn);text-transform:uppercase;margin-bottom:8px}
+#dz-blurb p{font-size:clamp(.94rem,1.7vw,1.08rem);color:#e4edf4;line-height:1.6;margin:0}
+@media (max-width:760px){#dz-blurb{top:12px;right:12px;width:min(38ch,86vw);padding:12px 14px}
+     #dz-blurb p{font-size:.84rem}
+     #dz-blurb .bk{font-size:.64rem}}
 
 /* century HUD */
 #cmap{position:absolute;inset:0;width:100%;height:100%}
@@ -475,6 +519,40 @@ html.hr-locked body{overflow:hidden}
      background:rgba(13,30,44,.8)}
 @media (max-width:760px){#sound-toggle{width:36px;height:36px;right:12px;top:10px}}
 
+/* floating bookmark button (top-left) + section menu */
+#bookmark-btn{position:fixed;left:16px;top:14px;z-index:120;width:40px;height:40px;
+     display:flex;align-items:center;justify-content:center;border-radius:50%;
+     border:1px solid #24333f;background:rgba(9,14,20,.72);color:#8b98a8;cursor:pointer;
+     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+     transition:color .2s,border-color .2s,background .2s}
+#bookmark-btn:hover{color:#cfe2ee;border-color:#2a4a66}
+#bookmark-btn.on{color:var(--cy);border-color:rgba(79,195,247,.5);
+     background:rgba(13,30,44,.8)}
+#bookmark-menu{position:fixed;left:16px;top:62px;z-index:121;min-width:240px;
+     display:none;flex-direction:column;gap:2px;padding:10px;border-radius:14px;
+     border:1px solid #22354a;background:rgba(9,13,20,.96);
+     backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+     box-shadow:0 18px 50px rgba(0,0,0,.55);max-height:min(74vh,600px);overflow-y:auto}
+#bookmark-menu.on{display:flex}
+#bookmark-menu .bm-kick{font-family:var(--mono);font-size:.6rem;letter-spacing:.26em;
+     text-transform:uppercase;color:#5d6b7c;padding:2px 10px 8px;margin:0}
+#bookmark-menu button{text-align:left;font-family:var(--sans);font-size:.86rem;
+     color:#cdd9e5;background:none;border:none;border-radius:8px;padding:8px 10px;
+     cursor:pointer;transition:background .15s,color .15s}
+#bookmark-menu button:hover{background:#16222f;color:#fff}
+#bookmark-menu button.cur{color:var(--cy);background:rgba(79,195,247,.08)}
+html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
+@media (max-width:760px){#bookmark-btn{width:36px;height:36px;left:12px;top:10px}
+     #bookmark-menu{left:12px;top:54px;min-width:210px}}
+
+/* footer replay */
+#replay-story{font-family:var(--sans);font-size:1rem;font-weight:600;cursor:pointer;
+     border-radius:999px;padding:12px 30px;margin-bottom:34px;
+     border:1px solid #4fc3f7;background:linear-gradient(160deg,#1d4f6e,#153049);
+     color:#eaf3fa;transition:background .2s,transform .15s}
+#replay-story:hover{background:#1a304a;transform:translateY(-1px)}
+#replay-story:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+
 /* interactive fact tooltips */
 .hr-tip{cursor:help;position:relative;outline:none;
      border-bottom:1px dashed rgba(79,195,247,.5)}
@@ -488,7 +566,10 @@ html.hr-locked body{overflow:hidden}
      pointer-events:none;background:rgba(9,14,21,.97);border:1px solid #2a4a66;
      border-radius:12px;padding:14px 16px;box-shadow:0 14px 44px rgba(0,0,0,.6);
      transform:translateY(6px);transition:opacity .18s,transform .18s}
-.hr-tip-pop.on{opacity:1;pointer-events:auto;transform:none}
+.hr-tip-pop.on{opacity:1;transform:none}
+/* only a pinned (clicked) popover takes the pointer — a hover preview that
+   captured clicks used to sit over the next card and eat its hover/click */
+.hr-tip-pop.pinned{pointer-events:auto}
 .hr-tip-pop p{color:#d2dde7;font-size:.86rem;line-height:1.6;margin:0}
 .hr-tip-pop a{display:inline-block;margin-top:10px;font-family:var(--mono);
      font-size:.72rem;letter-spacing:.04em}
@@ -592,8 +673,8 @@ html.hr-locked body{overflow:hidden}
 
 /* the vote chamber backdrop */
 .chamber-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-     opacity:.5;mask-image:radial-gradient(ellipse 90% 80% at 50% 36%,#000 40%,transparent 86%);
-     -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 36%,#000 40%,transparent 86%)}
+     opacity:.66;mask-image:radial-gradient(ellipse 94% 86% at 50% 38%,#000 46%,transparent 90%);
+     -webkit-mask-image:radial-gradient(ellipse 94% 86% at 50% 38%,#000 46%,transparent 90%)}
 .chamber-bg svg{position:absolute;inset:0;width:100%;height:100%}
 #sc-vote .chamber{position:relative;z-index:2}
 

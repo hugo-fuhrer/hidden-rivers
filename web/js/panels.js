@@ -46,8 +46,8 @@ HR.PANELS = {
       into in the 1880s. They still follow the old valleys — which is why the
       flooding does too.</p>`,
     figs: [
-      { src: WM("Combined sewer NYC.jpg"),
-        cap: "How a combined sewer works: one pipe for everything, with an overflow to the nearest water body when rain overwhelms it." },
+      { src: WM("CSO diagram US EPA.svg"),
+        cap: "How a combined sewer works: one pipe for everything, with an overflow to the nearest water body when rain overwhelms it. (US EPA diagram.)" },
     ],
     sources: [
       { label: "Basement flooding — City of Toronto", url: "https://www.toronto.ca/services-payments/water-environment/managing-rain-melted-snow/basement-flooding/" },
@@ -68,7 +68,7 @@ HR.PANELS = {
       <b>$940&nbsp;million</b> — and uninsured basement damage always runs far past
       the insured number. It was Toronto's third "hundred-year storm" since 2013.</p>`,
     sources: [
-      { label: "July 2024 flooding — Insurance Bureau of Canada", url: "https://www.ibc.ca/news-insights/news/july-16-flooding-in-toronto-caused-over-940-million-in-insured-damage" },
+      { label: "July 2024 flooding — Insurance Bureau of Canada", url: "https://www.ibc.ca/news-insights/news/july-flash-floods-in-toronto-and-southern-ontario-caused-over-940-million-in-insured-damage" },
       { label: "Environment and Climate Change Canada — historical data", url: "https://climate.weather.gc.ca/" },
     ],
   },
@@ -88,12 +88,34 @@ HR.PANELS = {
       drown fastest sit in the shallow valleys of buried creeks, where water has
       collected since before the city existed.</p>`,
     figs: [
-      { src: WM("Flooded Don River in Toronto 2013.jpg"),
-        cap: "The Don River over its banks and onto the parkway, July 8, 2013." },
+      { src: WM("Flooding in Dufferin Street underpass beneath railway tracks, 2013-07-08.JPG"),
+        cap: "A rail underpass swallowed whole on July 8, 2013 — the same scene this story opens with, eleven years earlier." },
     ],
     sources: [
-      { label: "2013 Greater Toronto Area floods — Wikipedia", url: "https://en.wikipedia.org/wiki/2013_Greater_Toronto_Area_floods" },
+      { label: "The July 2013 GTA flood — History of flooding in Canada, Wikipedia", url: "https://en.wikipedia.org/wiki/History_of_flooding_in_Canada" },
       { label: "Lost Rivers of Toronto — walk the buried creeks", url: "https://www.lostrivers.ca/" },
+    ],
+  },
+
+  ashbridges: {
+    kick: "1882 · downwind of everything",
+    title: "Ashbridge's Bay — \"the greatest plague-spot\"",
+    body: `
+      <p>Every creek in the old city — and the sewage of every privy that drained
+      into them — emptied into the vast marsh at the mouth of the Don. By the
+      1880s the cattle byres, distillery waste and raw sewage had turned
+      Ashbridge's Bay septic; visiting health officials would later brand the
+      marsh <b>"the greatest plague-spot in Christendom."</b></p>
+      <p>This was the emergency the 1882 chamber could smell through its own
+      windows. Miasma theory — disease carried on foul air — was still current
+      medicine, and by that theory the stinking creeks themselves were the
+      killers. Burying them wasn't malice; it was the treatment the science of
+      the day prescribed. A century later, the same bay hosts Toronto's main
+      wastewater treatment plant — the pipe network built that decade still
+      terminates there.</p>`,
+    sources: [
+      { label: "Ashbridges Bay — Wikipedia", url: "https://en.wikipedia.org/wiki/Ashbridges_Bay" },
+      { label: "Ashbridges Bay Wastewater Treatment Plant — Wikipedia", url: "https://en.wikipedia.org/wiki/Ashbridges_Bay_Wastewater_Treatment_Plant" },
     ],
   },
 
@@ -111,12 +133,9 @@ HR.PANELS = {
       the map. An entire stone bridge — the Crawford Street bridge — stands
       buried whole under Trinity Bellwoods Park. When storms overwhelm the old
       sewer, the water resurfaces along exactly this alignment.</p>`,
-    figs: [
-      { src: WM("Crawford Street Bridge Toronto 1915.jpg"),
-        cap: "The Crawford Street bridge over the Garrison Creek ravine, before the ravine was filled around it. The bridge is still there, underground." },
-    ],
     sources: [
-      { label: "Garrison Creek — Wikipedia", url: "https://en.wikipedia.org/wiki/Garrison_Creek_(Toronto)" },
+      { label: "Garrison Creek — Wikipedia", url: "https://en.wikipedia.org/wiki/Garrison_Creek_(Ontario)" },
+      { label: "Crawford Street Bridge, buried whole — Wikipedia", url: "https://en.wikipedia.org/wiki/Crawford_Street_Bridge" },
       { label: "Garrison Creek Discovery Walk — Lost Rivers", url: "https://www.lostrivers.ca/" },
     ],
   },
@@ -137,13 +156,13 @@ HR.PANELS = {
       1884 Goad atlas still shows Garrison Creek winding, in blue, through
       blocks you may live on.</p>`,
     figs: [
-      { src: WM("1884 Goad Map of Toronto, Canada - Geographicus - Toronto-goad-1884.jpg"),
-        cap: "Goad's 1884 atlas of Toronto — drawn the year the Garrison Creek sewer went in, with the creeks still on the map." },
+      { src: WM("1910 Goad Toronto atlas map of Ward 1.jpg"),
+        cap: "A plate from Goad's fire-insurance atlas of Toronto — the block-by-block surveys the Lost Rivers volunteers reconstructed the creeks from." },
     ],
     sources: [
       { label: "Lost Rivers of Toronto — the project", url: "https://www.lostrivers.ca/" },
       { label: "Lost Rivers dataset — Borealis Dataverse (doi:10.5683/SP2/TSJSQZ)", url: "https://doi.org/10.5683/SP2/TSJSQZ" },
-      { label: "Goad's Atlas plates — Toronto Public Library digital archive", url: "https://www.torontopubliclibrary.ca/history-genealogy/lh-digital-city-directories.jsp" },
+      { label: "Goad's atlases of Toronto, plate by plate online", url: "http://goadstoronto.blogspot.com/" },
     ],
   },
 
@@ -162,8 +181,8 @@ HR.PANELS = {
       more pipes and more concrete. The paving of the watershed accelerated,
       and every hectare sealed sends its rain to the Victorian brick faster.</p>`,
     figs: [
-      { src: WM("Raymore Drive after Hurricane Hazel.jpg"),
-        cap: "Raymore Drive after the Humber tore through it, October 1954." },
+      { src: WM("Hurricane Hazel -- October 15, 1954 (4893181009).jpg"),
+        cap: "Hurricane Hazel's flooding, October 15, 1954 — the storm that rewrote how Toronto treats its big river valleys." },
     ],
     sources: [
       { label: "Effects of Hurricane Hazel in Canada — Wikipedia", url: "https://en.wikipedia.org/wiki/Effects_of_Hurricane_Hazel_in_Canada" },
@@ -186,8 +205,8 @@ HR.PANELS = {
       and now doing a job (storm drainage for a paved megacity) they were
       never designed to do.</p>`,
     sources: [
-      { label: "History of Toronto's water supply — Wikipedia", url: "https://en.wikipedia.org/wiki/Water_treatment_in_Toronto" },
-      { label: "Typhoid and chlorination — City of Toronto Archives", url: "https://www.toronto.ca/city-government/accountability-operations-customer-service/access-city-information-or-records/city-of-toronto-archives/" },
+      { label: "Toronto Water — Wikipedia", url: "https://en.wikipedia.org/wiki/Toronto_Water" },
+      { label: "R.C. Harris Water Treatment Plant — Wikipedia", url: "https://en.wikipedia.org/wiki/R._C._Harris_Water_Treatment_Plant" },
     ],
   },
 
@@ -302,7 +321,7 @@ HR.PANELS = {
       the park won national awards. The lesson Toronto keeps citing: the flood
       storage and the beloved park are <i>the same land</i>.</p>`,
     figs: [
-      { src: WM("Sutcliffe Park, river Quaggy.jpg"),
+      { src: WM("River Quaggy in Sutcliffe Park.JPG"),
         cap: "The Quaggy winding through Sutcliffe Park's floodable basin." },
     ],
     sources: [
@@ -328,7 +347,7 @@ HR.PANELS = {
       staring at sewer bills, maybe the most persuasive.</p>`,
     sources: [
       { label: "Daylighting in Switzerland — Wikipedia", url: "https://en.wikipedia.org/wiki/Daylighting_(streams)#Switzerland" },
-      { label: "Stream daylighting in Zurich — The Nature of Cities", url: "https://www.thenatureofcities.com/2016/06/05/stream-daylighting-transforming-zurich/" },
+      { label: "The Bachkonzept — Architecture is Climate", url: "https://architectureisclimate.net/practice/bachkonzept/" },
     ],
   },
 
@@ -349,11 +368,11 @@ HR.PANELS = {
       at full scale: Toronto knows how to give a river room — when it decides
       to pay for it. The buried creeks are the same argument, one size down.</p>`,
     figs: [
-      { src: WM("Port Lands flood protection aerial 2024.jpg"),
-        cap: "The new Don River mouth taking shape through the Port Lands." },
+      { src: WM("New Mouth of the Don River 2024.jpg"),
+        cap: "The Don's new, naturalized mouth flowing through the Port Lands, 2024." },
     ],
     sources: [
-      { label: "Port Lands Flood Protection — Waterfront Toronto", url: "https://www.waterfrontoronto.ca/our-projects/port-lands-flood-protection" },
+      { label: "Don Mouth Naturalization &amp; Port Lands Flood Protection — Waterfront Toronto", url: "https://www.waterfrontoronto.ca/our-projects/don-mouth-naturalization-and-port-lands-flood-protection" },
       { label: "Port Lands — Wikipedia", url: "https://en.wikipedia.org/wiki/Port_Lands" },
     ],
   },
