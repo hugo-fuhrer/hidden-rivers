@@ -41,7 +41,19 @@ HR.island = (() => {
   ffBtn.setAttribute("aria-label", "Fast-forward to the end of this part (F)");
   ffBtn.addEventListener("click", fastForward);
   document.body.appendChild(ffBtn);
-  const showFF = on => ffBtn.classList.toggle("on", on);
+  /* touch has no Esc key: give it a pause chip beside the skip chip */
+  const pauseBtn = document.createElement("button");
+  pauseBtn.id = "hr-pausechip";
+  pauseBtn.type = "button";
+  pauseBtn.className = "hr-ff hr-pausechip";
+  pauseBtn.innerHTML = "<span aria-hidden=\"true\">⏸</span> Pause";
+  pauseBtn.setAttribute("aria-label", "Pause the game");
+  pauseBtn.addEventListener("click", () => togglePause());
+  document.body.appendChild(pauseBtn);
+  const showFF = on => {
+    ffBtn.classList.toggle("on", on);
+    pauseBtn.classList.toggle("on", on);
+  };
 
   const prevent = e => e.preventDefault();
   const SCROLLKEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight",
@@ -59,6 +71,7 @@ HR.island = (() => {
     if (window.HR && HR.audio) HR.audio.sfx.click();
     hidePause();
     showFF(false);
+    if (window.HR && HR.tutor) { HR.tutor.clear(); HR.tutor.hideKeys(); }
     if (typeof active.ff === "function") active.ff();
     else active.skip();                                  // games w/o ff: restart on autopilot
   }
@@ -78,7 +91,11 @@ HR.island = (() => {
     if (g.pauseEl) {
       const q = c => g.pauseEl.querySelector(c);
       q(".g-resume") && q(".g-resume").addEventListener("click", togglePause);
-      q(".g-restart") && q(".g-restart").addEventListener("click", () => { hidePause(); g.restart(); });
+      q(".g-restart") && q(".g-restart").addEventListener("click", () => {
+        hidePause();
+        if (window.HR && HR.tutor) HR.tutor.reset();
+        g.restart();
+      });
       q(".g-skip2") && q(".g-skip2").addEventListener("click", () => { hidePause(); g.skip(); });
       q(".g-ff") && q(".g-ff").addEventListener("click", fastForward);
       /* leave the game entirely: straight to the next story section */
@@ -102,13 +119,22 @@ HR.island = (() => {
     active = g;
     /* overflow:hidden kills position:sticky, so pin the stage explicitly */
     g.stickyEl = g.stickyEl || document.querySelector("#" + g.sceneId + " .sticky");
-    if (g.stickyEl) { g.stickyEl.classList.add("gfix"); g.stickyEl.appendChild(ffBtn); }
+    if (g.stickyEl) {
+      g.stickyEl.classList.add("gfix");
+      g.stickyEl.appendChild(ffBtn);
+      g.stickyEl.appendChild(pauseBtn);
+    }
     document.documentElement.classList.add("hr-locked");
     addEventListener("wheel", prevent, { passive: false });
     addEventListener("touchmove", prevent, { passive: false });
     addEventListener("keydown", keyTrap, true);
     if (g.engageEl) g.engageEl.classList.remove("on");
     if (g.replayEl) g.replayEl.classList.remove("on");
+    if (window.HR && HR.tutor) {
+      HR.tutor.reset();                                  // fresh run, fresh coach marks
+      HR.tutor.mount(g.stickyEl);                        // into the locked stage's layer
+      if (!asSkip) HR.tutor.showKeys(g.keys);            // autopilot teaches nothing
+    }
     dip(() => {                                          // cut, don't pop, into the game
       asSkip ? g.skip() : g.start();
       showFF(true);                                      // fast-forward available throughout
@@ -121,6 +147,7 @@ HR.island = (() => {
     removeEventListener("wheel", prevent, { passive: false });
     removeEventListener("touchmove", prevent, { passive: false });
     removeEventListener("keydown", keyTrap, true);
+    if (window.HR && HR.tutor) { HR.tutor.hideKeys(); HR.tutor.reset(); HR.tutor.mount(null); }
     showFF(false);
     active = null;
   }

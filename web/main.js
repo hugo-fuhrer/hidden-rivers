@@ -46,7 +46,16 @@ function scene(id, update) {
   const beats = [...el.querySelectorAll(".beat,.step")].map(b => ({
     el: b, a: +b.dataset.a, b: +b.dataset.b,
   }));
-  SCENES.push({ el, sticky: el.querySelector(".sticky"), beats, update,
+  const sticky = el.querySelector(".sticky");
+  /* edge veil: each sticky dips to dark as it pins/unpins, so the hard cut
+     between consecutive scenes reads as a fade instead of a jump */
+  let edge = null;
+  if (sticky) {
+    edge = document.createElement("div");
+    edge.className = "edgefade";
+    sticky.appendChild(edge);
+  }
+  SCENES.push({ el, sticky, edge, beats, update,
                 name: el.dataset.name || "", top: 0, hgt: 0 });
 }
 function measure() {
@@ -905,11 +914,32 @@ rainCanvas("sc-drive");
   const D = window.RIVERS_DATA, M = D.meta;
   const cnv = document.getElementById("cmap");
   const yearEl = document.getElementById("cy-year");
-  const popEl = document.getElementById("cy-pop");
-  const kmEl = document.getElementById("cy-km");
-  const impEl = document.getElementById("cy-imp");
   const buried = D.segs.filter(s => s.y < 9999);        // sorted by year already
   const cumKm = []; { let a = 0; for (const s of buried) { a += s.km; cumKm.push(a); } }
+
+  /* ── qualitative HUD tiles (top-left) ─────────────────────────────────
+     population: a crowd of figures, 1 figure = 100,000 people.
+     creek buried: a miniature Line 1 — the buried length equals riding
+     Finch↔Vaughan again and again (≈7.5 trips, ≈9 hours, by today).
+     paved surface: ground cells sealing over, soil → asphalt. */
+  const peopleEl = document.getElementById("cy-people");
+  const trainEl = document.getElementById("cy-train");
+  const kmCapEl = document.getElementById("cy-km-cap");
+  const pavedEl = document.getElementById("cy-paved");
+  const impCapEl = document.getElementById("cy-imp-cap");
+  const PERSON = `<svg viewBox="0 0 10 20" aria-hidden="true">
+    <circle cx="5" cy="3.2" r="2.5"/>
+    <path d="M2.2 7h5.6l-.7 6.4H6l-.3 6H4.3l-.3-6H2.9Z"/></svg>`;
+  const PERSON_K = 200;                                  // 1 figure = 200,000 people
+  const NPEOPLE = 14;                                    // 2024 ≈ 2.8 M
+  if (peopleEl) peopleEl.innerHTML =
+    Array.from({ length: NPEOPLE }, () => `<i class="cy-person">${PERSON}</i>`).join("");
+  const personEls = peopleEl ? [...peopleEl.children] : [];
+  const NPAVE = 30;                                      // 10 × 3 ground cells
+  if (pavedEl) pavedEl.innerHTML =
+    Array.from({ length: NPAVE }, () => "<i></i>").join("");
+  const paveEls = pavedEl ? [...pavedEl.children] : [];
+  const LINE1_KM = 38.8, TRIP_MIN = 72;                  // Finch↔Vaughan, one way
 
   const POPC = [[1930, 631], [1951, 1117], [1971, 2089], [1991, 2275], [2011, 2615], [2024, 2800]];
   function popC(year) {
@@ -929,6 +959,14 @@ rainCanvas("sc-drive");
     { n: "Don River", lat: 43.673, lon: -79.355, from: 0, alive: true },
     { n: "Humber River", lat: 43.648, lon: -79.4935, from: 0, alive: true },
     { n: "Lake Ontario", lat: 43.636, lon: -79.387, from: 0, lake: true },
+    /* landmarks: fixed points so the map reads as a real city, not a diagram
+       (positions nudged where a creek label already owns the exact spot) */
+    { n: "CN TOWER", lat: 43.6396, lon: -79.3871, from: 1976, mark: true },
+    { n: "FORT YORK", lat: 43.6371, lon: -79.4032, from: 0, mark: true },
+    { n: "CASA LOMA", lat: 43.6781, lon: -79.4094, from: 0, mark: true },
+    { n: "HIGH PARK", lat: 43.6435, lon: -79.4637, from: 0, mark: true },
+    { n: "YORK U", lat: 43.7735, lon: -79.5019, from: 1965, mark: true },
+    { n: "SCARBOROUGH TOWN CTR", lat: 43.7764, lon: -79.2573, from: 1973, mark: true },
   ].map(L => ({ ...L, mx: (L.lon - M.lonMin) * M.kx, my: (M.latMax - L.lat) * M.ky }));
 
   let fit = null;
@@ -941,8 +979,35 @@ rainCanvas("sc-drive");
     const oy = (H - M.h * sc) / 2 - H * .02;
     fit = { sc, ox, oy, dpr, W, H };
   }
-  const yearAt = p => Math.min(2024, Math.round(1930 + 94 * easeIO(p)));
   const FLASH_YEARS = [1954, 2005, 2013, 2018, 2024];
+  /* activity-weighted clock: scroll time is spent on the years where the
+     map actually changes (km buried, milestone storms); the quiet decades
+     flick past instead of dragging */
+  const yearAt = (() => {
+    const Y0 = 1930, Y1 = 2024;
+    const kmY = new Float32Array(Y1 - Y0 + 1);           // km buried per year
+    for (const s of buried)
+      if (s.y >= Y0 && s.y <= Y1) kmY[s.y - Y0] += s.km;
+    /* weight = idle drift + capped burial activity: the dataset bins whole
+       campaigns onto single years (109 km on "1931"), so uncapped km would
+       freeze the clock there instead of giving it a beat */
+    const w = new Float32Array(kmY.length).fill(.35);
+    for (let i = 0; i < w.length; i++)
+      w[i] += Math.min(kmY[i], 14) * .5 + (kmY[i] > .5 ? 1.2 : 0);
+    for (const fy of FLASH_YEARS)
+      if (fy >= Y0 && fy <= Y1) w[fy - Y0] += 2.4;
+    const cum = [0];
+    for (let i = 0; i < w.length; i++) cum.push(cum[i] + w[i]);
+    const total = cum[cum.length - 1];
+    return p => {
+      const tgt = c01(p) * total;
+      let lo = 0, hi = cum.length - 1;
+      while (lo < hi) { const mid = (lo + hi) >> 1; cum[mid] < tgt ? lo = mid + 1 : hi = mid; }
+      const i = Math.max(1, lo);
+      const f = (tgt - cum[i - 1]) / (cum[i] - cum[i - 1] || 1);
+      return Math.min(Y1, Y0 + (i - 1) + f);
+    };
+  })();
   let flashed = new Set();
 
   scene("sc-century", (p, t) => {
@@ -1016,23 +1081,50 @@ rainCanvas("sc-drive");
         ctx.font = `${11.5 * dprS}px ui-monospace,Menlo,monospace`;
         continue;
       }
+      if (L.mark) {                                       // landmark: warm square + tag
+        ctx.strokeStyle = `rgba(255,214,140,${(a * .8).toFixed(2)})`;
+        ctx.lineWidth = 1.2 * dprS;
+        ctx.strokeRect(x - 2.6 * dprS, y - 2.6 * dprS, 5.2 * dprS, 5.2 * dprS);
+        ctx.fillStyle = `rgba(255,214,140,${(a * .6).toFixed(2)})`;
+        ctx.font = `${8.5 * dprS}px ui-monospace,Menlo,monospace`;
+        ctx.textAlign = "center";                         // label under the square,
+        ctx.fillText(L.n, x, y + 9 * dprS);               // clear of the creek names
+        ctx.textAlign = "start";
+        ctx.font = `${11.5 * dprS}px ui-monospace,Menlo,monospace`;
+        continue;
+      }
       const col = L.alive ? "127,212,255" : "190,178,215";
       ctx.fillStyle = `rgba(${col},${(a * .95).toFixed(2)})`;
       ctx.beginPath(); ctx.arc(x, y, 2.4 * dprS, 0, TAU); ctx.fill();
       ctx.fillText(" " + L.n, x + 3 * dprS, y);
     }
 
-    /* counters */
-    yearEl.textContent = p > .95 ? "today" : year;
-    popEl.textContent = Math.round(popC(year)).toLocaleString("en-CA") + ",000";
+    /* counters → the qualitative tiles */
+    yearEl.textContent = p > .95 ? "today" : Math.floor(year);
+    const nP = Math.round(popC(year) / PERSON_K);        // 1 figure = 200k
+    for (let i = 0; i < personEls.length; i++)
+      personEls[i].classList.toggle("on", i < nP);
     let km = 0;
     if (buried.length) {
       let lo = 0, hi = buried.length;                    // count segments with y < year
       while (lo < hi) { const mid = lo + hi >> 1; buried[mid].y < year ? lo = mid + 1 : hi = mid; }
       km = lo ? cumKm[lo - 1] : 0;
     }
-    kmEl.textContent = Math.round(km) + " km";
-    impEl.textContent = Math.round(lerp(24, 64, map(year, 1930, 2024))) + "%";
+    const trips = km / LINE1_KM;
+    if (trainEl) {
+      const ph = trips % 2;                              // ping-pong Vaughan ↔ Finch
+      const xf = ph < 1 ? ph : 2 - ph;
+      trainEl.style.left = (xf * 100).toFixed(1) + "%";
+    }
+    if (kmCapEl) kmCapEl.textContent =
+      `${Math.round(km)} km ≈ riding Line 1 end-to-end ${trips.toFixed(1)}× · ` +
+      `${(trips * TRIP_MIN / 60).toFixed(0)} h on the subway`;
+    const imp = lerp(24, 64, map(year, 1930, 2024));
+    const nC = Math.round(imp / 100 * paveEls.length);
+    for (let i = 0; i < paveEls.length; i++)
+      paveEls[i].classList.toggle("paved", i < nC);
+    if (impCapEl) impCapEl.textContent =
+      `${Math.round(imp / 10)} of 10 raindrops can’t soak in`;
   });
   /* Path2D cache (per segment per fit) */
   let pathCache = new WeakMap(), cacheKey = null;
@@ -1096,6 +1188,98 @@ if (window.RISK_DATA && document.getElementById("riskmap")) {
        <i class="rk-dbar"><b style="width:${(100 * d.imp / max).toFixed(0)}%"></b></i></li>`
     ).join("");
   }
+
+  /* rank every ward on both metrics for the tooltips */
+  [...RK.wards].sort((a, b) => b.nSusc - a.nSusc).forEach((w, i) => { w.rkSusc = i + 1; });
+  [...RK.wards].sort((a, b) => b.nCoin - a.nCoin).forEach((w, i) => { w.rkCoin = i + 1; });
+  const N_W = RK.wards.length;
+
+  /* ── hover: read any ward's numbers straight off the map ─────────────── */
+  const tipEl = document.getElementById("rk-tip");
+  let hoverW = null;
+  function wardHTML(w, label) {
+    return `${label ? `<em>${label}</em>` : ""}<b>${w.name}</b>
+      <span>flood susceptibility <i>${Math.round(w.nSusc * 100)}/100</i> · #${w.rkSusc} of ${N_W}</span>
+      <span>river × weak-sewer <i>${w.nCoin.toFixed(2)}</i> · #${w.rkCoin} of ${N_W}</span>`;
+  }
+  cnv.addEventListener("pointermove", e => {
+    if (!fit || !tipEl) return;
+    const r = cnv.getBoundingClientRect();
+    const mx = (e.clientX - r.left) * (cnv.width / r.width);
+    const my = (e.clientY - r.top) * (cnv.height / r.height);
+    const ctx = cnv.getContext("2d");
+    let found = null;
+    for (const w of RK.wards)
+      if (ctx.isPointInPath(wardPath(w, fit), mx, my)) { found = w; break; }
+    hoverW = found;
+    if (found) {
+      tipEl.innerHTML = wardHTML(found);
+      tipEl.classList.add("on");
+      const tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+      tipEl.style.left = Math.min(innerWidth - tw - 10, e.clientX + 16) + "px";
+      tipEl.style.top = Math.max(10, Math.min(innerHeight - th - 10, e.clientY + 14)) + "px";
+    } else tipEl.classList.remove("on");
+  });
+  cnv.addEventListener("pointerleave", () => {
+    hoverW = null;
+    if (tipEl) tipEl.classList.remove("on");
+  });
+
+  /* ── "find my ward": postal code (FSA) → point → ward ────────────────── */
+  const findForm = document.getElementById("rk-find");
+  const findInput = document.getElementById("rk-post");
+  const foundEl = document.getElementById("rk-found");
+  let pinW = null, pinPt = null;
+  function wardContains(w, x, y) {                        // even-odd over all rings
+    let inside = false;
+    for (const r of w.rings) {
+      for (let i = 0, j = r.length - 2; i < r.length; j = i, i += 2) {
+        const xi = r[i], yi = r[i + 1], xj = r[j], yj = r[j + 1];
+        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+          inside = !inside;
+      }
+    }
+    return inside;
+  }
+  if (findForm) findForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const raw = (findInput.value || "").trim().toUpperCase();
+    pinW = null; pinPt = null;
+    if (!raw) { foundEl.innerHTML = ""; return; }
+    /* a typed ward name works too */
+    const byName = RK.wards.find(w => w.name.toUpperCase().includes(raw) && raw.length >= 4);
+    const fsa = (raw.replace(/\s+/g, "").match(/^M\d[A-Z]/) || [])[0];
+    const ll = fsa && window.HR && HR.FSA ? HR.FSA[fsa] : null;
+    if (!byName && !ll) {
+      foundEl.innerHTML = raw[0] === "M" || /^\d/.test(raw)
+        ? `<span class="rk-miss">Couldn’t place “${raw}” — Toronto postal codes start M1A–M9W.</span>`
+        : `<span class="rk-miss">Enter a Toronto postal code (e.g. M5V) or a ward name.</span>`;
+      return;
+    }
+    let w = byName;
+    if (!byName) {
+      const x = (ll[1] - RM.lonMin) * RM.kx - RM.ox;
+      const y = (RM.latMax - ll[0]) * RM.ky - RM.oy;
+      w = RK.wards.find(wd => wardContains(wd, x, y));
+      if (!w) {                                           // fringe FSA: snap to nearest
+        let bd = Infinity;
+        for (const wd of RK.wards) {
+          const d = (wd.cx - x) ** 2 + (wd.cy - y) ** 2;
+          if (d < bd) { bd = d; w = wd; }
+        }
+      }
+      pinPt = [x, y];
+    }
+    pinW = w;
+    foundEl.innerHTML = wardHTML(w, fsa ? `${fsa} · approx.` : "your ward") +
+      `<button type="button" id="rk-clear">clear</button>`;
+    const clr = document.getElementById("rk-clear");
+    if (clr) clr.addEventListener("click", () => {
+      pinW = null; pinPt = null; foundEl.innerHTML = ""; findInput.value = "";
+    });
+    if (window.HR && HR.live) HR.live(`${w.name}: flood susceptibility ` +
+      `${Math.round(w.nSusc * 100)} out of 100, rank ${w.rkSusc} of ${N_W}.`);
+  });
 
   let fit = null;
   function refit() {
@@ -1186,6 +1370,27 @@ if (window.RISK_DATA && document.getElementById("riskmap")) {
       ctx.beginPath(); ctx.arc(lx, ly, 3 * dprS, 0, TAU);
       ctx.fillStyle = `rgba(255,255,255,${appear.toFixed(2)})`; ctx.fill();
       topEl.textContent = topW.name;
+    }
+
+    /* hovered ward + the looked-up "your ward" pin */
+    if (hoverW && appear > .2) {
+      ctx.lineWidth = 1.8 * dprS;
+      ctx.strokeStyle = "rgba(127,212,255,.95)";
+      ctx.stroke(wardPath(hoverW, f));
+    }
+    if (pinW && appear > .2) {
+      const path = wardPath(pinW, f);
+      ctx.lineWidth = 2.4 * dprS;
+      ctx.strokeStyle = "rgba(124,196,111,.95)";
+      ctx.stroke(path);
+      const px2 = (pinPt ? pinPt[0] : pinW.cx) * f.sc + f.ox;
+      const py2 = (pinPt ? pinPt[1] : pinW.cy) * f.sc + f.oy;
+      const pulse = 1 + .2 * Math.sin(t * 3);
+      ctx.strokeStyle = "rgba(124,196,111,.9)";
+      ctx.lineWidth = 2 * dprS;
+      ctx.beginPath(); ctx.arc(px2, py2, 7 * dprS * pulse, 0, TAU); ctx.stroke();
+      ctx.fillStyle = "#7cc46f";
+      ctx.beginPath(); ctx.arc(px2, py2, 2.6 * dprS, 0, TAU); ctx.fill();
     }
 
     metricEl.textContent = blend < .5
@@ -1554,9 +1759,8 @@ if (window.RISK_DATA && document.getElementById("riskmap")) {
   rainCanvas("sc-future");
 }
 
-/* ── chapter HUD + progress bar + main loop ───────────────────────────── */
+/* ── progress bar + main loop (the chapter readout lives in HR.nav) ───── */
 const barEl = document.getElementById("bar");
-const chapterEl = document.getElementById("chapter");
 const flowSections = [...document.querySelectorAll("section[data-name]")];
 /* which music bed each scene wants while it owns the viewport */
 const MOOD = {
@@ -1570,9 +1774,15 @@ function loop() {
   const t = perf(), dt = Math.min(.05, t - lastT); lastT = t;
   const y = scrollY, vh = innerHeight;
   rain.target = 0;
-  let chapter = "", activeId = "";
+  let activeId = "";
   for (const s of SCENES) {
     const p = (y - s.top) / (s.hgt - vh);
+    /* edge veil: dark while the sticky pins/unpins (wider window than the
+       update band so an entering scene is already veiled) */
+    if (s.edge && p > -1.5 && p < 2.5) {
+      const e = p < 0 ? c01(-p / .18) : p > 1 ? c01((p - 1) / .18) : 0;
+      s.edge.style.opacity = e.toFixed(3);
+    }
     if (p > -.12 && p < 1.12) {
       const pc = c01(p);
       for (const b of s.beats) {
@@ -1585,10 +1795,8 @@ function loop() {
   }
   for (const sec of flowSections) {
     const r = sec.getBoundingClientRect();
-    if (r.top < vh * .5 && r.bottom > vh * .5) { chapter = sec.dataset.name; activeId = sec.id; }
+    if (r.top < vh * .5 && r.bottom > vh * .5) { activeId = sec.id; }
   }
-  chapterEl.textContent = chapter;
-  chapterEl.classList.toggle("on", !!chapter && y > vh * .25);
   const docH = document.documentElement.scrollHeight - vh;
   barEl.style.transform = `scaleX(${(docH ? y / docH : 0).toFixed(4)})`;
   drawRain(dt, t);

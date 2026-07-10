@@ -20,9 +20,7 @@ HR.audio = (() => {
   let rainNode = null, engineNode = null, dozerNode = null;
   let enabled = false, built = false;
 
-  const wantOn = () => { try { return localStorage.getItem(PREF) === "1"; } catch (e) { return false; } }
-
-  /* ── graph construction (lazy: only after the user opts in) ───────────── */
+  /* ── graph construction (lazy: only after the first user gesture) ─────── */
   function build() {
     if (built) return;
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -283,11 +281,24 @@ HR.audio = (() => {
       : '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4Z" fill="currentColor"/><path d="M22 9l-6 6M16 9l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   }
 
-  /* re-arm a previously-granted preference on the first gesture */
+  /* arm audio on the first user gesture. Sound is opt-OUT: unless the user
+     has explicitly muted before (PREF === "0"), the first tap/keypress
+     starts the soundtrack — a hidden speaker button meant most visitors
+     never heard the piece at all. Autoplay policy is satisfied because the
+     AudioContext is created inside the gesture handler. */
   function armReentry() {
-    if (!wantOn()) return;
-    const go = () => { enable(); removeEventListener("pointerdown", go); removeEventListener("keydown", go); };
-    addEventListener("pointerdown", go); addEventListener("keydown", go);
+    let pref = null;
+    try { pref = localStorage.getItem(PREF); } catch (e) { /* private mode */ }
+    if (pref === "0") return;
+    const go = () => {
+      enable();
+      removeEventListener("pointerdown", go);
+      removeEventListener("keydown", go);
+      removeEventListener("touchend", go);
+    };
+    addEventListener("pointerdown", go);
+    addEventListener("keydown", go);
+    addEventListener("touchend", go);
   }
 
   function boot() { makeBtn(); armReentry(); }
