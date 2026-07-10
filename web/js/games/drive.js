@@ -69,6 +69,7 @@
   let st, tT, fT;                                        // edge state / telegraph deadline / flood time
   let player, elapsed, mode, dyingT, revealOn, auto, autoPath;
   let endgame, endT, Unode, lastSim, lastDir, raf = 0, running = false, paused = false, lastT = 0;
+  let tut;                                               // per-run tutorial progress
   let tscale = 1;                                        // >1 while fast-forwarding to the end
   const cv = document.getElementById("drive-cv");
   const clockEl = document.getElementById("drive-clock");
@@ -84,7 +85,31 @@
                bump: 0, bdx: 0, bdy: 0 };
     elapsed = 0; mode = "play"; dyingT = 0; revealOn = false; endgame = false; endT = 0;
     Unode = null; lastSim = 0; lastDir = 0; autoPath = null;
+    tut = { moved: false, bumped: false };
     lossEl.classList.remove("on");
+  }
+
+  /* sequential coach marks — the engage card no longer explains anything */
+  const T = () => (window.HR && HR.tutor) ? HR.tutor : null;
+  function tutStart() {
+    const t = T(); if (!t || auto) return;
+    t.hint("drive-move", t.COARSE
+      ? "Touch and drag the <b>joystick</b> to drive"
+      : `Drive with ${t.kbd("W")}${t.kbd("A")}${t.kbd("S")}${t.kbd("D")} or the arrow keys`,
+      { ttl: 0 });
+  }
+  function tutMoved() {
+    const t = T(); if (!t || auto || tut.moved) return;
+    tut.moved = true;
+    t.clear("drive-move");
+    setTimeout(() => t.hint("drive-goal",
+      "Reach the green <b>HOME</b> pin — before the water finds you", { ttl: 7 }), 700);
+  }
+  function tutBumped() {
+    const t = T(); if (!t || auto || tut.bumped) return;
+    tut.bumped = true;
+    t.hint("drive-bump",
+      "Dark water = street gone · flashing orange = about to flood", { ttl: 7 });
   }
 
   /* BFS over open edges (state 0 only — barricades already block) */
@@ -236,13 +261,16 @@
 
   /* ── movement ───────────────────────────────────────────────────────── */
   function movePlayer(dt) {
-    const ax = auto ? autoAxes() : HR.input.axes;
+    /* quantize: the joystick feeds analog axes, the grid needs -1/0/1 */
+    const raw = auto ? autoAxes() : HR.input.axes;
+    const qx = Math.abs(raw.x) > .35 ? Math.sign(raw.x) : 0;
+    const qy = Math.abs(raw.y) > .35 ? Math.sign(raw.y) : 0;
     const aud = A(); if (aud && mode === "play") aud.engineRev(player.moving ? .55 : .12);
     if (player.bump > 0) { player.bump -= dt; return; }
     if (player.moving) {
       /* allow mid-edge reverse */
       const dx = Math.sign(player.tx - player.x), dy = Math.sign(player.ty - player.y);
-      if ((dx && ax.x === -dx) || (dy && ax.y === -dy)) {
+      if ((dx && qx === -dx) || (dy && qy === -dy)) {
         const ox = player.x, oy = player.y;
         player.x = player.tx; player.y = player.ty;
         player.tx = ox; player.ty = oy; player.prog = 1 - player.prog;
@@ -255,8 +283,9 @@
       return;
     }
     let dx = 0, dy = 0;
-    if (ax.x) dx = ax.x; else if (ax.y) dy = ax.y;
+    if (qx) dx = qx; else if (qy) dy = qy;
     if (!dx && !dy) return;
+    tutMoved();
     const nx = player.x + dx, ny = player.y + dy;
     if (nx < 0 || nx >= NX || ny < 0 || ny >= NY) return;
     const e = edgeBetween(player.x, player.y, nx, ny);
@@ -264,6 +293,7 @@
       player.tx = nx; player.ty = ny; player.prog = 0; player.moving = true;
     } else {
       player.bump = .45; player.bdx = dx; player.bdy = dy;  // nose in, back out
+      tutBumped();
       const a = A(); if (a) { a.sfx.splash(); a.engineRev(.15); }
     }
   }
@@ -469,12 +499,14 @@
     init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     const a = A(); if (a) a.engineStart();
+    tutStart();
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
 
   const game = {
     id: "drive", sceneId: "sc-drive",
+    keys: { w: "up", a: "left", s: "down", d: "right" },
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),

@@ -95,6 +95,7 @@
   let dz, progress, elapsed, mode, auto, cam, announced;
   let convT, blurbSeen, blurbQ, blurbUntil, bonusAge;
   let running = false, paused = false, raf = 0, lastT = 0, tscale = 1;
+  let tut;                                               // per-run tutorial progress
 
   function init() {
     dz = { x: PATH[0][0] - 60, y: PATH[0][1] - 40, a: .6 };
@@ -102,8 +103,38 @@
     announced = {}; bonusAge = 0;
     convT = new Float32Array(NB).fill(-1);
     blurbSeen = {}; blurbQ = []; blurbUntil = 0;
+    tut = { rolled: false, dug: false, looked: false };
     if (blurbEl) { blurbEl.classList.remove("on"); blurbEl.innerHTML = ""; }
     winEl.classList.remove("on");
+  }
+
+  /* sequential coach marks */
+  const T = () => (window.HR && HR.tutor) ? HR.tutor : null;
+  function tutStart() {
+    const t = T(); if (!t || auto) return;
+    t.hint("dozer-roll", t.COARSE
+      ? "Drag the <b>joystick</b> up to roll forward"
+      : `Hold ${t.kbd("W")} to roll forward · ${t.kbd("A")}${t.kbd("D")} steer`,
+      { ttl: 0 });
+  }
+  function tutTick(nearPath) {
+    const t = T(); if (!t || auto || mode !== "play") return;
+    if (!tut.rolled && progress > 30) {
+      tut.rolled = true;
+      t.clear("dozer-roll");
+      t.hint("dozer-line",
+        "Follow the dashed <b>creek line</b> — the crew digs behind you", { ttl: 8 });
+    }
+    if (!tut.dug && progress > 420) {
+      tut.dug = true;
+      t.hint("dozer-look",
+        "Glance back — the river is coming to life in your wake", { ttl: 8 });
+    }
+    if (tut.rolled && progress < TOTAL && !nearPath) {
+      t.nag("dozer-stray", "You’ve drifted — follow the <b>blue arrow</b> back to the line");
+    } else {
+      t.clear("dozer-stray");
+    }
   }
 
   /* ── milestone blurbs: queued, one at a time ─────────────────────────── */
@@ -148,12 +179,12 @@
     const speed = auto ? 2.4 : 1;
     elapsed += dt * speed;
 
-    /* drive */
+    /* drive — the cap is deliberately low: this run is a stroll, not a race */
     const ax = auto ? autoAxes() : HR.input.axes;
-    dz.a += ax.x * 1.92 * dt;
+    dz.a += ax.x * 1.7 * dt;
     const [fx, fy] = pointAt(Math.min(TOTAL, progress + 30));
     const nearPath = U.dist(dz.x, dz.y, fx, fy) < CORRIDOR;
-    const v = (nearPath ? 185 : 145) * -ax.y;            // W = up = forward
+    const v = (nearPath ? 125 : 100) * -ax.y;            // W = up = forward
     dz.x = U.clamp(dz.x + Math.cos(dz.a) * v * dt, 30, WORLD.w - 30);
     dz.y = U.clamp(dz.y + Math.sin(dz.a) * v * dt, 30, WORLD.h - 30);
 
@@ -180,6 +211,7 @@
     /* the dozer engine bogs down harder while it's actually cutting channel */
     const aud = A();
     if (aud) aud.dozerLoad(nearPath && Math.abs(ax.y) > .1 ? .95 : .35);
+    tutTick(nearPath);
 
     const g = gauges();
     for (const k of ["heat", "flood", "cso", "species"]) {
@@ -457,12 +489,14 @@
     init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     const a = A(); if (a) a.dozerStart();
+    tutStart();
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
 
   const game = {
     id: "dozer", sceneId: "sc-dozer",
+    keys: { w: "forward", a: "steer left", s: "reverse", d: "steer right" },
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),

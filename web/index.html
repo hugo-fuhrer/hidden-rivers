@@ -11,13 +11,12 @@
 <body>
 
 <div id="bar"></div>
-<div id="chapter"></div>
 <div id="flash"></div>
 
 <main>
 
 <!-- ════════════ I · THE CLOUD ════════════ -->
-<section class="scene" id="sc-cloud" style="--len:3.4" data-name="I · The cloud">
+<section class="scene" id="sc-cloud" style="--len:4.2" data-name="I · The cloud">
   <div class="sticky">
     <div class="sky" id="cloud-sky"></div>
     <div class="cloudlayer" id="cl-back"></div>
@@ -28,14 +27,12 @@
     <div class="beat b-c dark-ink" data-a="-0.25" data-b="0.15">
       <p class="kicker">Toronto · July 16, 2024</p>
       <h1>It begins over the lake.</h1>
-      <p class="sub">A heat dome sits on southern Ontario. Lake Ontario is bath-warm,
-        and the air above it is loaded.</p>
+      <p class="sub">A heat dome sits on southern Ontario. The air is loaded.</p>
     </div>
     <p class="beat b-c dark-ink" data-a="0.24" data-b="0.40">You are up here — one droplet
       in a storm cell the size of the city.</p>
-    <p class="beat b-c dark-ink" data-a="0.48" data-b="0.63">Warm air holds more water —
-      about 7&thinsp;% more for every degree. This air has been warming for a
-      century.<button class="dig" type="button" data-dig="warmair" aria-label="Dig deeper: why warm air holds more rain">i</button></p>
+    <p class="beat b-c dark-ink" data-a="0.48" data-b="0.63">This sky has been warming
+      for a century.<button class="dig" type="button" data-dig="warmair" aria-label="Dig deeper: why warm air holds more rain">i</button></p>
     <p class="beat b-c" data-a="0.72" data-b="0.90">The cloud can’t carry it all.<br>
       Around midday, it lets go.</p>
 
@@ -44,7 +41,7 @@
 </section>
 
 <!-- ════════════ II · THE FALL ════════════ -->
-<section class="scene" id="sc-fall" style="--len:4.2" data-name="II · The fall">
+<section class="scene" id="sc-fall" style="--len:5.2" data-name="II · The fall">
   <div class="sticky">
     <div class="sky" id="fall-sky"></div>
     <div class="parallax" id="skyline-far"></div>
@@ -58,19 +55,18 @@
     </svg>
     <div id="altimeter">2 400 m</div>
 
-    <p class="beat b-tl" data-a="0.06" data-b="0.20">12:48 p.m. — the third band of
-      storms that day stalls over the core.</p>
-    <p class="beat b-tr" data-a="0.30" data-b="0.46">Below you: a city that paved its
+    <p class="beat b-tl glass" data-a="0.06" data-b="0.20">12:48 p.m. — the third band of
+      storms stalls over the core.</p>
+    <p class="beat b-tr glass" data-a="0.30" data-b="0.46">Below you: a city that paved its
       valleys and pipes its rain.</p>
-    <p class="beat b-tl" data-a="0.54" data-b="0.70">Much of the old core still drains
-      through <em>combined</em> sewers — one Victorian pipe for sewage and storm
-      together.<button class="dig" type="button" data-dig="combined" aria-label="Dig deeper: Toronto's combined sewers">i</button></p>
-    <p class="beat b-tr" data-a="0.78" data-b="0.93">They were sized for another climate.</p>
+    <p class="beat b-tl glass" data-a="0.54" data-b="0.70">The old core drains through one
+      Victorian pipe — sewage and storm together.<button class="dig" type="button" data-dig="combined" aria-label="Dig deeper: Toronto's combined sewers">i</button></p>
+    <p class="beat b-tr glass" data-a="0.78" data-b="0.93">Sized for another climate.</p>
   </div>
 </section>
 
 <!-- ════════════ III · THE FLOOD ════════════ -->
-<section class="scene" id="sc-flood" style="--len:4.8" data-name="III · The flood">
+<section class="scene" id="sc-flood" style="--len:5.8" data-name="III · The flood">
   <div class="sticky">
     <div class="sky" id="flood-sky"></div>
     <svg id="street-flood" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
@@ -80,12 +76,12 @@
       at River Street.</p>
     <p class="beat b-tl" data-a="0.20" data-b="0.33">For a while, the drains keep up.</p>
     <p class="beat b-tl" data-a="0.38" data-b="0.52">Then they don’t.
-      <strong>97.8&nbsp;mm</strong> falls at Pearson — a month of rain in a day.</p>
-    <p class="beat b-tl stat" data-a="0.57" data-b="0.71">Union Station floods.
-      The Don Valley Parkway becomes a river.<br><strong>167,000</strong> customers lose
+      <strong>97.8&nbsp;mm</strong> — a month of rain in a day.</p>
+    <p class="beat b-tl stat" data-a="0.57" data-b="0.71">Union Station floods. The DVP
+      becomes a river. <strong>167,000</strong> lose
       power.<button class="dig" type="button" data-dig="storm2024" aria-label="Dig deeper: the July 2024 storm">i</button></p>
-    <p class="beat b-tl stat" data-a="0.76" data-b="0.99">The grey sedan with its hazards on,
-      trying to turn out of the water?<br><strong>That’s you. Get home.</strong></p>
+    <p class="beat b-tl stat" data-a="0.76" data-b="0.99">The grey sedan with its
+      hazards on?<br><strong>That’s you. Get home.</strong></p>
   </div>
 </section>
 
@@ -100,20 +96,13 @@
         <i class="stormbar"><b id="drive-stormfill"></b></i>
       </div>
     </div>
-    <span class="ghint drive-hint">WASD / arrows to drive · Esc pauses · <b>F</b> skips to the end · reach <em>HOME</em></span>
     <div class="dpad" id="drive-dpad"></div>
 
     <div class="engage" id="drive-engage">
       <p class="ekick">6:12 p.m. · Queen St E</p>
       <h3>Get home.</h3>
-      <p>Avoid flooded streets. That’s it. That’s the whole game.</p>
-      <ul class="guide">
-        <li><b>Goal</b><span>Reach the glowing green <em>HOME</em> pin, top-left, before the rising water seals off every street.</span></li>
-        <li><b>Controls</b><span>WASD or arrow keys (or the on-screen pad) — you drive one block at a time between intersections.</span></li>
-        <li><b>Read the map</b><span>Flashing orange barricades = a street about to flood. Dark water = already gone (you’ll bump off it). The storm meter, top-right, fills as the flood spreads.</span></li>
-        <li><b>You win if</b><span>your car parks on the HOME pin before the water finds you.</span></li>
-      </ul>
-      <p class="enote"><b>Esc</b> pauses at any time — resume, restart, skip to the end, or jump straight to the next section.</p>
+      <p>Avoid the flood. Reach the green <em>HOME</em> pin.</p>
+      <p class="enote">You’ll learn the rest as you drive · <b>Esc</b> pauses</p>
       <div class="ebtns">
         <button class="g-start" type="button">Start driving</button>
         <button class="g-skip" type="button">Skip — let it happen</button>
@@ -136,16 +125,14 @@
       <div class="gcard">
         <p class="ekick">ENGINE DEAD · 6:13 P.M.</p>
         <h3>The city is dark. You’re walking.</h3>
-        <p>You did nothing wrong. Replay it in your head: every route you tried
-           was already blocked, or about to be.</p>
-        <p class="greveal">The glowing lines behind this card are why. <b>The routes
-           that failed you trace Garrison Creek. It was buried in 1884. It never
+        <p>You did nothing wrong. Every route was already blocked, or about to be.</p>
+        <p class="greveal">The glowing lines are why. <b>The routes that failed you
+           trace Garrison Creek — buried in 1884. It never
            left.</b><button class="dig" type="button" data-dig="garrison" aria-label="Dig deeper: Garrison Creek">i</button></p>
         <p class="gstats">You lasted <b id="drive-surv">—</b> ·
-           Water at your intersection: 1.4&nbsp;m and rising ·
-           167,000 customers without power · DVP closed · Union Station flooding</p>
-        <p class="gfoot">Insured damage tonight: $940&nbsp;million and counting.
-           Toronto’s third “100-year storm” since
+           167,000 without power · DVP closed · Union Station flooding</p>
+        <p class="gfoot">$940&nbsp;million insured damage tonight — Toronto’s third
+           “100-year storm” since
            2013.<button class="dig" type="button" data-dig="flood2013" aria-label="Dig deeper: the 2013 flood">i</button></p>
         <button class="g-done" type="button">Get out — rewind 142 years ⏮</button>
       </div>
@@ -154,26 +141,16 @@
 </section>
 
 <!-- ════════════ REWIND ════════════ -->
-<section class="scene" id="sc-rewind" style="--len:2.2" data-name="⏮ Rewind">
+<section class="scene" id="sc-rewind" style="--len:2.8" data-name="⏮ Rewind">
   <div class="sticky pitch" id="rw-sticky">
     <canvas id="rw-flux" aria-hidden="true"></canvas>
     <div id="rw-burst" aria-hidden="true"></div>
     <div id="rw-year">2024</div>
-    <p class="beat b-c rw-cap" data-a="0.02" data-b="0.08">Feel cheated? Good.
-      <strong>Hold that thought for 142 years.</strong></p>
-    <p class="beat b-c rw-cap" data-a="0.10" data-b="0.26">1954 — Hazel kills 81.
-      The lesson learned is <em>more concrete</em>.<button class="dig" type="button" data-dig="hazel" aria-label="Dig deeper: Hurricane Hazel">i</button></p>
-    <p class="beat b-c rw-cap" data-a="0.32" data-b="0.48">1924 — the last open stretch
-      of Garrison Creek goes into the pipe.</p>
-    <p class="beat b-c rw-cap" data-a="0.54" data-b="0.70">1884 — Canada’s largest brick
-      sewer swallows the creek whole.<button class="dig" type="button" data-dig="garrison" aria-label="Dig deeper: Garrison Creek">i</button></p>
-    <p class="beat b-c rw-cap" data-a="0.78" data-b="0.96">1882 — a city council chamber,
-      a gas lamp, and one ballot. <strong>Yours.</strong></p>
   </div>
 </section>
 
 <!-- ════════════ III¾ · THE STINK (Ashbridge's Bay, 1882) ════════════ -->
-<section class="scene" id="sc-stink" style="--len:4" data-name="III¾ · The stink">
+<section class="scene" id="sc-stink" style="--len:4.8" data-name="III¾ · The stink">
   <div class="sticky">
     <div class="sky" id="stink-sky"></div>
     <svg id="stink-bay" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
@@ -183,15 +160,14 @@
       <p class="kicker">Toronto · 1882 · Ashbridge&rsquo;s Bay</p>
       <h1>Before you vote, smell the evidence.</h1>
     </div>
-    <p class="beat b-tl" data-a="0.22" data-b="0.36">Garrison Creek runs grey with the
-      waste of ten thousand privies. Every creek in the city drains to this marsh —
-      and the marsh has stopped forgiving.<button class="dig" type="button" data-dig="ashbridges" aria-label="Dig deeper: Ashbridge's Bay, the plague-spot">i</button></p>
-    <p class="beat b-tr" data-a="0.43" data-b="0.57">The physicians say the next cholera
-      season will not knock before it enters.</p>
-    <p class="beat b-tl" data-a="0.64" data-b="0.78">The ledger is bled white — the old
-      debts have come due, and the treasury cannot pay for both beauty and survival.</p>
-    <p class="beat b-c" data-a="0.84" data-b="0.98">The gallery is packed; a jury of your
-      neighbours watches from the box. Tonight the creeks stand trial —
+    <p class="beat b-tl" data-a="0.22" data-b="0.36">Every creek in the city drains to
+      this marsh — grey with the waste of ten thousand
+      privies.<button class="dig" type="button" data-dig="ashbridges" aria-label="Dig deeper: Ashbridge's Bay, the plague-spot">i</button></p>
+    <p class="beat b-tr" data-a="0.43" data-b="0.57">The physicians promise cholera
+      by summer.</p>
+    <p class="beat b-tl" data-a="0.64" data-b="0.78">The treasury cannot pay for both
+      beauty and survival.</p>
+    <p class="beat b-c" data-a="0.84" data-b="0.98">Tonight the creeks stand trial —
       <strong>and yours is the deciding ballot.</strong></p>
   </div>
 </section>
@@ -447,9 +423,8 @@
       <div class="vcard va" id="vote-a">
         <h3>Parks &amp; Boulevards</h3>
         <p class="vtag">the beautiful gamble</p>
-        <p>Keep the creeks in daylight as a chain of public gardens.
-           Twenty years, a fortune in land — and nothing for the families
-           burying children this summer.</p>
+        <p>Keep the creeks in daylight as a chain of gardens. Twenty years,
+           a fortune — and nothing for this summer’s sick.</p>
         <button class="vbtn" type="button">Vote for the Parks Plan — costly · slow · unproven</button>
         <div id="vote-toast">The City Engineer interjects: “With respect, Councillor —
           the parks plan costs $1.1&nbsp;million we do not have, and cholera does not
@@ -458,9 +433,8 @@
       <div class="vcard vb" id="vote-b">
         <h3>Sanitary Improvement</h3>
         <p class="vtag">the responsible choice</p>
-        <p>Entomb the creeks in brick sewers, fill the ravines, sell the level land.
-           Ground breaks within the month; the stench — and the sickness — goes
-           underground for good.</p>
+        <p>Entomb the creeks in brick sewers, fill the ravines. Ground breaks
+           within the month; the sickness goes underground for good.</p>
         <button class="vbtn" type="button">Vote to Bury the Creeks — immediate · funded · safe</button>
       </div>
     </div>
@@ -487,28 +461,17 @@
     <div class="ghud bury-hud">
       <span class="bh-cell"><small>POPULATION</small><b id="bury-pop">86,000</b></span>
       <span class="bh-year" id="bury-year">1880</span>
-      <span class="bh-cell bh-right"><small>HOPPER · 1&thinsp;s = 1&thinsp;yr → 1930</small><b id="bury-dirt">50%</b></span>
+      <span class="bh-cell bh-right"><small>HOPPER</small><b id="bury-dirt">50%</b></span>
     </div>
     <div id="bury-sick"><i id="bury-sickfill"></i><em>EPIDEMIC</em><small>SICKNESS</small></div>
     <div class="dpad" id="bury-dpad"></div>
 
     <div class="engage" id="bury-engage">
       <p class="ekick">1880 → 1930 · ONE SECOND = ONE YEAR · THE REAL MAP</p>
-      <h3>Bury them. All of them. Faster.</h3>
-      <p>Council voted. You’re the City Engineer now — and this is Toronto’s
-         <em>actual</em> creek map, from the Lost Rivers survey.</p>
-      <ul class="guide">
-        <li><b>Goal</b><span>Bury all <em>28</em> glowing creek sections before the sickness
-          meter (right) hits&nbsp;EPIDEMIC — or before the clock reaches 1930.</span></li>
-        <li><b>Controls</b><span>WASD / arrow keys (or the on-screen pad) drive the dozer.</span></li>
-        <li><b>How</b><span>Drive onto a brown <em>SPOIL</em> heap to shovel gravel into your
-          hopper, then start at either flashing end of a creek and crawl the line —
-          your hopper drains into the channel as you go. The arrow always points to
-          the next job; your crews handle the minor culverts around you.</span></li>
-        <li><b>Watch</b><span>Sprawl reaching an open creek makes it sicken twice as fast —
-          bury the built-up ones first.</span></li>
-      </ul>
-      <p class="enote"><b>Esc</b> pauses at any time — resume, restart, skip to the end, or jump straight to the next section.</p>
+      <h3>Bury them. All of them.</h3>
+      <p>Council voted. You’re the City Engineer — beat the epidemic
+         on Toronto’s <em>actual</em> creek map.</p>
+      <p class="enote">You’ll learn on the job · <b>Esc</b> pauses</p>
       <div class="ebtns">
         <button class="g-start" type="button">Break ground</button>
         <button class="g-skip" type="button">Let the engineers handle it — skip</button>
@@ -554,55 +517,67 @@
 </section>
 
 <!-- ════════════ V · THE CENTURY (consequences) ════════════ -->
-<section class="scene" id="sc-century" style="--len:6" data-name="V · The century">
+<section class="scene" id="sc-century" style="--len:7.5" data-name="V · The century">
   <div class="sticky pitch">
     <canvas id="cmap"></canvas>
     <div id="cy-hud">
       <div id="cy-year">1930</div>
-      <div class="cy-row"><span>population</span><b id="cy-pop">631,000</b></div>
-      <div class="cy-row"><span>creek buried</span><b id="cy-km">— km</b></div>
-      <div class="cy-row"><span>paved surface</span><b id="cy-imp">28%</b></div>
+    </div>
+    <div id="cy-tiles">
+      <div class="cy-tile">
+        <small>POPULATION</small>
+        <div id="cy-people" aria-hidden="true"></div>
+        <span class="cy-cap">1 figure = 200,000 people</span>
+      </div>
+      <div class="cy-tile">
+        <small>CREEK BURIED</small>
+        <div id="cy-subway" aria-hidden="true">
+          <i class="cy-rail"></i>
+          <b id="cy-train"></b>
+          <span class="cy-sta cy-sta-a">VAUGHAN</span>
+          <span class="cy-sta cy-sta-b">FINCH</span>
+        </div>
+        <span class="cy-cap" id="cy-km-cap">—</span>
+      </div>
+      <div class="cy-tile">
+        <small>PAVED SURFACE</small>
+        <div id="cy-paved" aria-hidden="true"></div>
+        <span class="cy-cap" id="cy-imp-cap">—</span>
+      </div>
     </div>
 
     <div class="step" data-a="0.015" data-b="0.145">
       <h3>The pipes won</h3>
-      <p>By 1930 the city above forgot the water below. The creeks ran in brick,
-      under streets named for them — and the brick was already forty years
-      old.<button class="dig" type="button" data-dig="lostmap" aria-label="Dig deeper: how the lost rivers were mapped">i</button></p>
+      <p>By 1930 the city forgot the water below. The creeks ran in
+      forty-year-old brick, under streets named for
+      them.<button class="dig" type="button" data-dig="lostmap" aria-label="Dig deeper: how the lost rivers were mapped">i</button></p>
     </div>
     <div class="step" data-a="0.17" data-b="0.30">
-      <h3>Then medicine solved the wrong half</h3>
-      <p>Chlorination. Vaccines. Treatment plants. By mid-century the diseases that
-      justified burying the rivers were beaten — by <b>medicine</b>, not by the pipes.
-      Nobody went back to ask what the pipes were for now. They just kept getting
-      older.<button class="dig" type="button" data-dig="medicine" aria-label="Dig deeper: how medicine beat the epidemics">i</button></p>
+      <h3>Medicine solved the wrong half</h3>
+      <p>Chlorination and vaccines beat the epidemics — <b>medicine</b>, not the pipes.
+      Nobody asked what the pipes were for now.<button class="dig" type="button" data-dig="medicine" aria-label="Dig deeper: how medicine beat the epidemics">i</button></p>
     </div>
     <div class="step" data-a="0.325" data-b="0.46">
       <h3>One pipe, two jobs</h3>
-      <p>The old city still drains through <b>combined sewers</b>: sewage and stormwater
-      share one Victorian tunnel. Dry day — it all reaches the treatment plant.
-      Cloudburst — the tunnel chokes, and the overflow goes straight to the lake, raw.
-      They built outfalls for exactly this. Toronto still has
-      dozens.<button class="dig" type="button" data-dig="cso" aria-label="Dig deeper: combined sewer overflows">i</button></p>
+      <p>Sewage and stormwater still share one Victorian tunnel. In a cloudburst
+      the overflow goes straight to the lake,
+      raw.<button class="dig" type="button" data-dig="cso" aria-label="Dig deeper: combined sewer overflows">i</button></p>
     </div>
     <div class="step" data-a="0.485" data-b="0.62">
       <h3>And the city sealed the sponge</h3>
-      <p>Hurricane Hazel, 1954: 81 dead, and the lesson learned was <b>more concrete</b>.
-      Every decade paved more of the watershed. Rain that once soaked into ravine soil
-      now arrives at the old brick all at once, carrying the whole sky with
-      it.<button class="dig" type="button" data-dig="hazel" aria-label="Dig deeper: Hurricane Hazel">i</button></p>
+      <p>Hazel, 1954: 81 dead — the lesson learned was <b>more concrete</b>.
+      Rain now reaches the old brick all at
+      once.<button class="dig" type="button" data-dig="hazel" aria-label="Dig deeper: Hurricane Hazel">i</button></p>
     </div>
     <div class="step" data-a="0.645" data-b="0.78">
       <h3>A solution becomes a time bomb</h3>
-      <p>Here is the trap in one sentence: we cured the sickness with medicine but kept
-      the cure we’d built for it — and that cure, aging and undersized and locked under
-      a century of city, is now the <b>cause</b> of the flooding. Page one of this story
-      was not weather. It was plumbing.</p>
+      <p>We cured the sickness with medicine but kept the cure we’d built for it.
+      Page one of this story wasn’t weather. It was <b>plumbing</b>.</p>
     </div>
     <div class="step" data-a="0.81" data-b="0.965">
       <h3>You’ve seen what happens next</h3>
-      <p>July 16, 2024. <b>97.8&nbsp;mm</b> at Pearson. A grey sedan at a rail underpass.
-      Which is where you came in. So — what would it take to take it back?</p>
+      <p>July 16, 2024. <b>97.8&nbsp;mm</b>. A grey sedan at an underpass.
+      So — what would it take to take it back?</p>
     </div>
 
     <div id="cy-src">Data: Lost Rivers of Toronto — Borealis Dataverse (doi:10.5683/SP2/TSJSQZ).
@@ -611,14 +586,21 @@
 </section>
 
 <!-- ════════════ V½ · THE FORECAST (predictive map) ════════════ -->
-<section class="scene" id="sc-forecast" style="--len:5" data-name="V½ · The forecast">
+<section class="scene" id="sc-forecast" style="--len:6.5" data-name="V½ · The forecast">
   <div class="sticky pitch">
     <canvas id="riskmap"></canvas>
     <div id="rk-hud">
       <div id="rk-metric">modelled flood susceptibility</div>
       <div class="rk-legend"><span>lower</span><i class="rk-ramp"></i><span>higher</span></div>
       <div id="rk-top" class="rk-row"><span>worst ward</span><b id="rk-topward">—</b></div>
+      <form id="rk-find" autocomplete="off">
+        <input id="rk-post" type="text" placeholder="Your postal code — M5V…"
+               aria-label="Find your ward by postal code" maxlength="7">
+        <button type="submit">Find my ward</button>
+      </form>
+      <div id="rk-found" aria-live="polite"></div>
     </div>
+    <div id="rk-tip" aria-hidden="true"></div>
     <div id="rk-drivers" aria-hidden="true">
       <p class="rk-dk">what the model leans on</p>
       <ol id="rk-dlist"></ol>
@@ -627,34 +609,28 @@
 
     <div class="step" data-a="0.02" data-b="0.17">
       <h3>Now run it forward</h3>
-      <p>The same 142 years of plumbing is a <b>dataset</b>: every ward’s buried-creek
-      length, its sewer age, its pipe diameters, its rainfall. Feed that to a model and
-      ask the obvious question — <em>where does it flood next, and why?</em></p>
+      <p>142 years of plumbing is a <b>dataset</b>: buried-creek length, sewer age,
+      pipe size, rainfall. Ask it — <em>where does it flood next?</em></p>
     </div>
     <div class="step" data-a="0.20" data-b="0.36">
       <h3>This is the answer</h3>
-      <p>Each ward shaded by <b>modelled flood susceptibility</b> — basement-flood load the
-      model expects from a ward’s infrastructure alone, at recent-typical rainfall. Deep
-      red is the chronic trouble: York South-Weston, Eglinton-Lawrence, Beaches–East York.</p>
+      <p>Each ward, shaded by <b>modelled flood susceptibility</b>. Deep red is the
+      chronic trouble. <em>Hover any ward for its numbers — or look up your own.</em></p>
     </div>
     <div class="step" data-a="0.40" data-b="0.56">
       <h3>Now lay the creeks back on top</h3>
-      <p>The buried network, drawn over the same map. The hot wards aren’t random — they
-      ride the old valleys. The water still knows where the rivers were; so, now, does the
-      model.</p>
+      <p>The hot wards aren’t random — they ride the old valleys. The water still
+      knows where the rivers were.</p>
     </div>
     <div class="step" data-a="0.60" data-b="0.76">
       <h3>Hidden river × weak sewer</h3>
-      <p>Switch the shading to the <b>coincidence index</b> — high <i>only</i> where a buried
-      creek and aging, pre-1960 sewers overlap. <b>Toronto Centre</b> tops it: Garrison and
-      Taddle creeks under Canada’s oldest brick sewers. That overlap is the fingerprint of
-      a flood-prone ward.</p>
+      <p>The shading switches to the <b>coincidence index</b> — high only where a buried
+      creek crosses pre-1960 sewers. <b>Toronto Centre</b> tops it.</p>
     </div>
     <div class="step" data-a="0.80" data-b="0.96">
       <h3>And it tells you why</h3>
-      <p>The drivers, ranked: how long the rain falls, undersized pipes, and — climbing the
-      list on their own — <b>buried creek running beside a trunk sewer</b>. The model rebuilt
-      the story’s thesis from the data. <em>So where would you dig first?</em></p>
+      <p>The ranked drivers: rain duration, undersized pipes — and <b>buried creek
+      beside a trunk sewer</b>. <em>So where would you dig first?</em></p>
     </div>
 
     <div id="rk-src">Modelled flood susceptibility + hidden-river × weak-sewer coincidence,
@@ -676,13 +652,10 @@
     </div>
   </div>
   <div class="wrap">
-    <p class="lede reveal"><b>Daylighting</b> is the opposite of burial — and it is less
-    about landscaping than about <b>restoring a river's hydrology</b>: digging a stream
-    out of its culvert and giving it back what the pipe amputated. A floodplain to
-    spread into. Banks that soak water into the ground and refill the water table.
-    A living channel that moves sediment instead of choking on it. The park, the
-    shade and the herons are what recovery <i>looks like</i> — the thing being repaired
-    is the water cycle itself.<button class="dig" type="button" data-dig="daylighting" aria-label="Dig deeper: what daylighting restores">i</button></p>
+    <p class="lede reveal"><b>Daylighting</b> is the opposite of burial: dig the stream
+    out of its culvert and give it back what the pipe amputated — a floodplain, soaking
+    banks, a living channel. The park and the herons are what recovery
+    <i>looks like</i>.<button class="dig" type="button" data-dig="daylighting" aria-label="Dig deeper: what daylighting restores">i</button></p>
 
     <div class="cards">
       <div class="card reveal"
@@ -690,126 +663,216 @@
            data-link="https://en.wikipedia.org/wiki/Daylighting_(streams)">
         <svg viewBox="0 0 48 48"><path d="M6 34c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue"/><path d="M6 24c4-6 8-6 12 0s8 6 12 0 8-6 12 0" class="i-blue f"/><path d="M24 4v10m0 0 4-4m-4 4-4-4" class="i-blue"/></svg>
         <h4>Room for cloudbursts</h4>
-        <p>An open channel with floodable banks holds many times what a buried pipe can.
-        Parks designed to flood mean basements that don’t.</p>
+        <p>Parks designed to flood mean basements that don’t.</p>
       </div>
       <div class="card reveal"
            data-tip="The urban heat-island effect can make paved districts several degrees hotter than nearby green corridors. After Seoul reopened the Cheonggyecheon, summer temperatures along the corridor measured roughly 3–6 °C cooler than parallel streets a few blocks away. Open water plus a tree canopy both shade the ground and cool the air by evaporation."
            data-link="https://en.wikipedia.org/wiki/Cheonggyecheon">
         <svg viewBox="0 0 48 48"><circle cx="24" cy="22" r="9" class="i-blue"/><path d="M24 6v4M24 34v4M8 22h4M36 22h4M12.7 10.7l2.8 2.8M32.5 30.5l2.8 2.8M35.3 10.7l-2.8 2.8M15.5 30.5l-2.8 2.8" class="i-blue"/></svg>
         <h4>Cooler streets</h4>
-        <p>Open water and the trees that line it knock degrees off summer heat
-        that pavement only stores up.</p>
+        <p>Open water and trees knock degrees off summer heat.</p>
       </div>
       <div class="card reveal"
            data-tip="Fish, herons, kingfishers and dragonflies recolonise daylighted reaches within a few seasons — the kingfishers returned to London’s River Quaggy on their own after Sutcliffe Park opened in 2003. Habitat follows the water, and people follow the habitat: opened reaches quickly become the most-used parkland around them."
            data-link="https://en.wikipedia.org/wiki/River_Quaggy">
         <svg viewBox="0 0 48 48"><path d="M8 40c10 0 8-26 26-30-2 8 2 10 6 10-6 4-4 22-22 22-6 0-10-2-10-2Z" class="i-blue"/><path d="M8 40c8-8 14-12 22-16" class="i-blue f"/></svg>
         <h4>Living corridors</h4>
-        <p>Daylighted reaches see fish, herons and dragonflies return within seasons —
-        and people follow them.</p>
+        <p>Fish and herons return within seasons — people follow.</p>
       </div>
       <div class="card reveal"
            data-tip="Toronto’s combined sewers are well over a century old; many are at or past the end of their service life. When a culvert must be dug up and rebuilt anyway, opening it as a channel can cost less than installing a larger buried pipe — and the money buys a park, flood storage and cooling instead of a buried liability that will age again."
            data-link="https://www.toronto.ca/services-payments/water-environment/managing-rain-melted-snow/basement-flooding/">
         <svg viewBox="0 0 48 48"><path d="M10 38V22m9 16V14m9 24V26m9 12V10" class="i-blue"/><path d="M6 42h36" class="i-blue"/></svg>
         <h4>Cheaper than bigger pipes</h4>
-        <p>Aging culverts fail expensively. When one must be rebuilt anyway, opening it
-        often costs less — and yields a park instead of a buried liability.</p>
+        <p>When a failing culvert must be rebuilt anyway, opening it often costs less.</p>
       </div>
     </div>
 
     <div class="case reveal">
       <div class="case-tag">Zurich · the <i>Bachkonzept</i></div>
-      <p>Since 1988, Zurich has daylighted <b>more than 20&nbsp;km</b> of buried brooks —
-      partly to keep clean stream water out of its overloaded sewers. Today brooks run
-      in the open beside tram lines, and on hot days the whole city swims in its rivers.</p>
-      <details class="case-photo">
-        <summary>See it — open water in central Zurich</summary>
-        <figure>
-          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Z%C3%BCrich%20-%20Schanzengraben%20-%20M%C3%A4nnerbadi%20IMG%200660%20ShiftN.jpg?width=1200"
-               data-page="https://commons.wikimedia.org/wiki/File:Z%C3%BCrich_-_Schanzengraben_-_M%C3%A4nnerbadi_IMG_0660_ShiftN.jpg"
-               alt="The Schanzengraben channel in central Zurich: clear open water between stone banks, with the river baths">
-          <figcaption>Open water threaded through central Zurich — the Schanzengraben and its
-          river baths. Photo: Wikimedia Commons.</figcaption>
-        </figure>
-      </details>
+      <p>Since 1988 Zurich has daylighted <b>more than 20&nbsp;km</b> of buried brooks.
+      On hot days the whole city swims in its rivers.</p>
+      <figure class="ba">
+        <div class="ba-frame" tabindex="0" role="slider" aria-label="Before and after: a Zurich brook"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="ba-before">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="450" fill="#565d66"/>
+              <rect y="0" width="800" height="140" fill="#6d7680"/>
+              <g fill="#4b525b">
+                <rect x="40" y="20" width="180" height="120"/><rect x="260" y="40" width="140" height="100"/>
+                <rect x="440" y="16" width="170" height="124"/><rect x="650" y="46" width="120" height="94"/>
+              </g>
+              <g fill="#ffd98c" opacity=".5">
+                <rect x="66" y="44" width="18" height="26"/><rect x="120" y="44" width="18" height="26"/>
+                <rect x="470" y="40" width="18" height="26"/><rect x="524" y="40" width="18" height="26"/>
+              </g>
+              <rect y="140" width="800" height="18" fill="#41474f"/>
+              <rect y="158" width="800" height="292" fill="#5d646d"/>
+              <g stroke="#41474f" stroke-width="4"><line x1="0" y1="250" x2="800" y2="250"/><line x1="0" y1="256" x2="800" y2="256"/></g>
+              <rect x="0" y="300" width="800" height="60" fill="#4d545d"/>
+              <g stroke="#3a4047" stroke-width="3">
+                <line x1="0" y1="308" x2="800" y2="308"/><line x1="0" y1="352" x2="800" y2="352"/>
+                <line x1="90" y1="308" x2="90" y2="352"/><line x1="270" y1="308" x2="270" y2="352"/>
+                <line x1="450" y1="308" x2="450" y2="352"/><line x1="630" y1="308" x2="630" y2="352"/>
+              </g>
+              <path d="M0 330 h800" stroke="#4fc3f7" stroke-width="4" stroke-dasharray="14 18" opacity=".5"/>
+              <text x="400" y="404" text-anchor="middle" font-family="ui-monospace,monospace"
+                    font-size="20" fill="#c3ccd6" letter-spacing="3">BROOK IN THE SEWER, UNDER THE STREET</text>
+            </svg>
+            <span class="ba-tag">before · illustrated</span>
+          </div>
+          <div class="ba-after">
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Z%C3%BCrich%20-%20Schanzengraben%20-%20M%C3%A4nnerbadi%20IMG%200660%20ShiftN.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:Z%C3%BCrich_-_Schanzengraben_-_M%C3%A4nnerbadi_IMG_0660_ShiftN.jpg"
+                 alt="The Schanzengraben channel in central Zurich: clear open water between stone banks, with the river baths">
+            <span class="ba-tag">today · photo</span>
+          </div>
+          <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
+        </div>
+        <figcaption>Drag the handle — open water threaded through central Zurich.
+        Photo: Wikimedia Commons.</figcaption>
+      </figure>
       <button class="digline" type="button" data-dig="zurich">Dig deeper — daylighting as sewer policy →</button>
     </div>
     <div class="case reveal">
       <div class="case-tag">London · the River Quaggy</div>
-      <p>For decades the Quaggy ran in concrete culverts beneath Lewisham and Greenwich.
-      In 2003 it was set loose into <b>Sutcliffe Park</b>, regraded as a wetland that is
-      <i>allowed</i> to flood. The park now stores the storm water that once filled
-      living rooms — protecting hundreds of homes — and the kingfishers are back.</p>
-      <details class="case-photo">
-        <summary>See it — the Quaggy loose in Sutcliffe Park</summary>
-        <figure>
-          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/River%20Quaggy%20in%20Sutcliffe%20Park.JPG?width=1200"
-               data-page="https://commons.wikimedia.org/wiki/File:River_Quaggy_in_Sutcliffe_Park.JPG"
-               alt="The River Quaggy meandering through the grassy floodable basin of Sutcliffe Park">
-          <figcaption>The Quaggy winding through Sutcliffe Park — playing fields on a dry day,
-          a storage lake in a storm. Photo: Wikimedia Commons.</figcaption>
-        </figure>
-      </details>
+      <p>In 2003 the Quaggy was let out of its concrete culvert into <b>Sutcliffe
+      Park</b> — a wetland <i>allowed</i> to flood. It now stores the storms that once
+      filled living rooms, and the kingfishers are back.</p>
+      <figure class="ba">
+        <div class="ba-frame" tabindex="0" role="slider" aria-label="Before and after: the River Quaggy"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="ba-before">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="450" fill="#5f7455"/>
+              <rect y="0" width="800" height="90" fill="#77896a"/>
+              <path d="M320 90 L480 90 L560 450 L240 450 Z" fill="#8b949c"/>
+              <path d="M348 90 L452 90 L516 450 L284 450 Z" fill="#6f7982"/>
+              <path d="M382 120 L418 120 L448 450 L352 450 Z" fill="#4e4435"/>
+              <g stroke="#9aa3ab" stroke-width="4">
+                <line x1="320" y1="90" x2="240" y2="450"/><line x1="480" y1="90" x2="560" y2="450"/>
+              </g>
+              <g stroke="#3d4a38" stroke-width="3" opacity=".8">
+                <line x1="150" y1="140" x2="150" y2="180"/><line x1="120" y1="180" x2="180" y2="180"/>
+                <line x1="660" y1="200" x2="660" y2="240"/><line x1="630" y1="240" x2="690" y2="240"/>
+              </g>
+              <text x="400" y="404" text-anchor="middle" font-family="ui-monospace,monospace"
+                    font-size="20" fill="#dfe7d8" letter-spacing="3">A RIVER IN A CONCRETE CHUTE</text>
+            </svg>
+            <span class="ba-tag">before · illustrated</span>
+          </div>
+          <div class="ba-after">
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/River%20Quaggy%20in%20Sutcliffe%20Park.JPG?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:River_Quaggy_in_Sutcliffe_Park.JPG"
+                 alt="The River Quaggy meandering through the grassy floodable basin of Sutcliffe Park">
+            <span class="ba-tag">today · photo</span>
+          </div>
+          <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
+        </div>
+        <figcaption>Playing fields on a dry day, a storage lake in a storm.
+        Photo: Wikimedia Commons.</figcaption>
+      </figure>
       <button class="digline" type="button" data-dig="quaggy">Dig deeper — the park that is allowed to flood →</button>
     </div>
     <div class="case reveal">
       <div class="case-tag">Seoul · the Cheonggyecheon</div>
       <p>Seoul demolished a four-lane elevated <b>expressway</b> to set the Cheonggyecheon
-      free: 5.8&nbsp;km of open river through the densest district in Korea. Summers along
-      the corridor now run <b>3–6&nbsp;°C cooler</b> than the streets a block away, and the
-      wildlife counts tripled within three years.</p>
-      <details class="case-photo">
-        <summary>See it — the river where the expressway stood</summary>
-        <figure>
-          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Cheonggyecheon%20stream%20with%20flowers%20and%20bridge%20at%20sunrise%20near%20Cheonggye%20Plaza%20in%20Seoul.jpg?width=1200"
-               data-page="https://commons.wikimedia.org/wiki/File:Cheonggyecheon_stream_with_flowers_and_bridge_at_sunrise_near_Cheonggye_Plaza_in_Seoul.jpg"
-               alt="The Cheonggyecheon stream at sunrise, flowing between planted stone banks below street level in central Seoul">
-          <figcaption>The Cheonggyecheon at dawn — 5.8&nbsp;km of public riverbank through
-          the densest district in Korea. Photo: Wikimedia Commons.</figcaption>
-        </figure>
-      </details>
+      free. The corridor now runs <b>3–6&nbsp;°C cooler</b> than streets a block away.</p>
+      <figure class="ba">
+        <div class="ba-frame" tabindex="0" role="slider" aria-label="Before and after: the Cheonggyecheon"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="ba-before">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="450" fill="#4a4f57"/>
+              <rect y="0" width="800" height="120" fill="#5b616a"/>
+              <g fill="#3d434b">
+                <rect x="20" y="10" width="150" height="110"/><rect x="200" y="30" width="120" height="90"/>
+                <rect x="470" y="14" width="140" height="106"/><rect x="640" y="36" width="130" height="84"/>
+              </g>
+              <rect y="150" width="800" height="90" rx="8" fill="#6f7680"/>
+              <rect y="150" width="800" height="10" fill="#868d97"/>
+              <g fill="#7d858f">
+                <rect x="70" y="240" width="40" height="210"/><rect x="330" y="240" width="40" height="210"/>
+                <rect x="590" y="240" width="40" height="210"/>
+              </g>
+              <g>
+                <rect x="120" y="176" width="86" height="34" rx="7" fill="#8a5c4a"/>
+                <rect x="300" y="180" width="76" height="30" rx="7" fill="#4a6d84"/>
+                <rect x="470" y="174" width="90" height="36" rx="7" fill="#77804e"/>
+                <rect x="620" y="180" width="70" height="30" rx="7" fill="#835a71"/>
+              </g>
+              <rect y="330" width="800" height="120" fill="#3a3f46"/>
+              <path d="M0 396 h800" stroke="#4fc3f7" stroke-width="4" stroke-dasharray="14 18" opacity=".45"/>
+              <text x="400" y="308" text-anchor="middle" font-family="ui-monospace,monospace"
+                    font-size="20" fill="#c3ccd6" letter-spacing="3">THE RIVER, UNDER FOUR LANES ON PIERS</text>
+            </svg>
+            <span class="ba-tag">before · illustrated</span>
+          </div>
+          <div class="ba-after">
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Cheonggyecheon%20stream%20with%20flowers%20and%20bridge%20at%20sunrise%20near%20Cheonggye%20Plaza%20in%20Seoul.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:Cheonggyecheon_stream_with_flowers_and_bridge_at_sunrise_near_Cheonggye_Plaza_in_Seoul.jpg"
+                 alt="The Cheonggyecheon stream at sunrise, flowing between planted stone banks below street level in central Seoul">
+            <span class="ba-tag">today · photo</span>
+          </div>
+          <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
+        </div>
+        <figcaption>5.8&nbsp;km of public riverbank through the densest district in Korea.
+        Photo: Wikimedia Commons.</figcaption>
+      </figure>
       <button class="digline" type="button" data-dig="cheong">Dig deeper — the expressway that became a river →</button>
     </div>
     <div class="case reveal">
       <div class="case-tag">Toronto · the Port Lands</div>
-      <p>This isn’t a foreign idea. Toronto just finished the <b>Port Lands Flood
-      Protection Project</b> — a $1.4&nbsp;billion re-naturalization that carved a new,
-      wetland-lined mouth for the Don River and lifted 240 hectares of downtown out of
-      the floodplain. The largest river restoration in Canadian urban history,
-      and it opened to the public in 2025.</p>
-      <details class="case-photo">
-        <summary>See it — the Don's new mouth, 2024</summary>
-        <figure>
-          <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/New%20Mouth%20of%20the%20Don%20River%202024.jpg?width=1200"
-               data-page="https://commons.wikimedia.org/wiki/File:New_Mouth_of_the_Don_River_2024.jpg"
-               alt="The new naturalized mouth of the Don River curving through the Port Lands, with fresh wetland banks">
-          <figcaption>The Don's new, naturalized mouth flowing through the Port Lands —
-          the largest urban river restoration in Canadian history. Photo: Wikimedia Commons.</figcaption>
-        </figure>
-      </details>
+      <p>Not a foreign idea. Toronto’s <b>$1.4&nbsp;billion</b> Port Lands project carved
+      a new wetland mouth for the Don — Canada’s largest urban river restoration,
+      opened in 2025.</p>
+      <figure class="ba">
+        <div class="ba-frame" tabindex="0" role="slider" aria-label="Before and after: the Don River mouth"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+          <div class="ba-before">
+            <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="800" height="450" fill="#5a5347"/>
+              <path d="M0 120 h430 v90 L430 450 h-140 L290 210 H0 Z" fill="#3d444d"/>
+              <path d="M14 134 h402 v62 L416 450 h-112 L304 196 H14 Z" fill="#4e4435"/>
+              <g fill="#4a4335">
+                <rect x="480" y="60" width="130" height="120"/><rect x="640" y="90" width="110" height="90"/>
+                <rect x="500" y="250" width="180" height="80"/>
+              </g>
+              <g stroke="#332e24" stroke-width="8" fill="none">
+                <line x1="560" y1="60" x2="560" y2="0"/><line x1="700" y1="90" x2="700" y2="26"/>
+              </g>
+              <g fill="#6e6555"><ellipse cx="120" cy="330" rx="70" ry="16"/><ellipse cx="220" cy="390" rx="60" ry="14"/></g>
+              <text x="400" y="420" text-anchor="middle" font-family="ui-monospace,monospace"
+                    font-size="20" fill="#d8d0bd" letter-spacing="3">A RIGHT-ANGLE DOCK IN INDUSTRIAL FILL</text>
+            </svg>
+            <span class="ba-tag">before · illustrated</span>
+          </div>
+          <div class="ba-after">
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/New%20Mouth%20of%20the%20Don%20River%202024.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:New_Mouth_of_the_Don_River_2024.jpg"
+                 alt="The new naturalized mouth of the Don River curving through the Port Lands, with fresh wetland banks">
+            <span class="ba-tag">today · photo</span>
+          </div>
+          <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
+        </div>
+        <figcaption>The Don’s new, naturalized mouth in the Port Lands.
+        Photo: Wikimedia Commons.</figcaption>
+      </figure>
       <button class="digline" type="button" data-dig="portlands">Dig deeper — Toronto’s own proof, at river scale →</button>
     </div>
 
     <div class="case caution reveal">
       <div class="case-tag">The fine print · what it costs</div>
-      <p>Honesty matters here: daylighting is <b>not free flood control</b>. It means
-      buying scarce urban land, untangling a century of buried utilities, years of
-      construction, and a channel that must be maintained forever. Some reaches under
-      downtown towers will never come out of the pipe — and a restored creek can raise
-      land values enough to squeeze out the neighbours it was meant to protect, unless
-      that's planned against from day one. The honest comparison is never
-      “daylighting vs.&nbsp;free” — it’s daylighting vs. the next bigger pipe,
-      plus everything the pipe still can’t do.</p>
+      <p>Daylighting is <b>not free flood control</b>: scarce land, buried utilities,
+      years of construction, maintenance forever. The honest comparison is daylighting
+      vs. the next bigger pipe — plus everything the pipe still can’t do.</p>
       <button class="digline" type="button" data-dig="costs">Read the honest ledger →</button>
     </div>
 
-    <p class="kicker2 reveal">Sheffield, Aarhus, Yonkers, Seoul, Zurich, London —
-    no city that has opened a river has wanted to bury it again.</p>
-    <p class="bridge reveal">Toronto’s turn. The old Garrison alignment runs right through
-    Christie Pits, Bickford and Trinity Bellwoods — those parks were never a coincidence.
-    Get in the dozer.</p>
+    <p class="kicker2 reveal">No city that has opened a river has wanted to bury it again.</p>
+    <p class="bridge reveal">Toronto’s turn. Christie Pits, Bickford, Trinity Bellwoods —
+    those parks were never a coincidence. Get in the dozer.</p>
   </div>
 </section>
 
@@ -829,14 +892,9 @@
     <div class="engage" id="dozer-engage">
       <p class="ekick">GARRISON CREEK ALIGNMENT · PRESENT DAY</p>
       <h3>Dig it back up.</h3>
-      <p>The creek is still under there. <b>Bring it back to daylight.</b></p>
-      <ul class="guide">
-        <li><b>Goal</b><span>Drive the dozer along the glowing dashed creek line. The crew behind you cuts the channel — then, in layers, the water clears, the banks green up, trees rise, and wildlife moves back in.</span></li>
-        <li><b>Controls</b><span>W/↑ forward, S/↓ reverse, A/D steer (or the on-screen pad). Stay near the line to keep the crew digging — a blue arrow points you back if you stray.</span></li>
-        <li><b>Read the screen</b><span>Four gauges (bottom) track heat, flood risk, sewer overflows and wildlife — each turns green as it crosses its white <em>SAFE</em> tick. Real daylighting facts appear top-right as the valley heals.</span></li>
-        <li><b>Take your time</b><span>There is no clock. Glance back now and then — the river coming to life behind you is the whole point.</span></li>
-      </ul>
-      <p class="enote"><b>Esc</b> pauses at any time — resume, restart, skip to the end, or jump straight to the next section.</p>
+      <p>The creek is still under there. <b>Bring it back to daylight.</b>
+         No clock — take your time.</p>
+      <p class="enote">You’ll learn as you dig · <b>Esc</b> pauses</p>
       <div class="ebtns">
         <button class="g-start" type="button">Start the dozer</button>
         <button class="g-skip" type="button">Skip — watch the crews work</button>
@@ -870,7 +928,7 @@
 </section>
 
 <!-- ════════════ VII · THE CREEK ════════════ -->
-<section class="scene" id="sc-future" style="--len:4.6" data-name="VII · The creek">
+<section class="scene" id="sc-future" style="--len:5.6" data-name="VII · The creek">
   <div class="sticky">
     <div class="sky" id="future-sky"></div>
     <svg id="street-future" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
@@ -889,34 +947,34 @@
       <div class="acts">
         <a class="act" href="https://www.lostrivers.ca/" target="_blank" rel="noopener">
           <b>Walk a buried creek 🚶</b>
-          <span>Lost Rivers (Toronto Green Community) runs free guided walks along
-          Garrison, Taddle and the rest. Knowing your local ghost river is step one —
-          these are the volunteers who drew the maps in this story.</span></a>
+          <span>Free guided walks along Garrison, Taddle and the rest — led by the
+          volunteers who drew these maps.</span>
+          <em class="act-go">lostrivers.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
         <a class="act" href="https://www.waterfrontoronto.ca/our-projects/don-mouth-naturalization-and-port-lands-flood-protection" target="_blank" rel="noopener">
           <b>Visit the proof 🌊</b>
-          <span>Biidaasige Park and the new Don River mouth in the Port Lands are what
-          "giving a river room" looks like at full scale. Go stand on it — then tell
-          people it exists.</span></a>
+          <span>Stand on the Don’s new river mouth in the Port Lands — then tell
+          people it exists.</span>
+          <em class="act-go">waterfrontoronto.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
         <a class="act" href="https://trca.ca/get-involved/" target="_blank" rel="noopener">
           <b>Plant a ravine 🌱</b>
-          <span>TRCA and its partners run public tree plantings and stream clean-ups all
-          season. Every rooted bank upstream is storage the old brick sewer never
-          has to carry.</span></a>
+          <span>Public tree plantings and stream clean-ups, all season. Every rooted
+          bank is storage.</span>
+          <em class="act-go">trca.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
         <a class="act" href="https://www.toronto.ca/services-payments/water-environment/managing-rain-melted-snow/" target="_blank" rel="noopener">
           <b>Take your rain off the pipe 🏠</b>
-          <span>Disconnect your downspout, plant a rain garden, depave what you can.
-          In the combined-sewer core, every litre you soak on site is a litre that
-          never becomes an overflow — or someone's basement.</span></a>
+          <span>Disconnect your downspout, plant a rain garden, depave what
+          you can.</span>
+          <em class="act-go">toronto.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
         <a class="act" href="https://www.toronto.ca/city-government/public-notices-bylaws/get-involved-how-government-works/" target="_blank" rel="noopener">
           <b>Say it to council 🗳</b>
-          <span>Stormwater and green-infrastructure items come through committee every
-          year — and almost nobody deputes. In 1882 the vote was rigged by fear.
-          This one is just waiting for speakers.</span></a>
+          <span>Stormwater items come through committee every year — almost nobody
+          deputes.</span>
+          <em class="act-go">toronto.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
         <a class="act" href="https://parkpeople.ca/" target="_blank" rel="noopener">
           <b>Back the park groups 🌳</b>
-          <span>Park People and local “friends of” groups are how creek-alignment parks
-          (Christie Pits → Bickford → Bellwoods) get champions. Daylighting starts as
-          a neighbourhood idea long before it's a budget line.</span></a>
+          <span>Creek-alignment parks get champions long before they get
+          budget lines.</span>
+          <em class="act-go">parkpeople.ca <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></em></a>
       </div>
       <p class="links"><a href="/">Explore the data — interactive map</a>
         · <a href="https://github.com/hugo-fuhrer/hidden-rivers">Read the research</a></p>
@@ -950,8 +1008,12 @@
 <script src="js/tips.js"></script>
 <script src="js/panels.js"></script>
 <script src="js/input.js"></script>
+<script src="js/scroll.js"></script>
+<script src="js/tutor.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/island.js"></script>
+<script src="js/compare.js"></script>
+<script src="js/fsa.js"></script>
 <script src="js/games/drive.js"></script>
 <script src="js/games/vote.js"></script>
 <script src="js/games/bury.js"></script>

@@ -161,13 +161,57 @@
 
   let dz, hopper, year, sick, mode, auto, doneYear, wasFull;
   let running = false, paused = false, raf = 0, lastT = 0, tscale = 1;
+  let tut;                                               // per-run tutorial progress
 
   function init() {
     for (const o of SECS) { o.st = 0; o.f = 0; o.dir = 1; }  // 0 open · 1 working · 2 buried
     dz = { x: OLDTOWN[0], y: OLDTOWN[1] - .06, a: -Math.PI / 2, moving: 0 };
     hopper = CAP * .5; wasFull = false;
     year = 1880; sick = 8; mode = "play"; doneYear = 0;
+    tut = { moved: false, started: false, buried: false, sickWarned: false };
     winEl.classList.remove("on"); failEl.classList.remove("on");
+  }
+
+  /* sequential coach marks — teach the loop live instead of up front */
+  const T = () => (window.HR && HR.tutor) ? HR.tutor : null;
+  function tutStart() {
+    const t = T(); if (!t || auto) return;
+    t.hint("bury-move", t.COARSE
+      ? "Touch and drag the <b>joystick</b> to drive the dozer"
+      : `Drive the dozer with ${t.kbd("W")}${t.kbd("A")}${t.kbd("S")}${t.kbd("D")}`,
+      { ttl: 0 });
+  }
+  function tutTick(loading, dumping) {
+    const t = T(); if (!t || auto || mode !== "play") return;
+    if (!tut.moved && dz.moving) {
+      tut.moved = true;
+      t.clear("bury-move");
+      setTimeout(() => t.hint("bury-start",
+        "Drive to a flashing <b>amber ring</b> — either end of an open creek", { ttl: 0 }), 600);
+    }
+    if (!tut.started && SECS.some(o => o.st === 1)) {
+      tut.started = true;
+      t.clear("bury-start");
+      t.hint("bury-crawl",
+        "Now crawl the line — your hopper pours gravel as you go", { ttl: 8 });
+    }
+    if (!tut.buried && SECS.some(o => o.st === 2)) {
+      tut.buried = true;
+      t.hint("bury-first",
+        "Section sealed · keep the red <b>SICKNESS</b> bar from the top", { ttl: 8 });
+    }
+    /* the recurring one: an empty hopper always points back to the spoil */
+    if (hopper < CAP * .06 && !loading) {
+      t.nag("bury-refill",
+        "Out of gravel — follow the amber arrow to a glowing <b>SPOIL</b> heap");
+    } else if (loading || hopper > CAP * .3) {
+      t.clear("bury-refill");
+    }
+    if (!tut.sickWarned && sick > 70) {
+      tut.sickWarned = true;
+      t.hint("bury-sick",
+        "The city is sickening — bury the creeks <b>inside the sprawl</b> first", { ttl: 8 });
+    }
   }
 
   const sprawlRadius = () => U.lerp(.08, .62, (popAt(year) - 86) / (631 - 86));
@@ -249,6 +293,7 @@
         }
       }
       const a = A(); if (a) a.dozerLoad(dumping ? .95 : loading ? .7 : dz.moving ? .45 : .15);
+      tutTick(loading, dumping);
 
       /* ── sickness: exposed creeks × the people living on top of them ── */
       const sr = sprawlRadius();
@@ -547,6 +592,18 @@
       ctx.fillText("SPOIL", x, y + 18 * dpr);
       ctx.textAlign = "start";
     }
+    /* an empty hopper spotlights the nearest heap (pairs with the arrow) */
+    if (mode === "play" && hopper < CAP * .18) {
+      const p = nearestPile();
+      const [x, y] = PX(p[0], p[1]);
+      const pulse = 1 + .25 * Math.sin(t * 4);
+      ctx.strokeStyle = `rgba(232,185,61,${(.5 + .35 * Math.sin(t * 4)).toFixed(2)})`;
+      ctx.lineWidth = 2.4 * dpr;
+      ctx.beginPath(); ctx.arc(x, y, 24 * dpr * pulse, 0, 6.3); ctx.stroke();
+      ctx.strokeStyle = "rgba(232,185,61,.25)";
+      ctx.lineWidth = 6 * dpr;
+      ctx.beginPath(); ctx.arc(x, y, 32 * dpr * pulse, 0, 6.3); ctx.stroke();
+    }
 
     /* the dozer */
     if (mode === "play" || mode === "won") {
@@ -620,12 +677,14 @@
     init(); auto = asAuto; tscale = 1; running = true; paused = false;
     lastT = performance.now() / 1000;
     const a = A(); if (a) a.dozerStart();
+    tutStart();
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(frame);
   }
 
   const game = {
     id: "bury", sceneId: "sc-bury",
+    keys: { w: "up", a: "left", s: "down", d: "right" },
     start: () => begin(false),
     skip: () => begin(true),
     restart: () => begin(auto),
@@ -649,7 +708,11 @@
   if (winDone) winDone.addEventListener("click", () =>
     HR.island.finish(game, "win", { finishYear: doneYear }));
   const retry = failEl.querySelector(".g-retry");
-  if (retry) retry.addEventListener("click", () => { failEl.classList.remove("on"); begin(false); });
+  if (retry) retry.addEventListener("click", () => {
+    failEl.classList.remove("on");
+    if (window.HR && HR.tutor) HR.tutor.reset();
+    begin(false);
+  });
   const concede = failEl.querySelector(".g-concede");
   if (concede) concede.addEventListener("click", () =>
     HR.island.finish(game, "epidemic", { finishYear: Math.round(year || 1894) }));

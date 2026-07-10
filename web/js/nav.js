@@ -1,36 +1,65 @@
 /* Hidden Rivers v2 — HR.nav: story navigation chrome.
-   - Bookmark button (top-left, the mirror of the sound toggle) opens a
-     dropdown of story sections to jump back to; the whole control hides
-     while a game holds the input lock (html.hr-locked).
+   - Chapters button (top-left): a pill that always shows "Chapters", the
+     current chapter's numeral + title, and how much of the story has been
+     read (%). Clicking opens the section menu to jump around; the whole
+     control hides while a game holds the input lock (html.hr-locked).
    - "Replay the story" button in the footer clears the cross-phase state
-     (vote, game results) and restarts from the top.
-   - Case-study photo dropdowns lazy-load their image on first open and
-     degrade to a Wikimedia Commons link if the image can't be fetched. */
+     (vote, game results) and restarts from the top. */
 "use strict";
 window.HR = window.HR || {};
 
 HR.nav = (() => {
   const sfx = () => { if (window.HR && HR.audio && HR.audio.sfx) HR.audio.sfx.soft(); };
 
-  /* ── bookmark button + section menu ─────────────────────────────────── */
+  /* ── chapters button + section menu ─────────────────────────────────── */
   const btn = document.createElement("button");
   btn.id = "bookmark-btn";
   btn.type = "button";
-  btn.setAttribute("aria-label", "Bookmarks — jump to a section");
+  btn.setAttribute("aria-label", "Chapters — jump to a section");
   btn.setAttribute("aria-haspopup", "true");
   btn.setAttribute("aria-expanded", "false");
-  btn.innerHTML = `<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
-    <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.2L5 21V4a1 1 0 0 1 1-1Z"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`;
+  btn.innerHTML = `<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+      <path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round"/></svg>
+    <span class="bm-word">Chapters</span>
+    <span class="bm-cur" id="bm-cur"></span>
+    <b class="bm-pct" id="bm-pct">0%</b>`;
 
   const menu = document.createElement("nav");
   menu.id = "bookmark-menu";
   menu.setAttribute("aria-label", "Story sections");
   const sections = [...document.querySelectorAll("section[data-name]")];
-  menu.innerHTML = `<p class="bm-kick">Jump back to&hellip;</p>` + sections.map(s =>
+  menu.innerHTML = `<p class="bm-kick">Chapters — jump to&hellip;</p>` + sections.map(s =>
     `<button type="button" data-target="${s.id}">${s.dataset.name}</button>`).join("");
   document.body.appendChild(btn);
   document.body.appendChild(menu);
+
+  const curEl = btn.querySelector("#bm-cur");
+  const pctEl = btn.querySelector("#bm-pct");
+
+  function currentSection() {
+    const vh = innerHeight;
+    for (const s of sections) {
+      const r = s.getBoundingClientRect();
+      if (r.top < vh * .5 && r.bottom > vh * .5) return s;
+    }
+    return null;
+  }
+  /* live readout: current chapter + % of the story completed */
+  let navRaf = 0;
+  function refresh() {
+    navRaf = 0;
+    const sec = currentSection();
+    curEl.textContent = sec ? sec.dataset.name : "";
+    curEl.classList.toggle("off", !sec);
+    const docH = document.documentElement.scrollHeight - innerHeight;
+    pctEl.textContent = (docH ? Math.min(100, Math.round(scrollY / docH * 100)) : 0) + "%";
+  }
+  addEventListener("scroll", () => {
+    if (!navRaf) navRaf = requestAnimationFrame(refresh);
+  }, { passive: true });
+  addEventListener("resize", refresh);
+  refresh();
 
   let openY = 0;
   function setOpen(on) {
@@ -39,15 +68,9 @@ HR.nav = (() => {
     btn.setAttribute("aria-expanded", on ? "true" : "false");
     if (on) {
       openY = scrollY;
-      /* mark the section currently on screen */
-      const vh = innerHeight;
-      let cur = "";
-      for (const s of sections) {
-        const r = s.getBoundingClientRect();
-        if (r.top < vh * .5 && r.bottom > vh * .5) cur = s.id;
-      }
+      const cur = currentSection();
       menu.querySelectorAll("button[data-target]").forEach(b =>
-        b.classList.toggle("cur", b.dataset.target === cur));
+        b.classList.toggle("cur", !!cur && b.dataset.target === cur.id));
     }
   }
   btn.addEventListener("click", e => {
@@ -83,24 +106,6 @@ HR.nav = (() => {
     try { history.scrollRestoration = "manual"; } catch (e) { /* old browsers */ }
     scrollTo(0, 0);
     location.reload();
-  });
-
-  /* ── case-study photos: fetch on first open, degrade to a source link ── */
-  document.querySelectorAll("details.case-photo").forEach(d => {
-    d.addEventListener("toggle", () => {
-      if (!d.open) return;
-      const img = d.querySelector("img[data-src]");
-      if (!img) return;
-      img.addEventListener("error", () => {
-        const fig = img.closest("figure");
-        const page = img.dataset.page;
-        if (fig) fig.innerHTML = `<p class="cp-fail">The photo couldn't be loaded here — ` +
-          (page ? `<a href="${page}" target="_blank" rel="noopener">view it on Wikimedia Commons ↗</a>`
-                : `check your connection`) + `.</p>`;
-      }, { once: true });
-      img.src = img.dataset.src;
-      img.removeAttribute("data-src");
-    });
   });
 
   return { openMenu: () => setOpen(true), closeMenu: () => setOpen(false) };

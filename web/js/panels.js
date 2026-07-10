@@ -456,11 +456,22 @@ HR.panel = (() => {
     }
   }, true);
 
+  /* the inline trigger chip: a pulsing spade instead of a flat "i" — it
+     should read as "there's treasure buried under this sentence" */
+  const DIG_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M12 3v6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M9 3.6h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M7.2 9.6h9.6v3.6a4.8 4.8 0 0 1-9.6 0Z" fill="currentColor"/></svg>`;
+
   /* affordance + keyboard access for non-button triggers */
   function scan(root = document) {
     root.querySelectorAll("[data-dig]").forEach(el => {
       if (el.dataset.digBound) return;
       el.dataset.digBound = "1";
+      if (el.tagName === "BUTTON" && el.classList.contains("dig")) {
+        el.innerHTML = DIG_ICON;
+        if (!el.title) el.title = "Dig deeper";
+      }
       if (el.tagName !== "BUTTON" && el.tagName !== "A") {
         el.tabIndex = 0;
         el.setAttribute("role", "button");
