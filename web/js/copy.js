@@ -19,6 +19,7 @@ HR.COPY = {
     blocked: "Route blocked ahead",
     trapped: "Every route is under water. The underpass is the only way.",
     dead: "Engine dead. The water won.",
+    home: "You reached home. The storm is still building.",
   },
   bury: {
     epidemic: y => `Epidemic — ${y}. The creeks outran the culverts.`,

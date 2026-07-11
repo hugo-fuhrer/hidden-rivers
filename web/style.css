@@ -269,13 +269,17 @@ html.hr-locked body{overflow:hidden}
 
 /* game canvas + HUD chrome */
 .gamecv{position:absolute;inset:0;width:100%;height:100%;z-index:1;outline:none}
-.ghud{position:absolute;top:14px;left:18px;right:18px;z-index:10;display:flex;
+.ghud{position:absolute;top:14px;left:18px;right:64px;z-index:10;display:flex;
      justify-content:space-between;align-items:flex-start;pointer-events:none;
      font-family:var(--mono);font-size:clamp(.72rem,1.4vw,.92rem);color:#cfe2ee;
      letter-spacing:.12em}
+.ghud-left{display:flex;gap:8px;align-items:center}
 .ghud .ghint{color:#5d6b7c}
 #drive-clock{background:rgba(9,14,20,.7);padding:5px 12px;border-radius:8px;
      border:1px solid #1c2634;color:var(--warm)}
+#drive-level{background:rgba(9,14,20,.7);padding:5px 12px;border-radius:8px;
+     border:1px solid #1c2634;color:var(--cy);font-size:.85em;letter-spacing:.14em}
+@media (max-width:560px){#drive-level{display:none}}
 
 /* engage cards */
 .engage,.replaychip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -329,6 +333,9 @@ html.hr-locked body{overflow:hidden}
 .govl button{margin-top:8px}
 #drive-loss .gcard{border-left-color:var(--warm)}
 #drive-loss .ekick{color:var(--or)}
+#drive-win .gcard{border-left-color:var(--grn)}
+#drive-win .ekick{color:var(--grn)}
+#drive-win .gstats{color:#9fc78f}
 
 /* touch joystick: the whole stage is the zone; the stick blooms under the
    thumb wherever it lands (far more playable than a fixed d-pad) */

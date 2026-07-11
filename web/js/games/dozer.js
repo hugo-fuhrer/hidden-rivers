@@ -210,7 +210,16 @@
 
     /* the dozer engine bogs down harder while it's actually cutting channel */
     const aud = A();
-    if (aud) aud.dozerLoad(nearPath && Math.abs(ax.y) > .1 ? .95 : .35);
+    if (aud) {
+      aud.dozerLoad(nearPath && Math.abs(ax.y) > .1 ? .95 : .35);
+      /* the soundscape heals with the river: streamflow grows with the open
+         channel, birds arrive with the trees, fish plop in the oldest water */
+      aud.gameAmb({
+        stream: .12 + .78 * (convNow / TOTAL),
+        birds: U.c01((a0 - 13) / 8) * .85,
+      });
+      if (a0 > 13 && Math.random() < dt * .3) aud.sfx.bloop();
+    }
     tutTick(nearPath);
 
     const g = gauges();
@@ -506,8 +515,9 @@
       lastT = performance.now() / 1000;
       const a = A(); if (a) a.dozerStart();
     },
-    stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
-    pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
+    stop() { running = false; cancelAnimationFrame(raf);
+             const a = A(); if (a) { a.dozerStop(); a.gameAmbClear(); } },
+    pause() { paused = true; const a = A(); if (a) { a.dozerStop(); a.gameAmbClear(); } },
     resume() { paused = false; lastT = performance.now() / 1000;
                const a = A(); if (a && mode === "play") a.dozerStart(); },
   };

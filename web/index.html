@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hidden Rivers — drive, vote, bury, daylight: Toronto's lost creeks</title>
-<meta name="description" content="An interactive scroll story: lose a rigged commute in the July 2024 Toronto flood, cast the 1882 vote that rigged it, bury the creeks yourself, then dig them back into daylight.">
+<meta name="description" content="An interactive scroll story: drive home three times through the July 2024 Toronto flood — the last run, across a buried creek, was never winnable — cast the 1882 vote that rigged it, bury the creeks yourself, then dig them back into daylight.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1C8 1 3 7.5 3 10.5a5 5 0 0 0 10 0C13 7.5 8 1 8 1Z' fill='%234fc3f7'/></svg>">
 </head>
@@ -85,12 +85,15 @@
   </div>
 </section>
 
-<!-- ════════════ III½ · GET HOME (the rigged commute) ════════════ -->
+<!-- ════════════ III½ · GET HOME (three runs, the last one rigged) ════════════ -->
 <section class="scene game" id="sc-drive" style="--len:2.2" data-name="III½ · Get home">
   <div class="sticky pitch">
     <canvas id="drive-cv" class="gamecv" tabindex="-1"></canvas>
     <div class="ghud">
-      <span id="drive-clock">6:12 p.m.</span>
+      <span class="ghud-left">
+        <span id="drive-level">RUN 1/3 · THE BEACHES</span>
+        <span id="drive-clock">5:41 p.m.</span>
+      </span>
       <div id="drive-storm" title="Storm intensity — when it fills, the flood spreads">
         <small>⛈ STORM</small>
         <i class="stormbar"><b id="drive-stormfill"></b></i>
@@ -99,9 +102,10 @@
     <div class="dpad" id="drive-dpad"></div>
 
     <div class="engage" id="drive-engage">
-      <p class="ekick">6:12 p.m. · Queen St E</p>
-      <h3>Get home.</h3>
-      <p>Avoid the flood. Reach the green <em>HOME</em> pin.</p>
+      <p class="ekick">July 16 · The storm comes in bands</p>
+      <h3>Get home. Three times.</h3>
+      <p>Three runs across Toronto as the storm builds — the Beaches, downtown,
+         the West End. Avoid the water. Reach the green <em>HOME</em> pin.</p>
       <p class="enote">You’ll learn the rest as you drive · <b>Esc</b> pauses</p>
       <div class="ebtns">
         <button class="g-start" type="button">Start driving</button>
@@ -115,9 +119,19 @@
       <div class="pbox">
         <button class="g-resume" type="button">Resume</button>
         <button class="g-ff" type="button">⏩ Skip to the end</button>
-        <button class="g-restart" type="button">Restart</button>
+        <button class="g-restart" type="button">Restart this run</button>
         <button class="g-skip2" type="button">Watch on autopilot</button>
         <button class="g-next" type="button">Next section ↓</button>
+      </div>
+    </div>
+
+    <div class="govl" id="drive-win">
+      <div class="gcard">
+        <p class="ekick" id="dw-kick">HOME</p>
+        <h3 id="dw-title">Made it.</h3>
+        <p id="dw-body"></p>
+        <p class="gstats" id="dw-stats"></p>
+        <button class="g-done" id="dw-next" type="button">Next run ↓</button>
       </div>
     </div>
 
@@ -125,11 +139,12 @@
       <div class="gcard">
         <p class="ekick">ENGINE DEAD · 6:13 P.M.</p>
         <h3>The city is dark. You’re walking.</h3>
-        <p>You did nothing wrong. Every route was already blocked, or about to be.</p>
+        <p>You did nothing wrong. You won twice tonight. This run was different:
+           every route was already blocked, or about to be.</p>
         <p class="greveal">The glowing lines are why. <b>The routes that failed you
            trace Garrison Creek — buried in 1884. It never
            left.</b><button class="dig" type="button" data-dig="garrison" aria-label="Dig deeper: Garrison Creek">i</button></p>
-        <p class="gstats">You lasted <b id="drive-surv">—</b> ·
+        <p class="gstats">You drove for <b id="drive-surv">—</b> ·
            167,000 without power · DVP closed · Union Station flooding</p>
         <p class="gfoot">$940&nbsp;million insured damage tonight — Toronto’s third
            “100-year storm” since

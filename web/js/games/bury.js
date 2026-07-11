@@ -292,7 +292,15 @@
           }
         }
       }
-      const a = A(); if (a) a.dozerLoad(dumping ? .95 : loading ? .7 : dz.moving ? .45 : .15);
+      const a = A();
+      if (a) {
+        a.dozerLoad(dumping ? .95 : loading ? .7 : dz.moving ? .45 : .15);
+        /* 1880 sounds like water and birdsong; both go quiet as the creeks
+           are entombed and the city grows over them */
+        const open = 1 - buriedCount() / N;
+        const urb = (popAt(year) - 86) / (631 - 86);
+        a.gameAmb({ stream: .55 * open, birds: .5 * open * (1 - urb * .75) });
+      }
       tutTick(loading, dumping);
 
       /* ── sickness: exposed creeks × the people living on top of them ── */
@@ -694,8 +702,9 @@
       lastT = performance.now() / 1000;
       const a = A(); if (a && (mode === "play" || mode === "won")) a.dozerStart();
     },
-    stop() { running = false; cancelAnimationFrame(raf); const a = A(); if (a) a.dozerStop(); },
-    pause() { paused = true; const a = A(); if (a) a.dozerStop(); },
+    stop() { running = false; cancelAnimationFrame(raf);
+             const a = A(); if (a) { a.dozerStop(); a.gameAmbClear(); } },
+    pause() { paused = true; const a = A(); if (a) { a.dozerStop(); a.gameAmbClear(); } },
     resume() { paused = false; lastT = performance.now() / 1000;
                const a = A(); if (a && (mode === "play" || mode === "won")) a.dozerStart(); },
   };

@@ -73,7 +73,7 @@ const flash = pow => {
   if (!REDUCED) { flashT = perf(); flashEl.dataset.p = pow; }
   /* loud strikes rumble — throttled so a flurry of flashes doesn't stack */
   if (pow >= .5 && perf() - lastThunder > 1.4 && window.HR && HR.audio) {
-    lastThunder = perf(); HR.audio.sfx.thunder();
+    lastThunder = perf(); HR.audio.sfx.thunder(pow);
   }
 };
 function perf() { return performance.now() / 1000; }
@@ -86,6 +86,9 @@ function drawFlash() {
 
 /* ── rain (one canvas per scene that needs it) ────────────────────────── */
 const rain = { target: 0, val: 0, drops: [], host: null, ctxs: new Map() };
+/* story-side ambient audio targets (wind gusts, streamflow, bird song) —
+   scenes set them while they own the viewport, reset every frame */
+const amb = { stream: 0, birds: 0, wind: 0 };
 const MAXDROPS = REDUCED ? 70 : 430;
 for (let i = 0; i < MAXDROPS; i++)
   rain.drops.push({ x: Math.random(), y: Math.random(), v: lerp(.9, 1.7, Math.random()),
@@ -183,6 +186,7 @@ scene("sc-cloud", (p, t) => {
   if (p > .86 && !cloudFlashes[1]) { cloudFlashes[1] = 1; flash(.85); }
   if (p < .03) cloudFlashes = [0, 0];
   if (p > .7) { rain.target = map(p, .7, 1) * .3; rain.host = "sc-cloud"; }
+  amb.wind = lerp(.2, .5, ease(p));                     // the storm cell breathing
   scrollHint.classList.toggle("off", p > .04);
 });
 cloudFlashes = [0, 0];
@@ -290,6 +294,7 @@ scene("sc-fall", (p, t) => {
   altim.textContent = alt > 0 ? alt.toLocaleString("en-CA") + " m" : "· splash ·";
   if (cnLight) cnLight.style.opacity = (Math.sin(t * 2.4) > 0 ? 1 : .15);
   rain.target = lerp(.25, 1, ease(p)); rain.host = "sc-fall";
+  amb.wind = lerp(.55, .3, p);                          // rushing past on the way down
 });
 rainCanvas("sc-fall");
 
@@ -634,6 +639,7 @@ function wavePath(width, amp, lam) {
     if (p > .8 && !floodFlashes[2]) { floodFlashes[2] = 1; flash(.6); }
     if (p < .03) floodFlashes = [0, 0, 0];
     rain.target = lerp(1, .75, p); rain.host = "sc-flood";
+    amb.wind = .35;
   });
   rainCanvas("sc-flood");
 }
@@ -902,7 +908,11 @@ for (const gid of ["drive", "bury", "dozer"]) {
   if (!document.getElementById(sid)) continue;
   scene(sid, p => {
     if (window.HR && HR.island) HR.island.maybeShow(gid, p);
-    if (gid === "drive") { rain.target = .6; rain.host = sid; }
+    /* the drive game sets its own storm level per level; .6 while idle */
+    if (gid === "drive") {
+      rain.target = (window.HR && HR._gameRain != null) ? HR._gameRain : .6;
+      rain.host = sid;
+    }
   });
 }
 rainCanvas("sc-drive");
@@ -1755,26 +1765,21 @@ if (window.RISK_DATA && document.getElementById("riskmap")) {
     }
     rain.target = p < .3 ? .25 * (1 - p / .3) : 0;
     rain.host = p < .35 ? "sc-future" : rain.host;
+    /* as the storm passes, the daylighted creek and its birds take over */
+    amb.stream = ease(map(p, .15, .5)) * .75;
+    amb.birds = ease(map(p, .3, .65)) * .7;
   });
   rainCanvas("sc-future");
 }
 
 /* ── progress bar + main loop (the chapter readout lives in HR.nav) ───── */
 const barEl = document.getElementById("bar");
-const flowSections = [...document.querySelectorAll("section[data-name]")];
-/* which music bed each scene wants while it owns the viewport */
-const MOOD = {
-  "sc-cloud": "calm", "sc-fall": "calm", "sc-flood": "tense", "sc-drive": "tense",
-  "sc-rewind": "tense", "sc-stink": "tense", "sc-vote": "tense", "sc-bury": "tense",
-  "sc-century": "calm", "sc-forecast": "calm", "sc-daylight": "calm",
-  "sc-dozer": "tense", "sc-future": "calm",
-};
-let lastT = perf(), curMood = "", audioWasOn = false;
+let lastT = perf();
 function loop() {
   const t = perf(), dt = Math.min(.05, t - lastT); lastT = t;
   const y = scrollY, vh = innerHeight;
   rain.target = 0;
-  let activeId = "";
+  amb.stream = 0; amb.birds = 0; amb.wind = 0;
   for (const s of SCENES) {
     const p = (y - s.top) / (s.hgt - vh);
     /* edge veil: dark while the sticky pins/unpins (wider window than the
@@ -1793,21 +1798,14 @@ function loop() {
       s.update && s.update(pc, t, dt);
     }
   }
-  for (const sec of flowSections) {
-    const r = sec.getBoundingClientRect();
-    if (r.top < vh * .5 && r.bottom > vh * .5) { activeId = sec.id; }
-  }
   const docH = document.documentElement.scrollHeight - vh;
   barEl.style.transform = `scaleX(${(docH ? y / docH : 0).toFixed(4)})`;
   drawRain(dt, t);
   drawFlash();
-  /* audio: crossfade the music bed to the active scene, track the rain bed */
+  /* audio: the ambience follows the scenery — rain, wind, water, birds */
   if (window.HR && HR.audio) {
-    if (HR.audio.on && !audioWasOn) { curMood = ""; audioWasOn = true; }   // just enabled → re-sync
-    else if (!HR.audio.on) audioWasOn = false;
-    const m = MOOD[activeId] || "calm";
-    if (m !== curMood) { curMood = m; HR.audio.mood(m); }
-    HR.audio.rain(rain.val);
+    HR.audio.storyAmb({ rain: rain.val, stream: amb.stream,
+                        birds: amb.birds, wind: amb.wind });
   }
   requestAnimationFrame(loop);
 }
