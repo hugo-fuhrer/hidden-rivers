@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hidden Rivers — drive, vote, bury, daylight: Toronto's lost creeks</title>
-<meta name="description" content="An interactive scroll story: drive home three times through the July 2024 Toronto flood — the last run, across a buried creek, was never winnable — cast the 1882 vote that rigged it, bury the creeks yourself, then dig them back into daylight.">
+<meta name="description" content="An interactive scroll story: drive through the July 2024 Toronto flood — a practice run, then a drive home across a buried creek that was never winnable — cast the 1882 vote that rigged it, bury the creeks yourself, then dig them back into daylight.">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path d='M8 1C8 1 3 7.5 3 10.5a5 5 0 0 0 10 0C13 7.5 8 1 8 1Z' fill='%234fc3f7'/></svg>">
 </head>
@@ -91,7 +91,7 @@
     <canvas id="drive-cv" class="gamecv" tabindex="-1"></canvas>
     <div class="ghud">
       <span class="ghud-left">
-        <span id="drive-level">RUN 1/3 · THE BEACHES</span>
+        <span id="drive-level">TUTORIAL · THE BEACHES</span>
         <span id="drive-clock">5:41 p.m.</span>
       </span>
       <div id="drive-storm" title="Storm intensity — when it fills, the flood spreads">
@@ -103,9 +103,10 @@
 
     <div class="engage" id="drive-engage">
       <p class="ekick">July 16 · The storm comes in bands</p>
-      <h3>Get home. Three times.</h3>
-      <p>Three runs across Toronto as the storm builds — the Beaches, downtown,
-         the West End. Avoid the water. Reach the green <em>HOME</em> pin.</p>
+      <h3>Get home.</h3>
+      <p>First a quick practice run in the Beaches while the rain is light —
+         then the real drive home as the storm stalls over the West End.
+         Avoid the water. Reach the green <em>HOME</em> pin.</p>
       <p class="enote">You’ll learn the rest as you drive · <b>Esc</b> pauses</p>
       <div class="ebtns">
         <button class="g-start" type="button">Start driving</button>
@@ -139,8 +140,8 @@
       <div class="gcard">
         <p class="ekick">ENGINE DEAD · 6:13 P.M.</p>
         <h3>The city is dark. You’re walking.</h3>
-        <p>You did nothing wrong. You won twice tonight. This run was different:
-           every route was already blocked, or about to be.</p>
+        <p>You did nothing wrong — the practice run proved you can drive. This
+           map was different: every route was already blocked, or about to be.</p>
         <p class="greveal">The glowing lines are why. <b>The routes that failed you
            trace Garrison Creek — buried in 1884. It never
            left.</b><button class="dig" type="button" data-dig="garrison" aria-label="Dig deeper: Garrison Creek">i</button></p>
@@ -735,7 +736,10 @@
               <text x="400" y="404" text-anchor="middle" font-family="ui-monospace,monospace"
                     font-size="20" fill="#c3ccd6" letter-spacing="3">BROOK IN THE SEWER, UNDER THE STREET</text>
             </svg>
-            <span class="ba-tag">before · illustrated</span>
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Channels%20Brook%20-%20culvert%20under%20the%20A264%20-%20geograph.org.uk%20-%201972896.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:Channels_Brook_-_culvert_under_the_A264_-_geograph.org.uk_-_1972896.jpg"
+                 alt="A brook disappearing into a concrete culvert beneath a road — the fate of a piped urban stream">
+            <span class="ba-tag" data-loaded="before · a culverted brook">before · illustrated</span>
           </div>
           <div class="ba-after">
             <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Z%C3%BCrich%20-%20Schanzengraben%20-%20M%C3%A4nnerbadi%20IMG%200660%20ShiftN.jpg?width=1200"
@@ -745,8 +749,9 @@
           </div>
           <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
         </div>
-        <figcaption>Drag the handle — open water threaded through central Zurich.
-        Photo: Wikimedia Commons.</figcaption>
+        <figcaption>Drag the handle. Before: a brook enters its culvert — how more
+        than a hundred Zürich brooks ran until 1988. After: open water threaded
+        through central Zurich. Photos: Wikimedia Commons.</figcaption>
       </figure>
       <button class="digline" type="button" data-dig="zurich">Dig deeper — daylighting as sewer policy →</button>
     </div>
@@ -775,7 +780,10 @@
               <text x="400" y="404" text-anchor="middle" font-family="ui-monospace,monospace"
                     font-size="20" fill="#dfe7d8" letter-spacing="3">A RIVER IN A CONCRETE CHUTE</text>
             </svg>
-            <span class="ba-tag">before · illustrated</span>
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/The%20Quaggy%20River%20east%20of%20Lee%20Road%2C%20SE3%20-%20geograph.org.uk%20-%202404652.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:The_Quaggy_River_east_of_Lee_Road,_SE3_-_geograph.org.uk_-_2404652.jpg"
+                 alt="The River Quaggy confined to a hard engineered channel east of Lee Road, a short way upstream of Sutcliffe Park">
+            <span class="ba-tag" data-loaded="before · the channelled Quaggy">before · illustrated</span>
           </div>
           <div class="ba-after">
             <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/River%20Quaggy%20in%20Sutcliffe%20Park.JPG?width=1200"
@@ -785,8 +793,9 @@
           </div>
           <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
         </div>
-        <figcaption>Playing fields on a dry day, a storage lake in a storm.
-        Photo: Wikimedia Commons.</figcaption>
+        <figcaption>Before: the Quaggy still walled into its channel just upstream,
+        east of Lee Road. After: playing fields on a dry day, a storage lake in a
+        storm. Photos: Wikimedia Commons.</figcaption>
       </figure>
       <button class="digline" type="button" data-dig="quaggy">Dig deeper — the park that is allowed to flood →</button>
     </div>
@@ -822,7 +831,10 @@
               <text x="400" y="308" text-anchor="middle" font-family="ui-monospace,monospace"
                     font-size="20" fill="#c3ccd6" letter-spacing="3">THE RIVER, UNDER FOUR LANES ON PIERS</text>
             </svg>
-            <span class="ba-tag">before · illustrated</span>
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Chonggye%20Expressway%201972-05-20.png?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:Chonggye_Expressway_1972-05-20.png"
+                 alt="The elevated Cheonggye expressway running over the covered stream through central Seoul, photographed in 1972">
+            <span class="ba-tag" data-loaded="before · 1972 photo">before · illustrated</span>
           </div>
           <div class="ba-after">
             <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Cheonggyecheon%20stream%20with%20flowers%20and%20bridge%20at%20sunrise%20near%20Cheonggye%20Plaza%20in%20Seoul.jpg?width=1200"
@@ -832,8 +844,9 @@
           </div>
           <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
         </div>
-        <figcaption>5.8&nbsp;km of public riverbank through the densest district in Korea.
-        Photo: Wikimedia Commons.</figcaption>
+        <figcaption>Before: the elevated expressway over the buried stream, 1972.
+        After: 5.8&nbsp;km of public riverbank through the densest district in
+        Korea. Photos: Wikimedia Commons / Seoul archives.</figcaption>
       </figure>
       <button class="digline" type="button" data-dig="cheong">Dig deeper — the expressway that became a river →</button>
     </div>
@@ -861,7 +874,10 @@
               <text x="400" y="420" text-anchor="middle" font-family="ui-monospace,monospace"
                     font-size="20" fill="#d8d0bd" letter-spacing="3">A RIGHT-ANGLE DOCK IN INDUSTRIAL FILL</text>
             </svg>
-            <span class="ba-tag">before · illustrated</span>
+            <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Keating%20Channel%20at%20the%20Don%20River%2C%20Toronto.jpg?width=1200"
+                 data-page="https://commons.wikimedia.org/wiki/File:Keating_Channel_at_the_Don_River,_Toronto.jpg"
+                 alt="The Keating Channel: the Don River forced through a hard right angle between dockwalls in Toronto's industrial Port Lands">
+            <span class="ba-tag" data-loaded="before · the Keating Channel">before · illustrated</span>
           </div>
           <div class="ba-after">
             <img data-src="https://commons.wikimedia.org/wiki/Special:FilePath/New%20Mouth%20of%20the%20Don%20River%202024.jpg?width=1200"
@@ -871,8 +887,9 @@
           </div>
           <div class="ba-handle" aria-hidden="true"><i>◂ ▸</i></div>
         </div>
-        <figcaption>The Don’s new, naturalized mouth in the Port Lands.
-        Photo: Wikimedia Commons.</figcaption>
+        <figcaption>Before: the Keating Channel — the Don hitting a dockwall at a
+        right angle. After: the Don’s new, naturalized mouth in the Port Lands.
+        Photos: Wikimedia Commons.</figcaption>
       </figure>
       <button class="digline" type="button" data-dig="portlands">Dig deeper — Toronto’s own proof, at river scale →</button>
     </div>

@@ -1,22 +1,25 @@
-/* Hidden Rivers v2 — Phase 1: "Get Home" — the commute, three times.
-   Top-down grid driving across three Toronto maps as the July 16 storm
-   builds. Runs 1 and 2 (the Beaches, then downtown) are honest and quick to
-   win: the flood rises along the buried creeks but a connected route home is
-   always preserved. Run 3 crosses Garrison Creek's valley and is rigged by a
-   Director — fairly: every blockage is telegraphed, the player is never
-   trapped instantly, and the loss screen reveals that the failed routes
-   trace the buried creek. The point of the two wins is the third loss. */
+/* Hidden Rivers v2 — Phase 1: "Get Home" — a tutorial run, then the real one.
+   Top-down grid driving across two Toronto maps as the July 16 storm builds.
+   The tutorial (the Beaches) is honest and quick to win: the flood rises
+   along the buried creek but a connected route home is always preserved,
+   while the coach marks teach the controls. The real drive home crosses
+   Garrison Creek's valley and is rigged by a Director — fairly: every
+   blockage is telegraphed, the player is never trapped instantly, and the
+   loss screen reveals that the failed routes trace the buried creek. The
+   tutorial win exists so the loss lands as the map's fault, not the
+   player's. */
 "use strict";
 (() => {
   const U = HR.u;
   const SPEED = 2.3;                                     // cells per second
 
-  /* ── the three runs ─────────────────────────────────────────────────────
+  /* ── the two runs ───────────────────────────────────────────────────────
      Each level is its own map: grid size, start/home, the buried creeks the
      water follows, pacing, and the recognisable Toronto set dressing. */
   const LEVELS = [
     {
-      name: "THE BEACHES", tag: "RUN 1 OF 3 · LIGHT RAIN",
+      name: "THE BEACHES", tag: "TUTORIAL · LIGHT RAIN",
+      chip: "TUTORIAL · THE BEACHES",
       clock: [5, 41],                                    // 5:41 p.m.
       nx: 9, ny: 7, home: { x: 1, y: 1 }, start: { x: 7, y: 5 },
       creeks: [                                          // Small's Creek, roughly
@@ -36,46 +39,17 @@
       win: {
         kick: "5:44 P.M. · HOME",
         title: "Made it — soaked, and fine.",
-        body: "The Beaches shrug this off: short blocks, the lake right there. " +
-              "But the radar shows two more bands stacked behind this one, " +
-              "and you have two more trips to make tonight.",
+        body: "That was the easy part: an errand in the Beaches, short blocks, " +
+              "the lake right there. Now the radar shows the real storm " +
+              "stalling over the west end — and that's where the drive home " +
+              "begins.",
         stats: "Rain so far: 31 mm · Streets lost: a handful · The 501: still running",
-        btn: "Next run · downtown ↓",
+        btn: "The real run · the West End ↓",
       },
     },
     {
-      name: "DOWNTOWN", tag: "RUN 2 OF 3 · THE SECOND BAND",
-      clock: [5, 58],
-      nx: 11, ny: 7, home: { x: 1, y: 2 }, start: { x: 9, y: 4 },
-      creeks: [                                          // Taddle Creek's diagonal
-        [[3.4, -.5], [3.9, .8], [4.6, 2.0], [5.5, 3.1], [6.3, 4.3], [6.8, 5.4], [7.1, 6.5]],
-      ],
-      floodT: 40, stormT: 46, rain: .65,
-      thunder: [6, 12, .7], sirens: true,
-      fair: true, rigged: false, tele: { after: 7, every: 4.6 },
-      tram: { y: 3, label: "KING ST W" },
-      parks: [{ cx: 5, cy: 0, w: 1, h: 1, n: "QUEEN'S PARK", oval: true }],
-      specials: [
-        { cx: 4, cy: 1, k: "cityhall" },
-        { cx: 5, cy: 4, k: "union" },
-        { cx: 3, cy: 5, k: "cn" },
-        { cx: 2, cy: 5, k: "dome" },
-      ],
-      rail: { cy: 5 },
-      vlabels: [{ x: 6, n: "YONGE ST" }, { x: 4, n: "BAY ST" }],
-      margin: { lake: true, gardiner: true },
-      win: {
-        kick: "6:07 P.M. · HOME",
-        title: "Made it again — barely.",
-        body: "That one cost you. Union's lower concourse is sandbagged, the " +
-              "Gardiner ramps are ponds. And the third band is stalling over " +
-              "the west end — exactly where your last run goes.",
-        stats: "Rain so far: 74 mm · DVP: closing · Union Station: flooding",
-        btn: "Last run · the West End ↓",
-      },
-    },
-    {
-      name: "THE WEST END", tag: "RUN 3 OF 3 · THE BAND THAT STALLS",
+      name: "THE WEST END", tag: "THE DRIVE HOME · THE BAND THAT STALLS",
+      chip: "THE DRIVE HOME · THE WEST END",
       clock: [6, 12],
       nx: 11, ny: 8, home: { x: 1, y: 1 }, start: { x: 9, y: 6 },
       creeks: [                                          // Garrison Creek + branch
@@ -97,6 +71,7 @@
       win: null,                                         // there is no winning this one
     },
   ];
+  const LAST = LEVELS.length - 1;
 
   /* ── per-level grid (rebuilt by loadLevel) ──────────────────────────── */
   let L = LEVELS[0], LVL = 0;
@@ -162,7 +137,7 @@
       for (let k = 0; k < n; k++) dots.push([rnd(), rnd()]);
       WIN.push(dots);
     }
-    if (levelEl) levelEl.textContent = `RUN ${i + 1}/3 · ${L.name}`;
+    if (levelEl) levelEl.textContent = L.chip;
   }
 
   /* ── mutable game state ─────────────────────────────────────────────── */
@@ -206,8 +181,8 @@
     if (winEl) winEl.classList.remove("on");
     /* per-run weather: visual rain (main.js reads this) + wind bed */
     if (window.HR) HR._gameRain = L.rain;
-    const a = A(); if (a) a.gameAmb({ wind: [.12, .3, .5][lvl] || .2 });
-    HR.live(`Run ${lvl + 1} of 3 — ${L.name}. Drive home.`);
+    const a = A(); if (a) a.gameAmb({ wind: [.15, .5][lvl] || .2 });
+    HR.live(`${L.chip}. Drive home.`);
   }
 
   /* sequential coach marks — the engage card no longer explains anything */
@@ -219,8 +194,6 @@
         ? "Touch and drag the <b>joystick</b> to drive"
         : `Drive with ${t.kbd("W")}${t.kbd("A")}${t.kbd("S")}${t.kbd("D")} or the arrow keys`,
         { ttl: 0 });
-    } else if (LVL === 1) {
-      t.hint("drive-l2", "The water is faster downtown — detour <b>early</b>", { ttl: 6 });
     } else {
       t.hint("drive-l3", "This is <b>Garrison Creek</b> country — the lowest ground in the west end", { ttl: 7 });
     }
@@ -320,7 +293,7 @@
 
     if (mode === "won") {                                // hold for the win card
       wonT += dt;
-      if (auto && wonT > 2.6 && LVL < 2) advance();
+      if (auto && wonT > 2.6 && LVL < LAST) advance();
       return;
     }
     if (mode !== "play") return updateDying(dt);
@@ -417,7 +390,10 @@
       const [g0, g1, pow] = L.thunder;
       nextThunder = elapsed + g0 + Math.random() * (g1 - g0);
       flashA = 1;
-      if (a) a.sfx.thunder(pow * (.75 + Math.random() * .35));
+      /* light first, sound after — nearby strikes arrive almost at once */
+      const pw = pow * (.75 + Math.random() * .35);
+      if (a) a.sfx.thunder(pw, pw > .65 ? .05 + Math.random() * .15
+                                        : .35 + Math.random() * .9);
     }
     if (!a) return;
     if (!dingDone && tram && elapsed > 1.2) { dingDone = true; a.sfx.ding(); }
@@ -473,7 +449,7 @@
     }, 750);
   }
   function advance() {
-    if (LVL >= 2) return;
+    if (LVL >= LAST) return;
     if (winEl) winEl.classList.remove("on");
     if (window.HR && HR.tutor) HR.tutor.clear();
     begin(auto, LVL + 1);

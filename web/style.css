@@ -171,6 +171,12 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
 .ba-after{clip-path:inset(0 0 0 var(--cut))}
 .ba-after img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
      display:block}
+/* the before photo sits over its illustration and fades in when it arrives;
+   until then (or offline) the drawing shows */
+.ba-before img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+     display:block;opacity:0;transition:opacity .6s}
+.ba-before img.on{opacity:1}
+.ba-before .ba-tag{z-index:1}
 .ba-tag{position:absolute;bottom:8px;font-family:var(--mono);font-size:.56rem;
      letter-spacing:.18em;text-transform:uppercase;color:#eaf2f8;
      background:rgba(7,11,17,.72);border-radius:6px;padding:3px 8px;pointer-events:none}
@@ -279,7 +285,11 @@ html.hr-locked body{overflow:hidden}
      border:1px solid #1c2634;color:var(--warm)}
 #drive-level{background:rgba(9,14,20,.7);padding:5px 12px;border-radius:8px;
      border:1px solid #1c2634;color:var(--cy);font-size:.85em;letter-spacing:.14em}
-@media (max-width:560px){#drive-level{display:none}}
+/* phones still get the run chip — just tighter */
+@media (max-width:560px){
+  #drive-level{font-size:.62rem;letter-spacing:.08em;padding:4px 7px}
+  #drive-clock{font-size:.7rem;padding:4px 8px}
+}
 
 /* engage cards */
 .engage,.replaychip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);

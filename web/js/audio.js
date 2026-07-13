@@ -232,7 +232,13 @@ HR.audio = (() => {
   function enable() {
     build();
     if (!ctx) return;
-    if (ctx.state === "suspended") ctx.resume();
+    if (ctx.state === "suspended") {
+      /* resume() rejects when the browser doesn't count the triggering
+         event as a user activation (e.g. a wheel scroll) — armReentry keeps
+         listening and tries again on the next gesture */
+      const p = ctx.resume();
+      if (p && p.catch) p.catch(() => {});
+    }
     enabled = true;
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.linearRampToValueAtTime(0.85, ctx.currentTime + 0.6);
@@ -278,6 +284,82 @@ HR.audio = (() => {
     return { f, g, src, at: now };
   }
 
+  /* thunder, staged like the real thing: a bright tearing crack (close
+     strikes only), the boom, then several overlapping rumble swells that
+     roll away, darken and wander across the stereo field. pow 0..1 is
+     closeness; delay (s) lets callers put air between lightning and sound. */
+  function thunderStrike(pow = 1, delay = 0) {
+    if (!enabled || !ctx) return;
+    const p = Math.max(.15, Math.min(1, pow));
+    const t0 = ctx.currentTime + Math.max(0, delay);
+
+    /* one output per strike so the whole event drifts together */
+    const out = ctx.createGain(); out.gain.value = 1;
+    if (ctx.createStereoPanner) {
+      const pan = ctx.createStereoPanner();
+      const p0 = (Math.random() * 1.4 - .7) * (1.1 - p * .6); // far strikes sit off to a side
+      pan.pan.setValueAtTime(p0, t0);
+      pan.pan.linearRampToValueAtTime(p0 * -.5, t0 + 2.6 + p * 2.4); // rolls across the sky
+      out.connect(pan); pan.connect(sfxBus);
+    } else out.connect(sfxBus);
+
+    /* a noise layer into the strike bus, with a custom gain envelope */
+    const layer = (filters, at, stop) => {
+      const src = noiseSrc();
+      let node = src;
+      for (const f of filters) { node.connect(f); node = f; }
+      const g = ctx.createGain(); g.gain.value = 0;
+      node.connect(g); g.connect(out);
+      src.start(at); src.stop(stop);
+      return g;
+    };
+
+    /* 1 · the crack: a snap, then the air ripping downward */
+    if (p > .55) {
+      const snap = layer([biq("highpass", 3200)], t0, t0 + .1);
+      snap.gain.setValueAtTime(.15 * p, t0);
+      snap.gain.exponentialRampToValueAtTime(.0004, t0 + .07);
+      const ripF = biq("bandpass", 1500, 1.1);
+      ripF.frequency.exponentialRampToValueAtTime(320, t0 + .34);
+      const rip = layer([ripF], t0 + .015, t0 + .45);
+      rip.gain.setValueAtTime(0, t0 + .015);
+      rip.gain.linearRampToValueAtTime(.22 * p, t0 + .04);
+      rip.gain.exponentialRampToValueAtTime(.0005, t0 + .4);
+      /* a slap-back echo off the streetscape */
+      const eAt = t0 + .3 + Math.random() * .18;
+      const echo = layer([biq("bandpass", 640, 1)], eAt, eAt + .3);
+      echo.gain.setValueAtTime(0, eAt);
+      echo.gain.linearRampToValueAtTime(.07 * p, eAt + .05);
+      echo.gain.exponentialRampToValueAtTime(.0004, eAt + .28);
+    }
+
+    /* 2 · the boom: a deep drop with a sub under it */
+    const bAt = p > .55 ? t0 + .07 : t0;
+    tone(48 + Math.random() * 10, 1.5 + p * .9, "sine", .3 * p, 26, bAt - ctx.currentTime);
+    tone(36, 1.9 + p, "triangle", .1 * p, 22, bAt - ctx.currentTime + .05);
+
+    /* 3 · the roll: overlapping swells, each darker and softer, the last
+       ones just a shudder on the horizon */
+    const swells = 2 + Math.round(Math.random() * (1 + p * 1.4));
+    let at = bAt + .1;
+    for (let i = 0; i < swells; i++) {
+      const dur = .8 + Math.random() * 1.1 + p * .7;
+      const f = biq("lowpass", (520 + Math.random() * 320) * (1 - i * .17), .7);
+      f.frequency.exponentialRampToValueAtTime(70 + Math.random() * 40, at + dur);
+      const g = layer([f], at, at + dur + .1);
+      const peak = .3 * p * Math.pow(.72, i) * (.8 + Math.random() * .4);
+      /* bumpy decay: thunder never fades smoothly */
+      const N = 14, curve = new Float32Array(N);
+      for (let k = 0; k < N; k++) {
+        const env = k < 2 ? k / 2 : Math.pow(1 - (k - 2) / (N - 2), 1.6);
+        curve[k] = Math.max(0, peak * env * (.65 + Math.random() * .55));
+      }
+      curve[N - 1] = 0.0001;
+      g.gain.setValueCurveAtTime(curve, at, dur);
+      at += dur * (.4 + Math.random() * .3);              // the next swell overlaps
+    }
+  }
+
   const SFX = {
     click: () => tone(660, 0.06, "triangle", 0.16, 880),
     soft:  () => tone(520, 0.08, "sine", 0.12, 600),
@@ -299,26 +381,7 @@ HR.audio = (() => {
       }
       tone(65, 1.0, "sine", 0.1, 40);
     },
-    /* thunder, with a personality per strike: close hits crack first, far
-       ones only rumble; the tail wobbles as it decays. pow 0..1 = closeness */
-    thunder: (pow = 1) => {
-      if (!enabled || !ctx) return;
-      const p = Math.max(.2, Math.min(1, pow));
-      if (p > .55) {                                       // the crack
-        noiseBurst(0.09, "highpass", 2400, 0.14 * p, 1, 0.0);
-        noiseBurst(0.16, "bandpass", 900, 0.16 * p, 1.4, 0.02);
-      }
-      const dly = p > .55 ? .1 : .02;
-      tone(44 + Math.random() * 8, 1.4 + p, "sine", 0.3 * p, 28, dly);
-      const n = noiseBurst(1.1 + p * 1.2, "lowpass", 750, 0.28 * p, 0.6, dly);
-      if (n) {
-        n.f.frequency.exponentialRampToValueAtTime(90, n.at + 1 + p);
-        const lfo = ctx.createOscillator(); lfo.frequency.value = 5 + Math.random() * 3;
-        const lg = ctx.createGain(); lg.gain.value = 0.07 * p;
-        lfo.connect(lg); lg.connect(n.g.gain);
-        lfo.start(n.at); lfo.stop(n.at + 1.2 + p * 1.2);
-      }
-    },
+    thunder: thunderStrike,
     siren: () => {                                         // distant, behind the rain
       if (!enabled || !ctx) return;
       const now = ctx.currentTime;
@@ -447,22 +510,29 @@ HR.audio = (() => {
   }
 
   /* arm audio on the first user gesture. Sound is opt-OUT: unless the user
-     has explicitly muted before (PREF === "0"), the first tap/keypress
-     starts the soundscape. Autoplay policy is satisfied because the
-     AudioContext is created inside the gesture handler. */
+     has explicitly muted before (PREF === "0"), the first interaction —
+     tap, keypress, OR wheel/trackpad scroll — starts the soundscape, so the
+     piece is audible however the visitor chooses to move through it. Some
+     browsers don't count a wheel scroll as a user activation, so the
+     listeners stay armed until the AudioContext is confirmed running (the
+     first click/keypress/touch then unlocks it). */
   function armReentry() {
     let pref = null;
     try { pref = localStorage.getItem(PREF); } catch (e) { /* private mode */ }
     if (pref === "0") return;
+    const EVS = ["pointerdown", "keydown", "touchend", "wheel"];
+    const off = () => EVS.forEach(ev => removeEventListener(ev, go, true));
     const go = () => {
+      try {                                              // respect a mid-session mute
+        if (localStorage.getItem(PREF) === "0") { off(); return; }
+      } catch (e) {}
+      if (enabled && ctx && ctx.state === "running") { off(); return; }
       enable();
-      removeEventListener("pointerdown", go);
-      removeEventListener("keydown", go);
-      removeEventListener("touchend", go);
+      setTimeout(() => {                                 // disarm only once live
+        if (ctx && ctx.state === "running") off();
+      }, 250);
     };
-    addEventListener("pointerdown", go);
-    addEventListener("keydown", go);
-    addEventListener("touchend", go);
+    EVS.forEach(ev => addEventListener(ev, go, true));
   }
 
   function boot() { makeBtn(); armReentry(); }

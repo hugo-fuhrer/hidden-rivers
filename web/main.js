@@ -73,7 +73,8 @@ const flash = pow => {
   if (!REDUCED) { flashT = perf(); flashEl.dataset.p = pow; }
   /* loud strikes rumble — throttled so a flurry of flashes doesn't stack */
   if (pow >= .5 && perf() - lastThunder > 1.4 && window.HR && HR.audio) {
-    lastThunder = perf(); HR.audio.sfx.thunder(pow);
+    lastThunder = perf();
+    HR.audio.sfx.thunder(pow, (1 - pow) * .8);           // light first, sound after
   }
 };
 function perf() { return performance.now() / 1000; }

@@ -1,34 +1,39 @@
-/* Hidden Rivers v2 — HR.scroll: enforced scroll pacing.
+/* Hidden Rivers v2 — HR.scroll: a speed limit, nothing more.
    Mouse wheels and trackpad flicks can tear through a scene in one gesture,
-   so wheel input is intercepted and re-played as a smooth scroll whose
-   velocity is capped relative to the viewport. Native scrolling elsewhere
-   (scrollbar drag, keyboard, touch) is untouched — touch pacing comes from
-   the longer scene lengths. Disabled while a game holds the input lock and
-   inside any scrollable overlay (drawer, menus, cards). */
+   so wheel input is intercepted and applied directly with a cap on velocity.
+   There is deliberately NO easing or coasting: input that hasn't been spent
+   within a beat of the fingers stopping is dropped, so the page halts the
+   moment the user does. Native scrolling elsewhere (scrollbar drag,
+   keyboard, touch) is untouched — touch pacing comes from the longer scene
+   lengths. Disabled while a game holds the input lock and inside any
+   scrollable overlay (drawer, menus, cards). */
 "use strict";
 window.HR = window.HR || {};
 
 HR.scroll = (() => {
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
   const SCROLLABLES = ".hp-drawer,#bookmark-menu,#finale,.govl .gcard,.engage,.step";
-  let target = scrollY, cur = scrollY, raf = 0, lastT = 0, settling = false;
+  let pending = 0, frac = 0, raf = 0, lastT = 0, lastInput = 0;
 
-  const maxStep = () => innerHeight * .82;     // largest wheel step we honour, px
-  const maxVel  = () => innerHeight * 1.5;     // cap, px per second
+  const maxVel = () => innerHeight * 1.5;      // the cap, px per second
+  const IDLE = 140;                            // ms without input = fingers stopped
 
   function tick(now) {
     const dt = Math.min(.05, (now - lastT) / 1000); lastT = now;
-    const d = target - cur;
-    /* ease toward the target but never faster than the velocity cap */
-    let step = d * Math.min(1, dt * 7);
+    /* the user stopped: whatever they haven't scrolled yet, they didn't want */
+    if (now - lastInput > IDLE) pending = 0;
     const cap = maxVel() * dt;
-    if (Math.abs(step) > cap) step = Math.sign(step) * cap;
-    cur += step;
-    if (Math.abs(target - cur) < .6) { cur = target; settling = false; }
-    settling = Math.abs(target - cur) >= .6;
-    scrollTo(0, Math.round(cur));
-    if (settling) raf = requestAnimationFrame(tick);
-    else raf = 0;
+    const step = clamp(pending, -cap, cap);
+    pending -= step;
+    frac += step;
+    const move = Math.trunc(frac);             // whole pixels; carry the rest
+    frac -= move;
+    if (move) {
+      const docH = document.documentElement.scrollHeight - innerHeight;
+      scrollTo(0, clamp(scrollY + move, 0, docH));
+    }
+    if (pending) raf = requestAnimationFrame(tick);
+    else { raf = 0; frac = 0; }
   }
 
   addEventListener("wheel", e => {
@@ -42,17 +47,10 @@ HR.scroll = (() => {
     let dy = e.deltaY;
     if (e.deltaMode === 1) dy *= 16;                        // lines → px
     else if (e.deltaMode === 2) dy *= innerHeight;          // pages → px
-    dy = clamp(dy, -140, 140);                              // tame violent flicks
-    const docH = document.documentElement.scrollHeight - innerHeight;
-    if (!settling) { cur = scrollY; target = scrollY; }     // resync after native scrolls
-    target = clamp(target + dy * 1.1, 0, docH);
-    if (!raf) { lastT = performance.now(); raf = requestAnimationFrame(tick); }
+    pending += clamp(dy, -420, 420);
+    lastInput = performance.now();
+    if (!raf) { lastT = lastInput; raf = requestAnimationFrame(tick); }
   }, { passive: false });
 
-  /* a scroll we didn't cause (keyboard, scrollbar, anchor jump) resyncs us */
-  addEventListener("scroll", () => {
-    if (!settling) { cur = scrollY; target = scrollY; }
-  }, { passive: true });
-
-  return { get active() { return settling; } };
+  return { get active() { return raf !== 0; } };
 })();

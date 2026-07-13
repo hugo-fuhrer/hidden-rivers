@@ -1,11 +1,13 @@
 /* Hidden Rivers v2 — HR.compare: before/after sliders for the case studies.
-   Each .ba-frame holds an illustrated "before" layer and a photo "after"
-   layer clipped by --cut (the divider position, % from the left). The photo
-   lazy-loads when the figure scrolls into view — no click needed — and the
-   divider auto-sweeps from all-before to mostly-after so the comparison
+   Each .ba-frame holds a "before" layer (a real archival/contextual photo
+   over an illustrated placeholder) and a photo "after" layer clipped by
+   --cut (the divider position, % from the left). Both photos lazy-load when
+   the figure scrolls into view — no click needed — and the divider
+   auto-sweeps from all-before to mostly-after so the comparison
    demonstrates itself. Drag / touch / arrow keys move the divider after
-   that. A photo that fails to load collapses the frame to the illustration
-   plus a source link, so nothing breaks offline. */
+   that. A before photo that fails to load falls back to the illustration
+   (tag reverts to "illustrated"); a failed after photo collapses the frame
+   to the before layer plus a source link, so nothing breaks offline. */
 "use strict";
 window.HR = window.HR || {};
 
@@ -64,8 +66,23 @@ HR.compare = (() => {
 
   function open(fig) {
     const frame = fig.querySelector(".ba-frame");
-    const img = fig.querySelector("img[data-src]");
     if (!frame) return;
+
+    /* the before photo layers over its illustration; the drawing is only
+       the loading state / offline fallback */
+    const before = fig.querySelector(".ba-before img[data-src]");
+    if (before) {
+      const tag = fig.querySelector(".ba-before .ba-tag");
+      before.addEventListener("load", () => {
+        before.classList.add("on");
+        if (tag && tag.dataset.loaded) tag.textContent = tag.dataset.loaded;
+      }, { once: true });
+      before.addEventListener("error", () => before.remove(), { once: true });
+      before.src = before.dataset.src;
+      before.removeAttribute("data-src");
+    }
+
+    const img = fig.querySelector(".ba-after img[data-src]");
     const go = () => sweep(frame, 100, 42, 2600);          // the reveal: wipe to "after"
     if (!img) { go(); return; }
     img.addEventListener("load", go, { once: true });
