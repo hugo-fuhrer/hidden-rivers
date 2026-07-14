@@ -139,7 +139,7 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
      text-shadow:0 1px 10px rgba(6,14,20,.9)}
 .dl-sparkle{animation:dlshimmer 3.4s ease-in-out infinite}
 @keyframes dlshimmer{0%,100%{opacity:.5}50%{opacity:.2}}
-@media (prefers-reduced-motion:reduce){.dl-sparkle{animation:none}}
+@media (prefers-reduced-motion:reduce){html:not(.hr-motion) .dl-sparkle{animation:none}}
 #sc-daylight .lede{font-size:clamp(1.05rem,2vw,1.3rem);color:#d7e1ea;
      max-width:60ch;margin-bottom:7vh}
 #sc-daylight .lede b{color:var(--cy)}
@@ -255,8 +255,8 @@ footer code{font-family:var(--mono);color:#7d8ea0}
   #altimeter{display:none}
 }
 @media (prefers-reduced-motion:reduce){
-  .reveal{transition:none}
-  #scrollhint{animation:none}
+  html:not(.hr-motion) .reveal{transition:none}
+  html:not(.hr-motion) #scrollhint{animation:none}
 }
 
 /* ════════════════════════ v2 · interactive layer ════════════════════════ */
@@ -696,7 +696,7 @@ html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
   0%{box-shadow:0 0 0 0 rgba(79,195,247,.45)}
   55%{box-shadow:0 0 0 9px rgba(79,195,247,0)}
   100%{box-shadow:0 0 0 0 rgba(79,195,247,0)}}
-@media (prefers-reduced-motion:reduce){.dig{animation:none}}
+@media (prefers-reduced-motion:reduce){html:not(.hr-motion) .dig{animation:none}}
 .beat .dig,.step .dig{pointer-events:auto}
 /* block trigger for case studies: an explicit "dig deeper" line */
 .digline{display:inline-flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;
@@ -734,7 +734,7 @@ html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
      color:#5d6b7c;margin:22px 0 10px}
 .hp-srcs{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .hp-srcs a{font-size:.84rem}
-@media (prefers-reduced-motion:reduce){.hp-drawer{transition:none}.hp-scrim{transition:none}}
+@media (prefers-reduced-motion:reduce){html:not(.hr-motion) .hp-drawer{transition:none}html:not(.hr-motion) .hp-scrim{transition:none}}
 
 /* engage-card structured guidance */
 .engage .guide{list-style:none;text-align:left;margin:16px auto 2px;max-width:42ch;
@@ -805,7 +805,7 @@ html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
 @keyframes keypress{0%,100%{transform:translateY(0);border-bottom-width:3px}
      50%{transform:translateY(2px);border-bottom-width:1px;
          box-shadow:0 0 10px rgba(79,195,247,.6)}}
-@media (prefers-reduced-motion:reduce){#hr-hint kbd.hh-key{animation:none}}
+@media (prefers-reduced-motion:reduce){html:not(.hr-motion) #hr-hint kbd.hh-key{animation:none}}
 @media (max-width:760px){#hr-hint{bottom:86px}}
 
 /* chips: on keyboards the ⏩ skip chip shows (Esc pauses); on touch the
@@ -828,7 +828,7 @@ html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
 .hr-ff:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
 .hr-ff span{font-size:.9em}
 .pausesheet .g-ff{background:linear-gradient(160deg,#1d4f6e,#153049)}
-@media (prefers-reduced-motion:reduce){.hr-ff{transition:opacity .25s}}
+@media (prefers-reduced-motion:reduce){html:not(.hr-motion) .hr-ff{transition:opacity .25s}}
 
 /* the vote chamber backdrop */
 .chamber-bg{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
@@ -842,7 +842,7 @@ html.hr-locked #bookmark-btn,html.hr-locked #bookmark-menu{display:none}
 #rw-burst{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;
      background:radial-gradient(circle at 50% 50%,rgba(190,225,255,.95),rgba(120,200,255,.5) 30%,transparent 70%)}
 @media (prefers-reduced-motion:reduce){
-  #drive-storm.hot .stormbar,.hr-tip-pop{animation:none}
+  html:not(.hr-motion) #drive-storm.hot .stormbar,html:not(.hr-motion) .hr-tip-pop{animation:none}
 }
 
 /* no backdrop-filter (older browsers): lean on opacity instead of blur so

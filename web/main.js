@@ -13,7 +13,9 @@ const map = (p, a, b) => c01((p - a) / (b - a));
 const ease = t => t * t * (3 - 2 * t);                  // smoothstep
 const easeIO = t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 const TAU = Math.PI * 2;
-const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const REDUCED = window.HR && "REDUCED" in HR
+  ? HR.REDUCED
+  : matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function mulberry(seed) {                                // tiny seeded RNG
   return () => {

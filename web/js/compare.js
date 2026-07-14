@@ -11,7 +11,9 @@ window.HR = window.HR || {};
 
 HR.compare = (() => {
   const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
-  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const REDUCED = "REDUCED" in HR
+    ? HR.REDUCED
+    : matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function setCut(frame, pct, announce = true) {
     pct = clamp(pct, 0, 100);
