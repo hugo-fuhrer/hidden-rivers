@@ -1,11 +1,11 @@
 /* Hidden Rivers v2 — HR.compare: before/after sliders for the case studies.
-   Each .ba-frame holds an illustrated "before" layer and a photo "after"
-   layer clipped by --cut (the divider position, % from the left). The photo
-   lazy-loads when the figure scrolls into view — no click needed — and the
+   Each .ba-frame holds a photo "before" layer and a photo "after" layer
+   clipped by --cut (the divider position, % from the left). The photos
+   lazy-load when the figure scrolls into view — no click needed — and the
    divider auto-sweeps from all-before to mostly-after so the comparison
    demonstrates itself. Drag / touch / arrow keys move the divider after
-   that. A photo that fails to load collapses the frame to the illustration
-   plus a source link, so nothing breaks offline. */
+   that. A photo that fails to load collapses the frame to the surviving
+   layer plus a source link, so nothing breaks offline. */
 "use strict";
 window.HR = window.HR || {};
 
@@ -66,24 +66,28 @@ HR.compare = (() => {
 
   function open(fig) {
     const frame = fig.querySelector(".ba-frame");
-    const img = fig.querySelector("img[data-src]");
     if (!frame) return;
+    const imgs = [...fig.querySelectorAll("img[data-src]")];
     const go = () => sweep(frame, 100, 42, 2600);          // the reveal: wipe to "after"
-    if (!img) { go(); return; }
-    img.addEventListener("load", go, { once: true });
-    img.addEventListener("error", () => {
-      const page = img.dataset.page;
-      const after = img.closest(".ba-after");
-      if (after) after.remove();
-      const handle = frame.querySelector(".ba-handle");
-      if (handle) handle.remove();
-      frame.classList.add("ba-flat");
-      const cap = fig.querySelector("figcaption");
-      if (cap && page) cap.innerHTML =
-        `The photo couldn't be loaded here — <a href="${page}" target="_blank" rel="noopener">view it on Wikimedia Commons ↗</a>.`;
-    }, { once: true });
-    img.src = img.dataset.src;
-    img.removeAttribute("data-src");
+    if (!imgs.length) { go(); return; }
+    for (const img of imgs) {
+      const isAfter = !!img.closest(".ba-after");
+      if (isAfter) img.addEventListener("load", go, { once: true });
+      img.addEventListener("error", () => {
+        const page = img.dataset.page;
+        const layer = img.closest(isAfter ? ".ba-after" : ".ba-before");
+        if (layer) layer.remove();
+        const handle = frame.querySelector(".ba-handle");
+        if (handle) handle.remove();
+        frame.classList.add("ba-flat");
+        if (!isAfter) setCut(frame, 0);                    // show the surviving "after" full-frame
+        const cap = fig.querySelector("figcaption");
+        if (cap && page) cap.innerHTML =
+          `The photo couldn't be loaded here — <a href="${page}" target="_blank" rel="noopener">view it on Wikimedia Commons ↗</a>.`;
+      }, { once: true });
+      img.src = img.dataset.src;
+      img.removeAttribute("data-src");
+    }
   }
 
   function boot() {

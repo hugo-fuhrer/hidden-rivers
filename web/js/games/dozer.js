@@ -4,15 +4,15 @@
    then water that clears from mud-brown to (exaggerated) blue, banks that
    green up, trees that grow in, and finally wildlife moving back to the river.
    Each layer's first appearance posts a real-world daylighting stat. There is
-   no clock: the four gauges cross their safe thresholds as the dig advances,
-   and the camera trails the dozer so the healing river stays in frame. */
+   no clock: the four gauges cross their safe thresholds as the dig advances.
+   The frame is static — the whole alignment fits on screen at once, so the
+   healing river is always in view and nothing ever scrolls. */
 "use strict";
 (() => {
   const U = HR.u;
-  const WORLD = { w: 2400, h: 1500 };
-  const PATH = [[260, 180], [420, 330], [380, 520], [560, 660], [760, 700],
-                [900, 880], [1150, 940], [1320, 1100], [1600, 1160],
-                [1850, 1300], [2150, 1360]];
+  const WORLD = { w: 1600, h: 900 };
+  const PATH = [[150, 140], [330, 260], [300, 430], [520, 540], [760, 560],
+                [930, 700], [1180, 740], [1360, 820]];
   /* arc-length parameterization */
   const ARC = [0];
   for (let i = 1; i < PATH.length; i++)
@@ -92,14 +92,14 @@
   const winEl = document.getElementById("dozer-win");
   const blurbEl = document.getElementById("dz-blurb");
 
-  let dz, progress, elapsed, mode, auto, cam, announced;
+  let dz, progress, elapsed, mode, auto, announced;
   let convT, blurbSeen, blurbQ, blurbUntil, bonusAge;
   let running = false, paused = false, raf = 0, lastT = 0, tscale = 1;
   let tut;                                               // per-run tutorial progress
 
   function init() {
     dz = { x: PATH[0][0] - 60, y: PATH[0][1] - 40, a: .6 };
-    progress = 0; elapsed = 0; mode = "play"; cam = { x: 0, y: 0 };
+    progress = 0; elapsed = 0; mode = "play";
     announced = {}; bonusAge = 0;
     convT = new Float32Array(NB).fill(-1);
     blurbSeen = {}; blurbQ = []; blurbUntil = 0;
@@ -125,7 +125,7 @@
       t.hint("dozer-line",
         "Follow the dashed <b>creek line</b> — the crew digs behind you", { ttl: 8 });
     }
-    if (!tut.dug && progress > 420) {
+    if (!tut.dug && progress > TOTAL * .3) {
       tut.dug = true;
       t.hint("dozer-look",
         "Glance back — the river is coming to life in your wake", { ttl: 8 });
@@ -152,7 +152,7 @@
       const b = blurbQ.shift();
       blurbEl.innerHTML = `<p class="bk">🌿 ${b.kick}</p><p>${b.txt}</p>`;
       blurbEl.classList.add("on");
-      blurbUntil = now + 11;                              // no storm clock: let it breathe
+      blurbUntil = now + 9;                               // no storm clock: let it breathe
     } else if (!blurbQ.length && now >= blurbUntil && blurbEl.classList.contains("on")) {
       blurbEl.classList.remove("on");
     }
@@ -184,7 +184,7 @@
     dz.a += ax.x * 1.7 * dt;
     const [fx, fy] = pointAt(Math.min(TOTAL, progress + 30));
     const nearPath = U.dist(dz.x, dz.y, fx, fy) < CORRIDOR;
-    const v = (nearPath ? 125 : 100) * -ax.y;            // W = up = forward
+    const v = (nearPath ? 105 : 85) * -ax.y;             // W = up = forward
     dz.x = U.clamp(dz.x + Math.cos(dz.a) * v * dt, 30, WORLD.w - 30);
     dz.y = U.clamp(dz.y + Math.sin(dz.a) * v * dt, 30, WORLD.h - 30);
 
@@ -246,17 +246,13 @@
     const dpr = U.sizeCanvas(cv);
     const ctx = cv.getContext("2d");
     const W = cv.width, H = cv.height;
-    const Z = Math.max(W / 1750, H / 1170);              // wide view: the valley, not the machine
-
-    /* the camera trails the dozer: centre on a point behind the blade so the
-       river healing in your wake stays in frame instead of dead-centring you */
-    const back = 170;
-    const lx = (dz.x - Math.cos(dz.a) * back) * Z;
-    const ly = (dz.y - Math.sin(dz.a) * back) * Z;
-    const cxT = U.clamp(lx - W / 2, 0, Math.max(0, WORLD.w * Z - W));
-    const cyT = U.clamp(ly - H / 2, 0, Math.max(0, WORLD.h * Z - H));
-    cam.x += (cxT - cam.x) * .08; cam.y += (cyT - cam.y) * .08;
-    const PX = (x, y) => [x * Z - cam.x, y * Z - cam.y];
+    /* static frame: the whole alignment fits on screen at once — no camera.
+       Leave a band at the bottom clear for the gauge bar. */
+    const pad = 12 * dpr, hudH = 92 * dpr;
+    const Z = Math.min((W - 2 * pad) / WORLD.w, (H - hudH - pad) / WORLD.h);
+    const ox = (W - WORLD.w * Z) / 2;
+    const oy = pad + (H - hudH - pad - WORLD.h * Z) / 2;
+    const PX = (x, y) => [x * Z + ox, y * Z + oy];
 
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = "#171c22"; ctx.fillRect(0, 0, W, H);

@@ -169,8 +169,8 @@ canvas.rainfx{position:absolute;inset:0;width:100%;height:100%;z-index:5;
 .ba-before,.ba-after{position:absolute;inset:0}
 .ba-before svg{position:absolute;inset:0;width:100%;height:100%}
 .ba-after{clip-path:inset(0 0 0 var(--cut))}
-.ba-after img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-     display:block}
+.ba-after img,.ba-before img{position:absolute;inset:0;width:100%;height:100%;
+     object-fit:cover;display:block}
 .ba-tag{position:absolute;bottom:8px;font-family:var(--mono);font-size:.56rem;
      letter-spacing:.18em;text-transform:uppercase;color:#eaf2f8;
      background:rgba(7,11,17,.72);border-radius:6px;padding:3px 8px;pointer-events:none}
