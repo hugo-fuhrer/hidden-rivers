@@ -3,7 +3,12 @@
 "use strict";
 window.HR = window.HR || {};
 
-HR.REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+/* Motion: honour the OS/browser "reduce motion" accessibility setting, but a
+   presenter can force full animation on any device by opening the site with
+   ?motion=full (also accepts motion=on / motion=1, or in the #hash). */
+HR.FORCE_MOTION = /[?&#]motion=(full|on|1)\b/i.test(location.href);
+HR.REDUCED = !HR.FORCE_MOTION && matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (HR.FORCE_MOTION) document.documentElement.classList.add("hr-motion");
 
 HR.u = {
   clamp: (v, a, b) => v < a ? a : v > b ? b : v,
